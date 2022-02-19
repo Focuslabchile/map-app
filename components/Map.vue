@@ -66,6 +66,7 @@ export default {
         zoom: 3,
         center: [-73.17561116302086, -39.27770932403337],
         map: null,
+        draw: null,
         mode: 'light',
         init(options) {
           mapboxgl.accessToken = 'pk.eyJ1Ijoic2ViYWtjIiwiYSI6ImNremx0MTZ1MDUwN20yeHByanY2aHdldGMifQ.RJbd85g3ESIAiFjmeJNUIg'
@@ -131,7 +132,7 @@ export default {
       
       const self = this
 
-      const draw = new MapboxDraw({
+      this.mapbox.draw = new MapboxDraw({
         displayControlsDefault: false,
         controls: {
           polygon: true,
@@ -144,7 +145,7 @@ export default {
         // The user does not have to click the polygon control button first.
         defaultMode: 'draw_polygon'
       });
-      map.addControl(draw);
+      map.addControl(this.mapbox.draw);
 
       map.on('draw.create', mapCreateDelete);
       map.on('draw.delete', mapCreateDelete);
@@ -154,6 +155,7 @@ export default {
       map.once('load', e => {
         map.on('zoom', mapUpdateZoom)
         map.on('move', mapUpdateCenter)
+        self.loadLocalPolygons()
         if(localStorage.getItem('center')) {
           setTimeout(() => {
             const to = {
@@ -181,9 +183,11 @@ export default {
         self.polygons = self.polygons.map(el => {
           if(el.id === e.features[0].id) {
             el.value = calc.value
+            e.feature = e.features[0]
           }
           return el
         })
+        localStorage.setItem('polygons', JSON.stringify(self.polygons))
       }
       function mapSelectionChange(e) {
         if(!e.features[0]) {
@@ -220,22 +224,71 @@ export default {
       }
 
       function mapCreateDelete(e) {
-        const data = draw.getAll();
+        const data = self.mapbox.draw.getAll();
         if (e.type === 'draw.delete'){
           self.polygons = self.polygons.filter(polygon => {
             return polygon.id !== e.features[0].id
           })
+          localStorage.setItem('polygons', JSON.stringify(self.polygons))
           return
         }
         if (data.features.length > 0) {
           const lastFeature = data.features.pop()
           const geometry = lastFeature.geometry
           let calc = getCalc(geometry)
-          self.polygons.push({...calc, id: e.features[0].id})
+          self.polygons.push({...calc, id: e.features[0].id, feature: e.features[0]})
+          localStorage.setItem('polygons', JSON.stringify(self.polygons))
         } else {
           if (e.type !== 'draw.delete') alert('Click the map to draw a polygon.');
         }
       }
+    },
+    loadLocalPolygons() {
+      let features = JSON.parse(localStorage.getItem('polygons'))
+      this.polygons = features
+      features = features.map(el => {
+        return el.feature
+      })
+      const geojson = {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: features
+        }
+      }
+      this.mapbox.draw.add(geojson.data)
+      return
+      /* add layers
+      const geojson = {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features
+        }
+      }
+      this.mapbox.map.addSource('national-park', geojson);
+      this.mapbox.map.addLayer({
+        id: 'park-boundary',
+        type: 'fill',
+        source: 'national-park',
+        paint: {
+          'fill-color': '#888888',
+          'fill-opacity': 0.4
+        },
+        filter: ['==', '$type', 'Polygon']
+      });
+      
+      this.mapbox.map.addLayer({
+        id: 'park-volcanoes',
+        type: 'circle',
+        source: 'national-park',
+        paint: {
+          'circle-radius': 6,
+          'circle-color': '#B42222'
+        },
+        filter: ['==', '$type', 'Point']
+      });
+      */
     },
     restart() {
       this.fullscreen = !this.fullscreen
