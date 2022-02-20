@@ -334,7 +334,7 @@ export default {
   position: relative;
   width: 100%;
   height: var(--height);
-  --height: calc(100vh - 100px);
+  --height: calc(100vh - 120px);
   --space: 10px;
   --top: var(--space);
   --left: var(--space);

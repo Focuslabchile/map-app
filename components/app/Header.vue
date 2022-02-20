@@ -16,13 +16,13 @@
             <li>
               <a href="">
                 <span class="material-icons">contact_support</span>
-                Contacto
+                <span>Contacto</span>
               </a>
             </li>
             <li>
               <a href="">
                 <span class="material-icons">electrical_services</span>
-                Servicios
+                <span>Servicios</span>
               </a>
             </li>
           </ul>
