@@ -45,7 +45,7 @@ header {
   }
   nav {
     --space: 20px;
-    margin-right: calc(var(--space) * -1);
+    margin-right: -20px;
     ul {
       li {
         a {
