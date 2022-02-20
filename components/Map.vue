@@ -245,7 +245,8 @@ export default {
     },
     loadLocalPolygons() {
       let features = JSON.parse(localStorage.getItem('polygons'))
-      this.polygons = features
+      this.polygons = Array.isArray(features) ? features : []
+      features = this.polygons
       features = features.map(el => {
         return el.feature
       })
