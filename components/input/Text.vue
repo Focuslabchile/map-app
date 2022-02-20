@@ -1,7 +1,12 @@
 <template>
   <div class="input-container">
     <label :for="name">{{label}}</label>
-    <input :autocomplete="autocomplete" :name="name" v-model="value" @input="$emit('update:model', value)" type="text">
+    <input
+      :autocomplete="autocomplete"
+      :name="name"
+      v-model="value"
+      @input="$emit('update:model', value); $emit('update', value)"
+      type="text">
   </div>
 </template>
 <script>

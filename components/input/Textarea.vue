@@ -1,7 +1,12 @@
 <template>
   <div class="textarea-container">
     <label :for="name">{{label}}</label>
-    <textarea rows="4" :name="name" v-model="value" @input="$emit('update:model', value)" />
+    <textarea
+      rows="4"
+      :name="name"
+      v-model="value"
+      @input="$emit('update:model', value); $emit('update', value);"
+    />
   </div>
 </template>
 <script>

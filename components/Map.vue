@@ -28,24 +28,24 @@
         <div class="flex justify-between items-center">
           <div>
             <div>
-              {{polygon.name}}({{ polygon.type }})
+              {{polygon.name}}
             </div>
             <div>
               {{ polygon.calc }}: {{ polygon.value }} {{ polygon.unit }}
             </div>
           </div>
-          <span @click="polygon.edit = !polygon.edit" class="material-icons cursor-pointer">edit</span>
+          <div class="icons">
+            <span @click="center(polygon)" class="material-icons cursor-pointer">my_location</span>
+            <span @click="polygon.edit = !polygon.edit" class="material-icons cursor-pointer">edit</span>
+          </div>
         </div>
         <div v-if="polygon.edit" class="edit mt-2">
           <div>id: {{ polygon.id }}</div>
-          <InputText autocomplete="off" class="mb-2" label="Nombre" name="name" :model.sync="polygon.name" />
-          <InputTextarea class="mb-2" label="Descripción" name="description" :model.sync="polygon.description" />
+          <InputText @update="updateLocalStorage" autocomplete="off" class="mb-2" label="Nombre" name="name" :model.sync="polygon.name" />
+          <InputTextarea @update="updateLocalStorage" class="mb-2" label="Descripción" name="description" :model.sync="polygon.description" />
         </div>
       </div>
     </div>
-  </div>
-  <div style="display:none;" class="calculation-box">
-    <div id="calculated-area"></div>
   </div>
 </article>
 </template>
@@ -143,7 +143,7 @@ export default {
         },
         // Set mapbox-gl-draw to draw by default.
         // The user does not have to click the polygon control button first.
-        defaultMode: 'draw_polygon'
+        defaultMode: 'simple_select'
       });
       map.addControl(this.mapbox.draw);
 
@@ -183,7 +183,7 @@ export default {
         self.polygons = self.polygons.map(el => {
           if(el.id === e.features[0].id) {
             el.value = calc.value
-            e.feature = e.features[0]
+            el.feature = {...e.features[0]}
           }
           return el
         })
@@ -295,6 +295,31 @@ export default {
       this.$nextTick(() => {
         this.mapbox.map.resize();
       })
+    },
+    updateLocalStorage() {
+      const polygons = this.polygons
+      localStorage.setItem('polygons', JSON.stringify(polygons.map(el => {
+        return {...el, edit: false}
+      })))
+    },
+    center(polygon) {
+      this.active = polygon.id
+      var bbox = turf.bbox(polygon.feature)
+      
+      const corners = {
+        southwestern: [
+          bbox[0],
+          bbox[1]
+        ],
+        northeastern: [
+          bbox[2],
+          bbox[3]
+        ]
+      }
+
+      this.mapbox.map.fitBounds([corners.southwestern, corners.northeastern], {padding: 20})
+      this.mapbox.draw.changeMode('simple_select', { featureIds: [polygon.id] })
+
     }
   },
   mounted() {
