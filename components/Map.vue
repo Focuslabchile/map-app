@@ -19,30 +19,43 @@
     <div class="map-info-title p-3">
       Mis zonas
     </div>
-    <div class="map-info-body">
-      <div
-        :class="['info-item p-3', {active:active === polygon.id}]"
-        v-for="(polygon, index) in polygons"
-        :key="index"
-      >
-        <div class="flex justify-between items-center">
-          <div>
+    <div class="map-info-body flex justify-between flex-col">
+      <div class="info-items">
+        <div
+          :class="['info-item p-3', {active:active === polygon.id}]"
+          v-for="(polygon, index) in polygons"
+          :key="index"
+        >
+          <div class="flex justify-between items-center">
+
             <div>
-              {{polygon.name}}
+              <div>
+                {{polygon.properties.name}}
+              </div>
+              <div>
+                {{ polygon.properties.calc }}: {{ polygon.properties.value }} {{ polygon.properties.unit }}
+              </div>
             </div>
-            <div>
-              {{ polygon.calc }}: {{ polygon.value }} {{ polygon.unit }}
+            <div class="icons">
+              <span @click="center(polygon)" class="material-icons cursor-pointer">my_location</span>
+              <span @click="polygon.properties.edit = !polygon.properties.edit" class="material-icons cursor-pointer">edit</span>
             </div>
           </div>
-          <div class="icons">
-            <span @click="center(polygon)" class="material-icons cursor-pointer">my_location</span>
-            <span @click="polygon.edit = !polygon.edit" class="material-icons cursor-pointer">edit</span>
+          <div v-if="polygon.properties.edit" class="edit mt-2">
+            <div>id: {{ polygon.id }}</div>
+            <InputText @update="updateLocalStorage" autocomplete="off" class="mb-2" label="Nombre" name="name" :model.sync="polygon.properties.name" />
+            <InputTextarea @update="updateLocalStorage" class="mb-2" label="Descripción" name="description" :model.sync="polygon.properties.description" />
           </div>
         </div>
-        <div v-if="polygon.edit" class="edit mt-2">
-          <div>id: {{ polygon.id }}</div>
-          <InputText @update="updateLocalStorage" autocomplete="off" class="mb-2" label="Nombre" name="name" :model.sync="polygon.name" />
-          <InputTextarea @update="updateLocalStorage" class="mb-2" label="Descripción" name="description" :model.sync="polygon.description" />
+      </div>
+      <div class="controls flex justify-between">
+        <div class="disabled:opacity-50 cursor-pointer flex items-center">
+          cargar zonas
+          <span class="material-icons">file_upload</span>
+        </div>
+        <div @click="download" class="cursor-pointer flex items-center">
+          descargar zonas
+          <span class="material-icons">file_download</span>
         </div>
       </div>
     </div>
@@ -92,6 +105,21 @@ export default {
     }
   },
   methods: {
+    download() {
+      const geojson = {
+        type: 'FeatureCollection',
+        features: this.polygons
+      }
+
+      var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(geojson, null, 2));
+      const link = document.createElement('a')
+      link.setAttribute('href', 'data:' + data)
+      link.setAttribute('download', 'mis_zonas.json')
+      //document.querySelector('body').appendChild(link);
+      link.click()
+      link.remove()
+      // 
+    },
     switchStyle(val) {
       if(val === 'Mapa') {
         this.mapbox.map.setStyle(`mapbox://styles/mapbox/${this.mapbox.mode}-v10`)
@@ -180,10 +208,13 @@ export default {
           return
         }
         const calc = getCalc(e.features[0].geometry);
+        const feature = { ...e.features[0] }
+        feature.properties = calc
+
         self.polygons = self.polygons.map(el => {
           if(el.id === e.features[0].id) {
-            el.value = calc.value
-            el.feature = {...e.features[0]}
+            el = e.features[0]
+            el.properties = calc
           }
           return el
         })
@@ -200,6 +231,7 @@ export default {
 
       function getCalc(geometry) {
         let calc = {}
+        console.log(geometry)
         if(geometry.type === 'Polygon') {
           calc = self.calcArea(geometry)
           calc.type = 'poligono'
@@ -236,7 +268,10 @@ export default {
           const lastFeature = data.features.pop()
           const geometry = lastFeature.geometry
           let calc = getCalc(geometry)
-          self.polygons.push({...calc, id: e.features[0].id, feature: e.features[0]})
+          self.polygons.push({
+            ...e.features[0],
+            properties: calc
+          })
           localStorage.setItem('polygons', JSON.stringify(self.polygons))
         } else {
           if (e.type !== 'draw.delete') alert('Click the map to draw a polygon.');
@@ -247,9 +282,6 @@ export default {
       let features = JSON.parse(localStorage.getItem('polygons'))
       this.polygons = Array.isArray(features) ? features : []
       features = this.polygons
-      features = features.map(el => {
-        return el.feature
-      })
       const geojson = {
         type: 'geojson',
         data: {
@@ -305,7 +337,7 @@ export default {
     },
     center(polygon) {
       this.active = polygon.id
-      var bbox = turf.bbox(polygon.feature)
+      var bbox = turf.bbox(polygon)
       
       const corners = {
         southwestern: [
@@ -364,7 +396,7 @@ export default {
       max-width: var(--info);
       position: absolute;
       height: calc(100vh - 150px);
-      left: 0;
+      left: var(--left);
       display: none;
       &.open {
         display: flex;
