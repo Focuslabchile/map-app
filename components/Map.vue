@@ -110,14 +110,8 @@ export default {
   methods: {
     handleUpload() {
       const reader = new FileReader();
-      function b64DecodeUnicode(str) {
-        // Going backwards: from bytestream, to percent-encoding, to original string.
-        return decodeURIComponent(atob(str).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-      }
       reader.onload = (file) => {
-        const json = b64DecodeUnicode(file.target.result.substring(29));
+        const json = Buffer.from(file.target.result.substring(29), 'base64').toString('utf8');
         const result = JSON.parse(json);
         this.polygons = [ ...this.polygons, ...result.features ]
         const geojson = {
@@ -258,7 +252,6 @@ export default {
 
       function getCalc(geometry) {
         let calc = {}
-        console.log(geometry)
         if(geometry.type === 'Polygon') {
           calc = self.calcArea(geometry)
           calc.type = 'poligono'
