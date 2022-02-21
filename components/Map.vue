@@ -110,8 +110,14 @@ export default {
   methods: {
     handleUpload() {
       const reader = new FileReader();
+      function b64DecodeUnicode(str) {
+        // Going backwards: from bytestream, to percent-encoding, to original string.
+        return decodeURIComponent(atob(str).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+      }
       reader.onload = (file) => {
-        const json = atob(file.target.result.substring(29));
+        const json = b64DecodeUnicode(file.target.result.substring(29));
         const result = JSON.parse(json);
         this.polygons = [ ...this.polygons, ...result.features ]
         const geojson = {
@@ -132,7 +138,7 @@ export default {
         features: this.polygons
       }
 
-      var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(geojson, null, 2));
+      var data = "text/json;charset=iso-8859-1," + encodeURIComponent(JSON.stringify(geojson, null, 2));
       const link = document.createElement('a')
       link.setAttribute('href', 'data:' + data)
       link.setAttribute('download', 'mis_zonas.json')
