@@ -49,7 +49,10 @@
         </div>
       </div>
       <div class="controls flex justify-between">
-        <div class="disabled:opacity-50 cursor-pointer flex items-center">
+        <div @click="$refs.fileElem.click()" class="disabled:opacity-50 cursor-pointer flex items-center">
+          <form>
+            <input type="file" ref="fileElem" style="display:none" @change="handleUpload">
+          </form>
           cargar zonas
           <span class="material-icons">file_upload</span>
         </div>
@@ -105,6 +108,24 @@ export default {
     }
   },
   methods: {
+    handleUpload() {
+      const reader = new FileReader();
+      reader.onload = (file) => {
+        const json = atob(file.target.result.substring(29));
+        const result = JSON.parse(json);
+        this.polygons = [ ...this.polygons, ...result.features ]
+        const geojson = {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: this.polygons
+          }
+        }
+        this.mapbox.draw.add(geojson.data)
+        localStorage.setItem('polygons', JSON.stringify(this.polygons))
+      };
+      reader.readAsDataURL(this.$refs.fileElem.files[0]);
+    },
     download() {
       const geojson = {
         type: 'FeatureCollection',
