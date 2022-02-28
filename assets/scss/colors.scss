@@ -2,3 +2,7 @@
   background: var(--primary);
   color: var(--white);
 }
+.disabled {
+  opacity: .3;
+  pointer-events: none;
+}

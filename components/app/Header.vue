@@ -14,13 +14,13 @@
               </a>
             </li>
             <li>
-              <a href="">
+              <a class="disabled" href="">
                 <span class="material-icons">contact_support</span>
                 <span>Contacto</span>
               </a>
             </li>
             <li>
-              <a href="">
+              <a class="disabled" href="">
                 <span class="material-icons">electrical_services</span>
                 <span>Servicios</span>
               </a>

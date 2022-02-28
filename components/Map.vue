@@ -48,17 +48,15 @@
           </div>
         </div>
       </div>
-      <div class="controls flex justify-between">
+      <div class="controls flex justify-between p-3">
         <div @click="$refs.fileElem.click()" class="disabled:opacity-50 cursor-pointer flex items-center">
           <form>
             <input type="file" ref="fileElem" style="display:none" @change="handleUpload">
           </form>
-          cargar zonas
-          <span class="material-icons">file_upload</span>
+          <span content="Cargar zonas" v-tippy class="material-icons">upload_file</span>
         </div>
-        <div @click="download" class="cursor-pointer flex items-center">
-          descargar zonas
-          <span class="material-icons">file_download</span>
+        <div content="Descargar zonas" v-tippy @click="download" class="cursor-pointer flex items-center">
+          <span class="material-icons">save</span>
         </div>
       </div>
     </div>
@@ -71,6 +69,8 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw"
 import * as turf from '@turf/turf'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { tippy } from "vue-tippy";
+
 export default {
   data () {
     return {
@@ -98,7 +98,7 @@ export default {
           this.map.addControl(new mapboxgl.NavigationControl())
           this.map.addControl(new mapboxgl.GeolocateControl())
           this.map.addControl(new mapboxgl.AttributionControl({
-              compact: false,
+              compact: true,
               customAttribution: 'Desarrollado por Sebastian Vega'
           }))
           this.map.addControl(new mapboxgl.ScaleControl())
