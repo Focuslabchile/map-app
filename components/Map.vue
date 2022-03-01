@@ -17,9 +17,13 @@
   </div>
   <div :class="['map-info', {open:menu}]">
     <div class="map-info-title p-3">
-      Mis zonas
+      Herramientas
     </div>
-    <div class="map-info-body flex justify-between flex-col">
+    <div class="map-info-tabs px-3">
+      <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
+      <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
+    </div>
+    <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col">
       <div class="info-items">
         <div
           :class="['info-item p-3', {active:active === polygon.id}]"
@@ -60,6 +64,7 @@
         </div>
       </div>
     </div>
+    <load-kmz class="p-3" v-show="tab === 'kmz'" />
   </div>
 </article>
 </template>
@@ -74,6 +79,7 @@ import { tippy } from "vue-tippy";
 export default {
   data () {
     return {
+      tab: 'mis-zonas',
       active: '',
       menu: true,
       polygons: [],
@@ -446,6 +452,20 @@ export default {
     flex-direction: column;
     width: 100%;
     height: auto;
+    .map-info-tabs {
+      display: flex;
+      .map-info-tabs--item {
+        padding: 0.75rem;
+        flex-grow: 1;
+        text-align: center;
+        cursor: pointer;
+        border-bottom: 1px solid;
+        border-color: var(--light);
+        &.active {
+          border-color: var(--primary);
+        }
+      }
+    }
     .map-info-title {
       @extend .main;
     }
