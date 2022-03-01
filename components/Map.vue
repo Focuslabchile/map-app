@@ -19,11 +19,11 @@
     <div class="map-info-title p-3">
       Herramientas
     </div>
-    <div class="map-info-tabs px-3">
+    <div class="map-info-tabs">
       <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
       <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
     </div>
-    <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col">
+    <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col pt-3">
       <div class="info-items">
         <div
           :class="['info-item p-3', {active:active === polygon.id}]"
