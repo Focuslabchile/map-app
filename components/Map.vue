@@ -453,6 +453,7 @@ export default {
     width: 100%;
     height: auto;
     .map-info-tabs {
+      background: white;
       display: flex;
       .map-info-tabs--item {
         padding: 0.75rem;
