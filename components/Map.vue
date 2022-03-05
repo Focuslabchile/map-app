@@ -81,6 +81,7 @@ import { tippy } from "vue-tippy";
 export default {
   data () {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
+    mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
       tab: 'mis-zonas',
       active: '',
@@ -155,7 +156,7 @@ export default {
       if(val === 'Mapa') {
         this.mapbox.map.setStyle(`mapbox://styles/mapbox/${this.mapbox.mode}-v10`)
       } else {
-        this.mapbox.map.setStyle('mapbox://styles/mapbox/satellite-v9')
+        this.mapbox.map.setStyle('mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f')
       }
     },
     calcArea(geometry) {
