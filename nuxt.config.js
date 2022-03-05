@@ -48,6 +48,7 @@ export default {
   publicRuntimeConfig: {
     apiUrl: process.env.API_URL,
     apiToken: process.env.API_TOKEN,
+    mapboxApiUrl: process.env.MAPBOX_API_URL
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

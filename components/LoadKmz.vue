@@ -34,7 +34,12 @@
               <span v-tippy :content="kmz.attributes.description+'<br>'+kmz.attributes.file.data.attributes.size+' mb'" class="material-icons cursor-pointer">info</span>
             </span>
             <span class="icon-container">
-              <span v-tippy content="Visualizar kmz" class="material-icons cursor-pointer">add_circle</span>
+              <span
+                v-tippy
+                content="Visualizar kmz"
+                class="material-icons cursor-pointer"
+                @click="loadKmz('http://localhost:1337'+kmz.attributes.file.data.attributes.url)"
+              >add_circle</span>
             </span>
           </div>
         </div>
@@ -46,12 +51,23 @@
 <script>
 import FormControl from './FormControl.vue'
 import regions from '@/assets/regions.json'
+import JSZipUtils from 'jszip-utils'
+import JSZip from 'jszip'
+import toGeoJSON from '@mapbox/togeojson'
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   components: { FormControl },
+  props: {
+    map: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
       regions: regions,
+      kmlLayers: [],
       kmzs: [],
       comunas: [],
       search: '',
@@ -60,11 +76,45 @@ export default {
     }
   },
   methods: {
+    turnOffLayer(clickedLayer){
+	    this.map.setPaintProperty( clickedLayer,"fill-color",  "rgba(255,255,255,0)");
+    },
+    loadKmz(fileURL,show){
+      const self = this
+      JSZipUtils.getBinaryContent(fileURL, function(err, data) {
+        if(err) {
+          console.log('error');
+          throw err; // or handle err
+        }
+
+        JSZip.loadAsync(data,{base64: false, optimizedBinaryString:true}).then(function (zip) {
+          return zip
+        }).then(function (zip) {
+          var props = Object.getOwnPropertyNames(zip["files"]);
+          var name =props[0];
+          var kmlFile=zip.file(name).async("string"); // a promise of "Hello World\n"
+          return kmlFile;          
+        }).then(function(text){
+          var parser = new DOMParser();
+          var textXML = parser.parseFromString(text, "text/xml"); //important to use "text/xml"
+          var response = toGeoJSON.kml(textXML);
+          console.log(response)
+          var layerName=response.features[0].properties.name; 
+          let d = JSON.parse(localStorage.getItem('polygons'))
+          response.features[0].properties.edit = false
+          response.features[0].id = uuidv4()
+          d.push(response.features[0])
+          localStorage.setItem('polygons', JSON.stringify(d))
+          //self.$parent.init(layerName, response);
+
+            self.kmlLayers.push(layerName);
+        });
+      }); 
+    },
     pickComuna() {
       this.comunas = this.regions.find(region => region.region === this.region).comunas
     },
     searchKmz(val) {
-      console.log(val)
       this.$emit('search-kmz', this.search)
     },
     async fetchSomething() {

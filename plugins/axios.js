@@ -1,7 +1,5 @@
 export default function ({ $axios, $config }, inject) {
 
-
-  console.log($config)
   const api = $axios.create({
     headers: {
       common: {

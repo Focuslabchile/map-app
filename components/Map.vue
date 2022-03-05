@@ -22,7 +22,9 @@
     <div class="map-info-tabs">
       <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
       <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
+      <div v-if="description" @click="tab = 'description'" :class="['map-info-tabs--item', {active: tab === 'description'}]">Descripcion</div>
     </div>
+    <div v-show="tab === 'description'" class="pt-3 map-feature-description" v-html="description"></div>
     <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col pt-3">
       <div class="info-items">
         <div
@@ -64,7 +66,7 @@
         </div>
       </div>
     </div>
-    <load-kmz class="p-3" v-show="tab === 'kmz'" />
+    <load-kmz :map="mapbox.map" class="p-3" v-show="tab === 'kmz'" />
   </div>
 </article>
 </template>
@@ -78,9 +80,11 @@ import { tippy } from "vue-tippy";
 
 export default {
   data () {
+    const MAPBOX_API_URL = this.$config.mapboxApiUrl
     return {
       tab: 'mis-zonas',
       active: '',
+      description: '',
       menu: true,
       polygons: [],
       fullscreen: false,
@@ -91,7 +95,7 @@ export default {
         draw: null,
         mode: 'light',
         init(options) {
-          mapboxgl.accessToken = 'pk.eyJ1Ijoic2ViYWtjIiwiYSI6ImNremx0MTZ1MDUwN20yeHByanY2aHdldGMifQ.RJbd85g3ESIAiFjmeJNUIg'
+          mapboxgl.accessToken = MAPBOX_API_URL
           this.map = new mapboxgl.Map({
             container: 'map',
             style: `mapbox://styles/mapbox/${this.mode}-v10`,
@@ -180,7 +184,7 @@ export default {
         value: Math.round(length * 100) / 100
       }
     },
-    init() {
+    init(layerid = null, addkmz =null) {
       this.mapbox.init()
       this.mapbox.addControls()
       const map = this.mapbox.map
@@ -210,7 +214,7 @@ export default {
       map.once('load', e => {
         map.on('zoom', mapUpdateZoom)
         map.on('move', mapUpdateCenter)
-        self.loadLocalPolygons()
+        self.loadLocalPolygons(layerid, addkmz)
         if(localStorage.getItem('center')) {
           setTimeout(() => {
             const to = {
@@ -304,7 +308,7 @@ export default {
         }
       }
     },
-    loadLocalPolygons() {
+    loadLocalPolygons(layerid, addkmz) {
       let features = JSON.parse(localStorage.getItem('polygons'))
       this.polygons = Array.isArray(features) ? features : []
       features = this.polygons
@@ -316,6 +320,21 @@ export default {
         }
       }
       this.mapbox.draw.add(geojson.data)
+
+      if(layerid && addkmz) {
+        //addLayer(response,layerid){
+        this.mapbox.map.addSource(layerid, {
+          type: "geojson",
+          data: addkmz
+        });
+        this.mapbox.map.addLayer({
+          "id": layerid,
+          "type": "fill",
+          "source":layerid,
+          "paint": { "fill-color":  [ "string", ["get", "fill"]]}
+        }, 'aeroway-taxiway');
+      }
+
       return
       /* add layers
       const geojson = {
@@ -362,7 +381,10 @@ export default {
       })))
     },
     center(polygon) {
+      console.log(polygon)
       this.active = polygon.id
+      this.description = polygon.properties.description
+      this.tab = 'description'
       var bbox = turf.bbox(polygon)
       
       const corners = {
@@ -398,6 +420,9 @@ export default {
   --top: var(--space);
   --left: var(--space);
   --info: 300px;
+  .map-feature-description {
+    padding: .75rem;
+  }
   .map-filters {
     z-index: 1;
     position: absolute;
