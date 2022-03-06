@@ -41,16 +41,25 @@
         </div>
       </div>
     </header>
-    <div class="limit">
-      <AppSection>
-        
-      </AppSection>
-    </div>
+    <AppSection background="secondary">
+      <div class="limit">
+        <div class="grid grid-cols-2">
+          <div class="col-span-2 md:col-span-1">
+            <h3 class="h2">
+              Nosotros
+            </h3>
+          </div>
+        </div>
+      </div>
+    </AppSection>
   </div>
 </template>
 <style lang="scss">
+@import '~assets/scss/colors.scss';
+
 #home {
   #slider {
+    @extend .primary;
     min-height: 70vh;
     .slider-item {
       text-align: center;

@@ -31,6 +31,9 @@
                 <span>Servicios</span>
               </a>
             </li>
+            <li>
+              <DarkMode />
+            </li>
           </ul>
         </nav>
       </div>
@@ -38,7 +41,10 @@
   </header>
 </template>
 <style lang="scss">
+@import '~assets/scss/colors.scss';
+
 header {
+  @extend .primary;
   .logo {
     height: 88px;
     display: none;
