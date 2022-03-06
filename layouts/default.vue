@@ -2,7 +2,6 @@
 <main>
   <AppHeader />
   <Nuxt />
-  <AppFooter />
 </main>
 </template>
 <style lang="scss">

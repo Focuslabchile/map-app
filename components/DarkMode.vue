@@ -17,11 +17,21 @@ export default {
     toggle() {
       this.darkMode = !this.darkMode
       document.body.classList.toggle('dark-mode')
+      localStorage.setItem('darkMode', this.darkMode)
     }
   },
   mounted() {
-    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    this.darkMode = prefersDarkScheme.matches
+    const savedMode = localStorage.getItem('darkMode')
+    if(savedMode) {
+      this.darkMode = savedMode === 'true'
+      savedMode === 'true' ? this.darkMode = true : this.darkMode = false
+    } else {
+      const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+      this.darkMode = prefersDarkScheme.matches
+    }
+    if(this.darkMode) {
+      document.body.classList.add('dark-mode')
+    }
   }
 }
 </script>
