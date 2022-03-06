@@ -8,7 +8,13 @@
         <nav>
           <ul class="flex list-none">
             <li>
-              <a href="">
+              <a href="/">
+                <span class="material-icons">home</span>
+                <span class="desktop">Inicio</span>
+              </a>
+            </li>
+            <li>
+              <a href="/mapa">
                 <span class="material-icons">public</span>
                 <span class="desktop">Mapa</span>
               </a>

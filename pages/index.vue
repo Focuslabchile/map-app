@@ -1,29 +1,66 @@
 <template>
-  <div class="limit">
-    <AppSection title="Mapa">
-      <Map />
-    </AppSection>
+  <div id="home">
+    <header id="slider" class="flex items-center">
+      <div class="limit">
+        <div class="grid grid-cols-2">
+          <div class="box text-center md:text-left col-span-2 md:col-span-1 flex justify-center flex-col">
+            <h1>Ingeníeria eléctrica</h1>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          </div>
+          <div class="box col-span-2 md:col-span-1">
+            <Slider>
+              <div class="slider-item">
+                <div class="slider-item-header px-0 md:px-8">
+                  <h3>Estamos certificados</h3>
+                  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                </div>
+                <div class="img-container">
+                  <img src="@/static/sec.png" alt="sec certificación">
+                </div>
+              </div>
+              <div class="slider-item">
+                <div class="slider-item-header px-0 md:px-8">
+                  <h3>Estamos certificados</h3>
+                  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                </div>
+                <div class="img-container">
+                  <img src="@/static/analizador.png" alt="analizador">
+                </div>
+              </div>
+              <div class="slider-item">
+                <div class="slider-item-header px-0 md:px-8">
+                  <h3>Estamos certificados</h3>
+                  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                </div>
+                <div class="img-container">
+                  <img src="@/static/termo-cam.png" alt="termo cam">
+                </div>
+              </div>
+            </Slider>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="limit">
+      <AppSection>
+        
+      </AppSection>
+    </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'IndexPage'
-}
-</script>
-<style>
-:root {
-  --primary: rgb(49, 119,195);
-  --light: rgba(49, 119,195, .3);
-  --white: #fff;
-  --gray: lightgrey;
-  --box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
-}
-body { margin: 0; padding: 0; width: 100%;}
-.limit {
-  max-width: 1400px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 20px;
+<style lang="scss">
+#home {
+  #slider {
+    min-height: 70vh;
+    .slider-item {
+      text-align: center;
+      .img-container {
+        img {
+          margin: auto;
+          max-height: 250px;
+        }
+      }
+    }
+  }
 }
 </style>
