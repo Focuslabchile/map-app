@@ -7,7 +7,7 @@
             <h1>Ingeníeria eléctrica</h1>
             <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
           </div>
-          <div class="box col-span-2 md:col-span-1">
+          <div class="box col-span-2 md:col-span-1 mt-8 md:mt-0">
             <Slider>
               <div class="slider-item">
                 <div class="slider-item-header px-0 md:px-8">
