@@ -3,9 +3,13 @@
     <div class="limit">
       <div class="flex justify-between items-center">
         <figure class="logo">
-          <img src="/logo.png" alt="Mapbox logo" />
+          <img src="/logo2.png" alt="m&z logo" />
+          <figcaption> M&Z</figcaption>
         </figure>
-        <nav>
+        <div class="menu">
+          <span @click="menu = !menu" class="material-icons cursor-pointer">menu</span>
+        </div>
+        <nav :class="{active:menu}">
           <ul class="flex list-none">
             <li>
               <a href="/">
@@ -40,6 +44,15 @@
     </div>
   </header>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      menu: false
+    }
+  }
+}
+</script>
 <style lang="scss">
 @import '~assets/scss/colors.scss';
 
@@ -47,28 +60,63 @@ header {
   @extend .primary;
   .logo {
     height: 88px;
-    display: none;
+    display: block;
     img {
       height: 100%;
     }
-    @media screen and (min-width: 360px) {
-      display: block;
+    figcaption {
+      display: none;
+      font-size: 2.7vw;
+      font-weight: bold;
+      line-height: 1;
+      text-align: center;
     }
+  }
+  .menu {
+    position: relative;
+    z-index: 100;
   }
   nav {
     --space: 20px;
     margin-right: -20px;
+    display: none;
+    &.active {
+      @extend .primary;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 99;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      ul {
+        flex-direction: column;
+      }
+    }
     ul {
       li {
         a {
           display: flex;
-          flex-direction: column;
           align-items: center;
+          justify-content: center;
           padding: var(--space);
-          @media screen and (min-width: 460px) {
-            flex-direction: row;
-          }
         }
+      }
+    }
+  }
+  @media screen and (min-width: 630px) {
+    nav {
+      display: block;
+    }
+    .menu {
+      display: none;
+    }
+    .logo {
+      figcaption {
+        display: block;
       }
     }
   }
