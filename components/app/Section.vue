@@ -1,5 +1,5 @@
 <template>
-  <section :class="['section pt-12', background]">
+  <section :class="['section py-12', background]">
     <div class="limit">
       <h3>{{title}}</h3>
       <slot />

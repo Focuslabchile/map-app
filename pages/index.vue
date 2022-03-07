@@ -54,7 +54,7 @@
         <div class="col-span-2 md:col-span-1">
           <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/42/600/400.jpg?hmac=xu2H-JM2iZFaiBN-UgpmCMa3sFj-L53aoSCIbC91RjI" alt="">
           <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/496/600/400.jpg?hmac=UZP1e68JrI6RawgwYSmVqV66Te7qUVpmO0eM89EpQoI" alt="">
-          <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
+          <img class="w-full" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
         </div>
       </div>
     </AppSection>
@@ -63,7 +63,7 @@
         <div class="col-span-2 md:col-span-1">
           <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/42/600/400.jpg?hmac=xu2H-JM2iZFaiBN-UgpmCMa3sFj-L53aoSCIbC91RjI" alt="">
           <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/496/600/400.jpg?hmac=UZP1e68JrI6RawgwYSmVqV66Te7qUVpmO0eM89EpQoI" alt="">
-          <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
+          <img class="w-full" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
         </div>
         <div class="col-span-2 md:col-span-1">
           <div class="us-container pl-0 md:pl-16 text-center md:text-right">

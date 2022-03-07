@@ -1,5 +1,5 @@
 <template>
-  <footer id="app-footer" class="py-4">
+  <footer id="app-footer" class="py-8">
     <div class="limit">
       <div class="grid grid-cols-6 gap-4">
         <div class="logo flex items-center col-span-6 md:col-span-2">
