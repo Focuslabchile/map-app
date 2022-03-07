@@ -2,12 +2,17 @@
   <div class="form-control">
     <label v-if="name && name.length" :for="name">{{name}}</label>
     <slot />
+    <span class="description" v-if="description">{{description}}</span>
   </div>
 </template>
 <script>
 export default {
   props: {
     name: {
+      type: String,
+      default: '',
+    },
+    description: {
       type: String,
       default: '',
     },
@@ -18,14 +23,20 @@ export default {
 .form-control {
   margin-bottom: 10px;
   label {
-    font-size: .75rem;
     font-weight: bold;
     display: block;
+  }
+  .description {
+    font-weight: 300;
   }
   .btn {
     border-radius: 4px;
     border: 1px solid var(--gray);
     padding: 2px 7px;
+    &.btn-big {
+      padding: 5px 40px;
+      text-transform: uppercase;
+    }
   }
   input {
     color: #333;

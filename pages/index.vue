@@ -45,9 +45,63 @@
       <div class="limit">
         <div class="grid grid-cols-2">
           <div class="col-span-2 md:col-span-1">
-            <h3 class="h2">
-              Nosotros
-            </h3>
+            <div class="us-container pr-16">
+              <h3 class="h2">
+                Nosotros
+              </h3>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+            </div>
+          </div>
+          <div class="col-span-2 md:col-span-1">
+            <img class="mb-16" src="https://i.picsum.photos/id/42/600/400.jpg?hmac=xu2H-JM2iZFaiBN-UgpmCMa3sFj-L53aoSCIbC91RjI" alt="">
+            <img class="mb-16" src="https://i.picsum.photos/id/496/600/400.jpg?hmac=UZP1e68JrI6RawgwYSmVqV66Te7qUVpmO0eM89EpQoI" alt="">
+            <img class="mb-16" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
+          </div>
+        </div>
+      </div>
+    </AppSection>
+    <AppSection background="primary">
+      <div class="limit">
+        <div class="grid grid-cols-2">
+          <div class="col-span-2 md:col-span-1">
+            <img class="mb-16" src="https://i.picsum.photos/id/42/600/400.jpg?hmac=xu2H-JM2iZFaiBN-UgpmCMa3sFj-L53aoSCIbC91RjI" alt="">
+            <img class="mb-16" src="https://i.picsum.photos/id/496/600/400.jpg?hmac=UZP1e68JrI6RawgwYSmVqV66Te7qUVpmO0eM89EpQoI" alt="">
+            <img class="mb-16" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
+          </div>
+          <div class="col-span-2 md:col-span-1">
+            <div class="us-container pl-16 text-right">
+              <h3 class="h2">
+                Nuestros servicios
+              </h3>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </AppSection>
+    <AppSection class="pb-24 pt-24" background="secondary">
+      <div class="limit">
+        <div id="contact-us" class="grid grid-cols-2">
+          <div class="col-span-2 md:col-span-1 pr-16 mb-12 md:mb-0">
+            <h3 class="h2 mb-4">¡Contactanos!</h3>
+            <p class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
+            <p>Escribenos a renematusza@gmail.com o a través este formulario de contacto.</p>
+          </div>
+          <div class="col-span-2 md:col-span-1">
+            <form>
+              <FormControl name="¿Cómo te llamas?">
+                <InputText />
+              </FormControl>
+              <FormControl name="¿Cómo te podemos contactar?" description="Correo o número telefónico">
+                <InputText />
+              </FormControl>
+              <FormControl name="Cuéntanos sobre tu necesidad">
+                <InputTextarea />
+              </FormControl>
+              <FormControl>
+                <button class="btn btn-big" type="submit">Enviar</button>
+              </FormControl>
+            </form>
           </div>
         </div>
       </div>
@@ -70,6 +124,17 @@
         }
       }
     }
+  }
+  .us-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: sticky;
+    top: 8vw;
+    margin-top: 8vw;
+    margin-bottom: 12vw;
+  }
+  #contact-us {
   }
 }
 </style>
