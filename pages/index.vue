@@ -127,9 +127,8 @@
     flex-direction: column;
     justify-content: center;
     position: sticky;
-    top: 8vw;
-    margin-top: 8vw;
-    margin-bottom: 12vw;
+    top: 35vh;
+    margin-bottom: 10vh;
   }
   #contact-us {
   }

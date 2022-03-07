@@ -62,11 +62,10 @@ header {
     height: 88px;
     display: block;
     img {
-      height: 100%;
+      height: 75%;
     }
     figcaption {
-      display: none;
-      font-size: 2.7vw;
+      font-size: 1.3rem;
       font-weight: bold;
       line-height: 1;
       text-align: center;
@@ -113,11 +112,6 @@ header {
     }
     .menu {
       display: none;
-    }
-    .logo {
-      figcaption {
-        display: block;
-      }
     }
   }
 }
