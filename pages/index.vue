@@ -85,7 +85,7 @@
     <AppSection id="contacto" class="pb-24 pt-24" background="secondary">
       <div class="limit">
         <div id="contact-us" class="grid grid-cols-2">
-          <div class="col-span-2 md:col-span-1 pr-9 md:pr-16 mb-12 md:mb-0 text-center md:text-left">
+          <div class="col-span-2 md:col-span-1 pr-0 md:pr-16 mb-12 md:mb-0 text-center md:text-left">
             <h3 class="h2 mb-4">¡Contactanos!</h3>
             <p class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
             <p>Escribenos a renematusza@gmail.com o a través este formulario de contacto.</p>
