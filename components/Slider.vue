@@ -1,10 +1,10 @@
 <template>
 <div class="slider-container relative">
   <div class="slider-controls absolute flex justify-between w-full z-10 h-full">
-    <span @click="slider.goTo('prev')" class="material-icons cursor-pointer flex items-center h-full">
+    <span @click="slider.goTo('prev')" class="material-icons cursor-pointer flex items-center h-full w-1/2 justify-start">
       navigate_before
     </span>
-    <span @click="slider.goTo('next')" class="material-icons cursor-pointer flex items-center h-full">
+    <span @click="slider.goTo('next')" class="material-icons cursor-pointer flex items-center h-full w-1/2 justify-end">
       navigate_next
     </span>
   </div>

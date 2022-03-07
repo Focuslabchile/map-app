@@ -45,7 +45,7 @@
       <div class="limit">
         <div class="grid grid-cols-2">
           <div class="col-span-2 md:col-span-1">
-            <div class="us-container pr-16">
+            <div class="us-container pr-0 md:pr-16 text-center md:text-left">
               <h3 class="h2">
                 Nosotros
               </h3>
@@ -62,14 +62,14 @@
     </AppSection>
     <AppSection background="primary">
       <div class="limit">
-        <div class="grid grid-cols-2">
+        <div class="md:grid flex flex-col-reverse grid-cols-2">
           <div class="col-span-2 md:col-span-1">
             <img class="mb-16" src="https://i.picsum.photos/id/42/600/400.jpg?hmac=xu2H-JM2iZFaiBN-UgpmCMa3sFj-L53aoSCIbC91RjI" alt="">
             <img class="mb-16" src="https://i.picsum.photos/id/496/600/400.jpg?hmac=UZP1e68JrI6RawgwYSmVqV66Te7qUVpmO0eM89EpQoI" alt="">
             <img class="mb-16" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
           </div>
           <div class="col-span-2 md:col-span-1">
-            <div class="us-container pl-16 text-right">
+            <div class="us-container pl-0 md:pl-16 text-center md:text-right">
               <h3 class="h2">
                 Nuestros servicios
               </h3>
@@ -85,7 +85,7 @@
     <AppSection id="contacto" class="pb-24 pt-24" background="secondary">
       <div class="limit">
         <div id="contact-us" class="grid grid-cols-2">
-          <div class="col-span-2 md:col-span-1 pr-16 mb-12 md:mb-0">
+          <div class="col-span-2 md:col-span-1 pr-9 md:pr-16 mb-12 md:mb-0 text-center md:text-left">
             <h3 class="h2 mb-4">¡Contactanos!</h3>
             <p class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
             <p>Escribenos a renematusza@gmail.com o a través este formulario de contacto.</p>
