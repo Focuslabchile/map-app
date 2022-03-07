@@ -11,7 +11,7 @@
     <InputRadio
       @update="switchStyle"
       group-name="map_type"
-      value="Mapa"
+      :value="mapType"
       :options="['Mapa', 'Satelite']"
     />
   </div>
@@ -19,54 +19,56 @@
     <div class="map-info-title p-3">
       Herramientas
     </div>
-    <div class="map-info-tabs">
-      <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
-      <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
-      <div v-if="description" @click="tab = 'description'" :class="['map-info-tabs--item', {active: tab === 'description'}]">Descripcion</div>
-    </div>
-    <div v-show="tab === 'description'" class="pt-3 map-feature-description" v-html="description"></div>
-    <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col pt-3">
-      <div class="info-items">
-        <div
-          :class="['info-item p-3', {active:active === polygon.id}]"
-          v-for="(polygon, index) in polygons"
-          :key="index"
-        >
-          <div class="flex justify-between items-center">
+    <div class="map-info-body">
+      <div class="map-info-tabs">
+        <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
+        <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
+        <div v-if="description" @click="tab = 'description'" :class="['map-info-tabs--item', {active: tab === 'description'}]">Descripcion</div>
+      </div>
+      <div v-show="tab === 'description'" class="pt-3 map-feature-description" v-html="description"></div>
+      <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col pt-3">
+        <div class="info-items">
+          <div
+            :class="['info-item p-3', {active:active === polygon.id}]"
+            v-for="(polygon, index) in polygons"
+            :key="index"
+          >
+            <div class="flex justify-between items-center">
 
-            <div>
               <div>
-                {{polygon.properties.name}}
+                <div>
+                  {{polygon.properties.name}}
+                </div>
+                <div>
+                  {{ polygon.properties.calc }}: {{ polygon.properties.value }} {{ polygon.properties.unit }}
+                </div>
               </div>
-              <div>
-                {{ polygon.properties.calc }}: {{ polygon.properties.value }} {{ polygon.properties.unit }}
+              <div class="icons">
+                <span @click="center(polygon)" class="material-icons cursor-pointer">my_location</span>
+                <span @click="polygon.properties.edit = !polygon.properties.edit" class="material-icons cursor-pointer">edit</span>
               </div>
             </div>
-            <div class="icons">
-              <span @click="center(polygon)" class="material-icons cursor-pointer">my_location</span>
-              <span @click="polygon.properties.edit = !polygon.properties.edit" class="material-icons cursor-pointer">edit</span>
+            <div v-if="polygon.properties.edit" class="edit mt-2">
+              <div>id: {{ polygon.id }}</div>
+              <InputText @update="updateLocalStorage" autocomplete="off" class="mb-2" label="Nombre" name="name" :model.sync="polygon.properties.name" />
+              <InputTextarea @update="updateLocalStorage" class="mb-2" label="Descripción" name="description" :model.sync="polygon.properties.description" />
             </div>
           </div>
-          <div v-if="polygon.properties.edit" class="edit mt-2">
-            <div>id: {{ polygon.id }}</div>
-            <InputText @update="updateLocalStorage" autocomplete="off" class="mb-2" label="Nombre" name="name" :model.sync="polygon.properties.name" />
-            <InputTextarea @update="updateLocalStorage" class="mb-2" label="Descripción" name="description" :model.sync="polygon.properties.description" />
+        </div>
+        <div class="controls flex justify-between p-3">
+          <div @click="$refs.fileElem.click()" class="disabled:opacity-50 cursor-pointer flex items-center">
+            <form>
+              <input type="file" ref="fileElem" style="display:none" @change="handleUpload">
+            </form>
+            <span content="Cargar zonas" v-tippy class="material-icons">upload_file</span>
+          </div>
+          <div content="Descargar zonas" v-tippy @click="download" class="cursor-pointer flex items-center">
+            <span class="material-icons">save</span>
           </div>
         </div>
       </div>
-      <div class="controls flex justify-between p-3">
-        <div @click="$refs.fileElem.click()" class="disabled:opacity-50 cursor-pointer flex items-center">
-          <form>
-            <input type="file" ref="fileElem" style="display:none" @change="handleUpload">
-          </form>
-          <span content="Cargar zonas" v-tippy class="material-icons">upload_file</span>
-        </div>
-        <div content="Descargar zonas" v-tippy @click="download" class="cursor-pointer flex items-center">
-          <span class="material-icons">save</span>
-        </div>
-      </div>
+      <load-kmz :map="mapbox.map" class="p-3" v-show="tab === 'kmz'" />
     </div>
-    <load-kmz :map="mapbox.map" class="p-3" v-show="tab === 'kmz'" />
   </div>
 </article>
 </template>
@@ -84,6 +86,7 @@ export default {
     mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
       tab: 'mis-zonas',
+      mapType: 'Mapa',
       active: '',
       description: '',
       menu: true,
@@ -153,6 +156,7 @@ export default {
       // 
     },
     switchStyle(val) {
+      this.mapType = val
       if(val === 'Mapa') {
         this.mapbox.map.setStyle(`mapbox://styles/mapbox/${this.mapbox.mode}-v10`)
       } else {
@@ -405,8 +409,17 @@ export default {
     }
   },
   mounted() {
+    localStorage.getItem('darkMode') === 'true' ? this.mapbox.mode = 'dark' : this.mapbox.mode = 'light'
     this.mapbox.init()
     this.init()
+
+    document.addEventListener('dark-mode', (e) => {
+      console.log(this.mapType)
+      if(this.mapType !== 'Mapa') return
+      this.mapbox.mode = e.detail ? 'dark' : 'light'
+      this.mapbox.init()
+      this.init()
+    })
   }
 }
 </script>
@@ -414,6 +427,7 @@ export default {
 @import '~assets/scss/colors.scss';
 .map {
   position: relative;
+  color: #333;
   width: 100%;
   height: var(--height);
   --height: calc(100vh - 120px);
@@ -468,6 +482,7 @@ export default {
     left: var(--left);
     display: flex;
     flex-direction: column;
+    color: #333;
     .control {
       background-color: white;
       cursor: pointer;
@@ -479,7 +494,6 @@ export default {
     width: 100%;
     height: auto;
     .map-info-tabs {
-      background: white;
       display: flex;
       .map-info-tabs--item {
         padding: 0.75rem;
@@ -497,7 +511,7 @@ export default {
       @extend .main;
     }
     .map-info-body {
-      background-color: white;
+      @extend .secondary;
       flex-grow: 1;
       overflow: auto;
       .info-item {

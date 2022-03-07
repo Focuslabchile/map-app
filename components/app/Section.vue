@@ -1,7 +1,9 @@
 <template>
-  <section :class="['section', background]">
-    <h3>{{title}}</h3>
-    <slot />
+  <section :class="['section pt-12', background]">
+    <div class="limit">
+      <h3>{{title}}</h3>
+      <slot />
+    </div>
   </section>
 </template>
 <script>
@@ -22,10 +24,10 @@ export default {
 @import '~assets/scss/colors.scss';
 
 .section {
-  .section-primary {
+  &.section-primary {
     @extend .primary;
   }
-  .section-secondary {
+  &.section-secondary {
     @extend .secondary;
   }
 }

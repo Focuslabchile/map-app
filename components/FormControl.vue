@@ -28,6 +28,7 @@ export default {
     padding: 2px 7px;
   }
   input {
+    color: #333;
     width: 100%;
     padding: 7px 11px;
     border: 1px solid var(--gray);
@@ -65,6 +66,7 @@ export default {
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
+      color: var(--darkgray);
     }
   }
 }

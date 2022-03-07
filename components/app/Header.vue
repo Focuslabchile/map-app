@@ -12,16 +12,16 @@
         <nav :class="{active:menu}">
           <ul class="flex list-none">
             <li>
-              <a href="/">
+              <nuxt-link to="/">
                 <span class="material-icons">home</span>
                 <span class="desktop">Inicio</span>
-              </a>
+              </nuxt-link>
             </li>
             <li>
-              <a href="/mapa">
+              <nuxt-link to="/mapa">
                 <span class="material-icons">public</span>
                 <span class="desktop">Mapa</span>
-              </a>
+              </nuxt-link>
             </li>
             <li>
               <a class="disabled" href="">

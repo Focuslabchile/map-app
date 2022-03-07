@@ -55,6 +55,7 @@ export default {
   span {
     display: block;
     label {
+      color: #333;
       cursor: pointer;
       display: block;
       padding: 6px 12px;

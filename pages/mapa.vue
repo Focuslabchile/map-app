@@ -1,9 +1,7 @@
 <template>
-  <div class="limit">
-    <AppSection title="Mapa">
-      <Map />
-    </AppSection>
-  </div>
+  <AppSection>
+    <Map />
+  </AppSection>
 </template>
 
 <script>

@@ -18,6 +18,8 @@ export default {
       this.darkMode = !this.darkMode
       document.body.classList.toggle('dark-mode')
       localStorage.setItem('darkMode', this.darkMode)
+      const event = new CustomEvent('dark-mode', { detail: this.darkMode });
+      document.dispatchEvent(event);
     }
   },
   mounted() {

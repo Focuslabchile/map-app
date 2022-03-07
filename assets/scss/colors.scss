@@ -6,6 +6,8 @@ body {
   --darker: #321367;
   --white: #fff;
   --gray: lightgrey;
+  --gray2: #f5f6f8;
+  --darkgray: #0a0a0a;
   --box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
 }
 
@@ -13,7 +15,6 @@ body {
   opacity: .3;
   pointer-events: none;
 }
-
 
 .main {
   background: var(--primary);
@@ -26,7 +27,7 @@ body {
 }
 
 .secondary {
-  background: var(--light);
+  background: var(--gray2);
   color: var(--black);
 }
 
@@ -34,6 +35,10 @@ body {
   &.dark-mode {
     .primary {
       background: var(--black);
+      color: var(--white);
+    }
+    .secondary {
+      background: var(--darkgray);
       color: var(--white);
     }
   }

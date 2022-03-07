@@ -38,6 +38,7 @@ export default {
 <style lang="scss">
 .textarea-container {
   textarea {
+    color: var(--darkgray);
     width: 100%;
     border: 1px solid var(--gray);
     border-radius: 4px;

@@ -129,8 +129,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '~assets/scss/colors.scss';
 .load-kmz {
-  background: white;
   flex-grow: 1;
 }
 .kmz-list {
@@ -142,6 +142,7 @@ export default {
     .icon-container {
       position: relative;
       .material-icons {
+        color: black;
         z-index: 1;
         position: relative;
       }

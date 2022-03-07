@@ -42,6 +42,7 @@ export default {
 <style lang="scss">
 .input-container {
   input[type='text'] {
+    color: var(--darkgray);
     width: 100%;
     border: 1px solid var(--gray);
     border-radius: 4px;
