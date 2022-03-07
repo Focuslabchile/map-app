@@ -8,7 +8,15 @@
 * {
   font-family: 'Roboto', sans-serif;
 }
-body { margin: 0; padding: 0; width: 100%;}
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  scroll-behavior: smooth;
+}
+html {
+  scroll-behavior: smooth;
+}
 .limit {
   max-width: 1300px;
   width: 100%;

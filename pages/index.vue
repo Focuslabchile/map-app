@@ -74,12 +74,15 @@
                 Nuestros servicios
               </h3>
               <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+              <FormControl>
+                <button class="btn flex items-center ml-auto mt-8">Ver todos <span class="material-icons">read_more</span></button>
+              </FormControl>
             </div>
           </div>
         </div>
       </div>
     </AppSection>
-    <AppSection class="pb-24 pt-24" background="secondary">
+    <AppSection id="contacto" class="pb-24 pt-24" background="secondary">
       <div class="limit">
         <div id="contact-us" class="grid grid-cols-2">
           <div class="col-span-2 md:col-span-1 pr-16 mb-12 md:mb-0">

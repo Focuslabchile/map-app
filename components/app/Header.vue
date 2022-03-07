@@ -24,10 +24,10 @@
               </nuxt-link>
             </li>
             <li>
-              <a class="disabled" href="">
+              <nuxt-link to="/#contacto">
                 <span class="material-icons">contact_support</span>
                 <span>Contacto</span>
-              </a>
+              </nuxt-link>
             </li>
             <li>
               <a class="disabled" href="">
