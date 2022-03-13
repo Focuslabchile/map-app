@@ -4,7 +4,7 @@
       <div class="limit">
         <div class="grid grid-cols-2">
           <div class="box text-center md:text-left col-span-2 md:col-span-1 flex justify-center flex-col">
-            <h1>Ingeníeria eléctrica</h1>
+            <h1>Ingeníeria eléctrica M&Z</h1>
             <p>Empresa Nacional al servicios de los proyectos del país</p>
           </div>
           <div class="box col-span-2 md:col-span-1 mt-8 md:mt-0">
@@ -12,7 +12,7 @@
               <div class="slider-item">
                 <div class="slider-item-header px-0 md:px-8">
                   <h3>Estamos certificados</h3>
-                  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                  <p>Nuestro personal cuenta con licencia SEC clase A.</p>
                 </div>
                 <div class="img-container">
                   <img src="@/static/sec.png" alt="sec certificación">
@@ -20,20 +20,11 @@
               </div>
               <div class="slider-item">
                 <div class="slider-item-header px-0 md:px-8">
-                  <h3>Estamos certificados</h3>
-                  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
+                  <h3>Acreditados por el INN</h3>
+                  <p>Nuestros equipos se encuentran calibrados por laboratorios acreditados por el Instituto Nacional de Normalización</p>
                 </div>
                 <div class="img-container">
-                  <img src="@/static/analizador.png" alt="analizador">
-                </div>
-              </div>
-              <div class="slider-item">
-                <div class="slider-item-header px-0 md:px-8">
-                  <h3>Estamos certificados</h3>
-                  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry</p>
-                </div>
-                <div class="img-container">
-                  <img src="@/static/termo-cam.png" alt="termo cam">
+                  <img src="@/static/inn.png" alt="logo inn">
                 </div>
               </div>
             </Slider>
