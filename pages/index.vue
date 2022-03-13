@@ -93,27 +93,27 @@
         <div class="col-span-2 md:col-span-1">
           <div class="grid grid-cols-2 gap-16">
             <div class="font-bold text-center">
-              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/ingnieria.png" alt="icono de ingenieria electrica">
+              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/ingnieria.png" alt="icono de ingenieria electrica">
               Ingeniería Eléctrica
             </div>
             <div class="font-bold text-center">
-              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/certificacion.png" alt="icono de certificación">
+              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/certificacion.png" alt="icono de certificación">
               Certificación e inspección de instalaciones
             </div>
             <div class="font-bold text-center">
-              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/informe.png" alt="icono de informe">
+              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/informe.png" alt="icono de informe">
               Informe de verificación inicial
             </div>
             <div class="font-bold text-center">
-              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/mediciones.png" alt="icono de mediciones">
+              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/mediciones.png" alt="icono de mediciones">
               Mediciones de Mallas Tierra
             </div>
             <div class="font-bold text-center">
-              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/tower-guy.png" alt="icono de torre de alta tension">
+              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/tower-guy.png" alt="icono de torre de alta tension">
               Análisis de redes Eléctricas hasta 2000A
             </div>
             <div class="font-bold text-center">
-              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/camara-termica.png" alt="icono de camara termica">
+              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/camara-termica.png" alt="icono de camara termica">
               Inspección termográfica
             </div>
           </div>

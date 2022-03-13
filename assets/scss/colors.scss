@@ -33,6 +33,9 @@ body {
 
 body {
   &.dark-mode {
+    .dark-invert {
+      filter: invert(1);
+    }
     .primary {
       background: var(--black);
       color: var(--white);
