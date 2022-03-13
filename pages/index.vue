@@ -5,7 +5,7 @@
         <div class="grid grid-cols-2">
           <div class="box text-center md:text-left col-span-2 md:col-span-1 flex justify-center flex-col">
             <h1>Ingeníeria eléctrica</h1>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            <p>Empresa Nacional al servicios de los proyectos del país</p>
           </div>
           <div class="box col-span-2 md:col-span-1 mt-8 md:mt-0">
             <Slider>
@@ -48,29 +48,82 @@
             <h3 class="h2">
               Nosotros
             </h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+            <p>Somos una empresa chilena fundada el año 2021 por jóvenes que se dedica a solucionar problemas de ingeniería eléctrica.</p>
+            <p>Actualmente queremos determinar cómo afectara la sequía en los sistemas de protección a tierra.
+              Además de incorporar información relevante del sistema eléctrico nacional para el uso de la comunidad.</p>
           </div>
         </div>
         <div class="col-span-2 md:col-span-1">
-          <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/42/600/400.jpg?hmac=xu2H-JM2iZFaiBN-UgpmCMa3sFj-L53aoSCIbC91RjI" alt="">
-          <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/496/600/400.jpg?hmac=UZP1e68JrI6RawgwYSmVqV66Te7qUVpmO0eM89EpQoI" alt="">
-          <img class="w-full" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
+          <img class="mb-8 md:md-16 w-full" src="@/static/portada/high-voltage-tower.jpg" alt="torre de alto voltage">
+          <img class="mb-8 md:md-16 w-full" src="@/static/portada/santiago.jpg" alt="santiago">
+        </div>
+      </div>
+
+      <div class="flex flex-col-reverse md:grid grid-cols-2 md:mt-16">
+        <div class="col-span-2 md:col-span-1">
+          <img class="mb-8 md:md-16 w-full" src="@/static/portada/gis.png" alt="torre de alto voltage">
+        </div>
+        <div class="col-span-2 md:col-span-1 flex">
+          <div class="pr-0 md:pl-16 text-center m-auto">
+            <h3 class="uppercase">
+              Infomap
+            </h3>
+            <p>Queremos construir el <strong>repositorio de estudios de mallas tierra más grande del país</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col-reverse md:grid grid-cols-2">
+        <div class="col-span-2 md:col-span-1">
+          <img class="mb-8 md:md-16 w-full" src="@/static/portada/studies.jpg" alt="estudios">
+        </div>
+        <div class="col-span-2 md:col-span-1 flex">
+          <div class="pr-0 md:pl-16 text-center m-auto">
+            <h3 class="uppercase">
+              Puedes ser parte del proyecto
+            </h3>
+            <p>Cooperar con nosotros y con el desarrollo de la ingeniería nacional, enviando tus estudios de mallas tierra al correo: <strong><a href="mailto:estudios@infomap.cl">estudios@infomap.cl</a></strong></p>
+            <p>Tu estudio sera validado y agregado a nuestro repositorio</p>
+          </div>
         </div>
       </div>
     </AppSection>
     <AppSection background="primary">
       <div class="md:grid flex flex-col-reverse grid-cols-2">
         <div class="col-span-2 md:col-span-1">
-          <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/42/600/400.jpg?hmac=xu2H-JM2iZFaiBN-UgpmCMa3sFj-L53aoSCIbC91RjI" alt="">
-          <img class="mb-8 md:md-16 w-full" src="https://i.picsum.photos/id/496/600/400.jpg?hmac=UZP1e68JrI6RawgwYSmVqV66Te7qUVpmO0eM89EpQoI" alt="">
-          <img class="w-full" src="https://i.picsum.photos/id/1029/600/400.jpg?hmac=3muCYoyt7SRcTJEhJyYtvr08EQBZRYpWFepOEf8borI" alt="">
+          <div class="grid grid-cols-2 gap-16">
+            <div class="font-bold text-center">
+              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/ingnieria.png" alt="icono de ingenieria electrica">
+              Ingeniería Eléctrica
+            </div>
+            <div class="font-bold text-center">
+              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/certificacion.png" alt="icono de certificación">
+              Certificación e inspección de instalaciones
+            </div>
+            <div class="font-bold text-center">
+              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/informe.png" alt="icono de informe">
+              Informe de verificación inicial
+            </div>
+            <div class="font-bold text-center">
+              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/mediciones.png" alt="icono de mediciones">
+              Mediciones de Mallas Tierra
+            </div>
+            <div class="font-bold text-center">
+              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/tower-guy.png" alt="icono de torre de alta tension">
+              Análisis de redes Eléctricas hasta 2000A
+            </div>
+            <div class="font-bold text-center">
+              <img class="md:px-12 xl:px-16 mb-4" src="@/static/icons/camara-termica.png" alt="icono de camara termica">
+              Inspección termográfica
+            </div>
+          </div>
         </div>
         <div class="col-span-2 md:col-span-1">
           <div class="us-container pl-0 md:pl-16 text-center md:text-right">
             <h3 class="h2">
               Nuestros servicios
             </h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+            <p>Somos profesionales con licencia SEC y nuestros equipos se encuentran calibrados por laboratorios acreditado por el instituto nacional de normalización (INN). Somos especialistas en buscar soluciones a la medida de nuestros clientes.</p>
             <FormControl>
               <button class="btn flex items-center ml-auto mt-8">Ver todos <span class="material-icons">read_more</span></button>
             </FormControl>
@@ -82,8 +135,8 @@
       <div id="contact-us" class="grid grid-cols-2">
         <div class="col-span-2 md:col-span-1 pr-0 md:pr-16 mb-12 md:mb-0 text-center md:text-left">
           <h3 class="h2 mb-4">¡Contactanos!</h3>
-          <p class="mb-2">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
-          <p>Escribenos a renematusza@gmail.com o a través este formulario de contacto.</p>
+          <p class="mb-2">¿Sabes lo que necesitas para tu nuevo proyecto?</p>
+          <p>Escribenos a <strong><a href="mailto:rene@infomap.cl">rene@infomap.cl</a></strong> o a través este formulario de contacto.</p>
         </div>
         <div class="col-span-2 md:col-span-1">
           <form>

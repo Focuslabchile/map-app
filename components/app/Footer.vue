@@ -4,7 +4,7 @@
       <div class="grid grid-cols-6 gap-4">
         <div class="logo flex items-center col-span-6 md:col-span-2">
           <img src="/logo2.png" alt="m&z">
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <p>Ingeniería M&Z para todos los profesioanales del sector de la energía, técnologia y contrucción.</p>
         </div>
         <div class="col-span-6 sm:col-span-5 md:col-span-2">
           <span class="flex justify-center md:justify-start flex-col">
@@ -22,7 +22,7 @@
         </div>
         <div class="col-span-6 sm:col-span-1 flex justify-center">
           <span>
-            <h5>Siguenos</h5>
+            <p>Siguenos en nuestras redes sociales</p>
             <a href="#">
               <img class="social" src="/linkedin.svg" alt="linkedin">
             </a>
