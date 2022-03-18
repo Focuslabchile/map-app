@@ -38,7 +38,7 @@
                 v-tippy
                 content="Visualizar kmz"
                 class="material-icons cursor-pointer"
-                @click="loadKmz('http://localhost:1337'+kmz.attributes.file.data.attributes.url)"
+                @click="loadKmz(apiUrl+kmz.attributes.file.data.attributes.url)"
               >add_circle</span>
             </span>
           </div>
@@ -73,6 +73,11 @@ export default {
       search: '',
       region: '',
       comuna: ''
+    }
+  },
+  computed: {
+    apiUrl() {
+      return process.env.API_URL
     }
   },
   methods: {
@@ -128,8 +133,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-@import '~assets/scss/colors.scss';
+<style lang="scss" scoped>
 .load-kmz {
   flex-grow: 1;
 }

@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header class="primary">
     <div class="limit">
       <div class="flex justify-between items-center">
         <figure class="logo">
@@ -35,8 +35,8 @@
                 <span>Servicios</span>
               </a>
             </li>
-            <li>
-              <DarkMode />
+            <li class="flex items-center justify-center last">
+              <AccessibilityHandler />
             </li>
           </ul>
         </nav>
@@ -57,7 +57,6 @@ export default {
 @import '~assets/scss/colors.scss';
 
 header {
-  @extend .primary;
   .logo {
     height: 88px;
     display: block;
@@ -77,7 +76,6 @@ header {
   }
   nav {
     --space: 20px;
-    margin-right: -20px;
     display: none;
     &.active {
       @extend .primary;
@@ -102,6 +100,9 @@ header {
           align-items: center;
           justify-content: center;
           padding: var(--space);
+        }
+        &.last {
+          //margin-left: 88px;
         }
       }
     }

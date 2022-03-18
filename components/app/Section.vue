@@ -11,7 +11,7 @@ export default {
   props: {
     background: {
       type: String,
-      default: 'section-primary'
+      default: 'primary'
     },
     title: {
       type: String,
@@ -20,15 +20,6 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-@import '~assets/scss/colors.scss';
+<style lang="scss" scoped>
 
-.section {
-  &.section-primary {
-    @extend .primary;
-  }
-  &.section-secondary {
-    @extend .secondary;
-  }
-}
 </style>

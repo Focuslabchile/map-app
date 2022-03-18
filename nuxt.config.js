@@ -22,11 +22,14 @@ export default {
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap' }
     ]
   },
-
+  styleResources: {
+    scss: [
+      "@/assets/scss/colors.scss",
+    ],
+  },
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     "@/assets/scss/fonts.scss",
-    "@/assets/scss/colors.scss",
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins

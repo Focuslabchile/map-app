@@ -32,7 +32,7 @@
     </div>
   </footer>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 #app-footer {
   background-color: var(--dark);
   color: var(--gray2);

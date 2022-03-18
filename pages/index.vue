@@ -1,11 +1,11 @@
 <template>
   <div id="home">
-    <header id="slider" class="flex items-center">
+    <header id="slider" class="flex primary items-center">
       <div class="limit">
         <div class="grid grid-cols-2">
           <div class="box text-center md:text-left col-span-2 md:col-span-1 flex justify-center flex-col">
-            <h1>Ingeníeria eléctrica M&Z</h1>
-            <p>Empresa Nacional al servicios de los proyectos del país</p>
+            <h1 class="leading-125">Ingeníeria eléctrica M&Z</h1>
+            <p class="h5 tracking-widest leading-125">Empresa Nacional al servicios de los proyectos del país</p>
           </div>
           <div class="box col-span-2 md:col-span-1 mt-8 md:mt-0">
             <Slider>
@@ -149,12 +149,10 @@
     </AppSection>
   </div>
 </template>
-<style lang="scss">
-@import '~assets/scss/colors.scss';
+<style lang="scss" scoped>
 
 #home {
   #slider {
-    @extend .primary;
     min-height: 70vh;
     .slider-item {
       text-align: center;
@@ -172,7 +170,6 @@
     justify-content: center;
     position: sticky;
     top: 35vh;
-    margin-bottom: 10vh;
   }
   #contact-us {
   }

@@ -19,7 +19,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .search-input {
   input {
     border-radius: 4px 0 0 4px;

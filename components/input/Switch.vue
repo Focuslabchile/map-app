@@ -4,7 +4,7 @@
     <span class="slider round"></span>
   </label>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 /* The switch - the box around the slider */
 .switch {
   position: relative;
