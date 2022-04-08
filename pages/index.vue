@@ -83,40 +83,27 @@
       <div class="md:grid flex flex-col-reverse grid-cols-2">
         <div class="col-span-2 md:col-span-1">
           <div class="grid grid-cols-2 gap-16">
-            <div class="font-bold text-center text-xl">
-              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/ingnieria.png" alt="icono de ingenieria electrica">
-              Ingeniería Eléctrica
-            </div>
-            <div class="font-bold text-center text-xl">
-              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/certificacion.png" alt="icono de certificación">
-              Certificación e inspección de instalaciones
-            </div>
-            <div class="font-bold text-center text-xl">
-              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/informe.png" alt="icono de informe">
-              Informe de verificación inicial
-            </div>
-            <div class="font-bold text-center text-xl">
-              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/mediciones.png" alt="icono de mediciones">
-              Mediciones de Mallas Tierra
-            </div>
-            <div class="font-bold text-center text-xl">
-              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/tower-guy.png" alt="icono de torre de alta tension">
-              Análisis de redes Eléctricas hasta 2000A
-            </div>
-            <div class="font-bold text-center text-xl">
-              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/camara-termica.png" alt="icono de camara termica">
-              Inspección termográfica
+            <div v-for="(item, index) in data" :key="index" class="font-bold text-center text-xl">
+              <img
+                class="dark-invert md:w-[230px] max-w-full m-auto md:px-12 xl:px-16 mb-4"
+                :src="apiUrl+item.attributes.image.data[0].attributes.url"
+                :alt="'icono de ' + item.attributes.long_name"
+              >
+              {{item.attributes.long_name}}
             </div>
           </div>
+          <FormControl class="block md:hidden">
+            <nuxt-link to="/servicios" class="btn flex items-center m-auto mt-8 w-fit btn-big">Ver todos <span class="material-icons">add</span></nuxt-link>
+          </FormControl>
         </div>
         <div class="col-span-2 md:col-span-1">
-          <div class="us-container pl-0 md:pl-16 text-center md:text-right">
+          <div class="us-container pl-0 md:pl-16 text-center md:text-right md:mb-0 mb-12">
             <h3 class="h2">
               Nuestros servicios
             </h3>
             <p>Somos profesionales con licencia SEC y nuestros equipos se encuentran calibrados por laboratorios acreditado por el instituto nacional de normalización (INN). Somos especialistas en buscar soluciones a la medida de nuestros clientes.</p>
-            <FormControl>
-              <nuxt-link to="/servicios" class="btn flex items-center ml-auto mt-8 w-fit">Ver todos <span class="material-icons">read_more</span></nuxt-link>
+            <FormControl class="hidden md:block">
+              <nuxt-link to="/servicios" class="btn flex items-center ml-auto mt-8 w-fit btn-big">Ver todos <span class="material-icons">add</span></nuxt-link>
             </FormControl>
           </div>
         </div>
@@ -149,6 +136,25 @@
     </AppSection>
   </div>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      data: []
+    }
+  },
+  computed: {
+    apiUrl() {
+      return this.$config.apiUrl.slice(0,-1)
+    }
+  },
+  created() {
+    this.$api.get('api/services?populate=image').then(res => {
+      this.data = res.data.data
+    })
+  }
+}
+</script>
 <style lang="scss" scoped>
 
 #home {

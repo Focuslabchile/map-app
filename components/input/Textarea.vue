@@ -41,9 +41,8 @@ export default {
     color: var(--darkgray);
     width: 100%;
     border: 1px solid var(--gray);
-    border-radius: 4px;
-    box-shadow: var(--box-shadow);
     padding: 5px;
+    outline: none;
   }
 }
 </style>

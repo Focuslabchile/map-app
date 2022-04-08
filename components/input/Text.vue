@@ -45,9 +45,9 @@ export default {
     color: var(--darkgray);
     width: 100%;
     border: 1px solid var(--gray);
-    border-radius: 4px;
-    box-shadow: var(--box-shadow);
     text-indent: 5px;
+    padding: 4px 0;
+    outline: none;
   }
 }
 </style>
