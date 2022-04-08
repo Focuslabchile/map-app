@@ -30,10 +30,10 @@
               </nuxt-link>
             </li>
             <li>
-              <a class="disabled" href="">
+              <nuxt-link to="/servicios">
                 <span class="material-icons">electrical_services</span>
                 <span>Servicios</span>
-              </a>
+              </nuxt-link>
             </li>
             <li class="flex items-center justify-center last">
               <AccessibilityHandler />

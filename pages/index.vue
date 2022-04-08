@@ -83,28 +83,28 @@
       <div class="md:grid flex flex-col-reverse grid-cols-2">
         <div class="col-span-2 md:col-span-1">
           <div class="grid grid-cols-2 gap-16">
-            <div class="font-bold text-center">
-              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/ingnieria.png" alt="icono de ingenieria electrica">
+            <div class="font-bold text-center text-xl">
+              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/ingnieria.png" alt="icono de ingenieria electrica">
               Ingeniería Eléctrica
             </div>
-            <div class="font-bold text-center">
-              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/certificacion.png" alt="icono de certificación">
+            <div class="font-bold text-center text-xl">
+              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/certificacion.png" alt="icono de certificación">
               Certificación e inspección de instalaciones
             </div>
-            <div class="font-bold text-center">
-              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/informe.png" alt="icono de informe">
+            <div class="font-bold text-center text-xl">
+              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/informe.png" alt="icono de informe">
               Informe de verificación inicial
             </div>
-            <div class="font-bold text-center">
-              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/mediciones.png" alt="icono de mediciones">
+            <div class="font-bold text-center text-xl">
+              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/mediciones.png" alt="icono de mediciones">
               Mediciones de Mallas Tierra
             </div>
-            <div class="font-bold text-center">
-              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/tower-guy.png" alt="icono de torre de alta tension">
+            <div class="font-bold text-center text-xl">
+              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/tower-guy.png" alt="icono de torre de alta tension">
               Análisis de redes Eléctricas hasta 2000A
             </div>
-            <div class="font-bold text-center">
-              <img class="dark-invert md:px-12 xl:px-16 mb-4" src="@/static/icons/camara-termica.png" alt="icono de camara termica">
+            <div class="font-bold text-center text-xl">
+              <img class="dark-invert w-[230px] m-auto md:px-12 xl:px-16 mb-4" src="@/static/icons/camara-termica.png" alt="icono de camara termica">
               Inspección termográfica
             </div>
           </div>
@@ -116,7 +116,7 @@
             </h3>
             <p>Somos profesionales con licencia SEC y nuestros equipos se encuentran calibrados por laboratorios acreditado por el instituto nacional de normalización (INN). Somos especialistas en buscar soluciones a la medida de nuestros clientes.</p>
             <FormControl>
-              <button class="btn flex items-center ml-auto mt-8">Ver todos <span class="material-icons">read_more</span></button>
+              <nuxt-link to="/servicios" class="btn flex items-center ml-auto mt-8 w-fit">Ver todos <span class="material-icons">read_more</span></nuxt-link>
             </FormControl>
           </div>
         </div>

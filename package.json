@@ -17,6 +17,7 @@
     "jszip": "^3.7.1",
     "jszip-utils": "^0.1.0",
     "mapbox-gl": "^2.7.0",
+    "marked": "^4.0.12",
     "nuxt": "^2.15.8",
     "sass": "^1.49.8",
     "sass-loader": "10",
