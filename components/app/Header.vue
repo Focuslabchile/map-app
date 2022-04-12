@@ -2,10 +2,12 @@
   <header class="primary">
     <div class="limit">
       <div class="flex justify-between items-center">
-        <figure class="logo">
-          <img src="/logo2.png" alt="m&z logo" />
-          <figcaption> M&Z</figcaption>
-        </figure>
+        <nuxt-link to="/">
+          <figure class="logo">
+            <img src="/logo2.png" alt="m&z logo" />
+            <figcaption> M&Z</figcaption>
+          </figure>
+        </nuxt-link>
         <div class="menu">
           <span @click="menu = !menu" class="material-icons cursor-pointer">menu</span>
         </div>

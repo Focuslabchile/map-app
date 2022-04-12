@@ -19,12 +19,13 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' },
 
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap' }
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap' },
+      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css' }
     ]
   },
   styleResources: {
     scss: [
-      "@/assets/scss/colors.scss",
+      "@/assets/scss/colors.scss"
     ],
   },
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -52,6 +53,7 @@ export default {
   publicRuntimeConfig: {
     apiUrl: process.env.API_URL,
     apiToken: process.env.API_TOKEN,
+    contactApiToken: process.env.CONTACT_API_TOKEN,
     mapboxApiUrl: process.env.MAPBOX_API_URL
   },
 

@@ -1,13 +1,19 @@
 <template>
-  <div class="form-control">
+  <div :class="['form-control', {'animate__animated animate__headShake':shake}]">
     <label v-if="name && name.length" :for="name">{{name}}</label>
     <slot />
     <span class="description" v-if="description">{{description}}</span>
+    <br v-if="alert">
+    <small v-if="alert" class="alert">{{alert}}</small>
   </div>
 </template>
 <script>
 export default {
   props: {
+    alert: {
+      type: String,
+      default: ''
+    },
     name: {
       type: String,
       default: '',
@@ -16,6 +22,22 @@ export default {
       type: String,
       default: '',
     },
+  },
+  data() {
+    return {
+      shake: false
+    }
+  },
+  watch: {
+    alert() {
+      if(!this.alert) {
+        return
+      }
+      this.shake = true
+      setTimeout(() => {
+        this.shake = false
+      }, 1000)
+    }
   }
 }
 </script>
