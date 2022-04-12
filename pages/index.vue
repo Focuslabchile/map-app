@@ -4,27 +4,21 @@
       <div class="limit">
         <div class="grid grid-cols-2">
           <div class="box text-center md:text-left col-span-2 md:col-span-1 flex justify-center flex-col">
-            <h1 class="leading-125">{{ data.Titulo }}-</h1>
-            <p class="h5 tracking-widest leading-125">Empresa Nacional al servicios de los proyectos del país</p>
+            <h1 class="leading-125">{{ data.Titulo }}</h1>
+            <p class="h5 tracking-widest leading-125">{{ data.Bajada_de_titulo }}</p>
           </div>
           <div class="box col-span-2 md:col-span-1 mt-8 md:mt-0">
             <Slider>
-              <div class="slider-item">
+              <div v-for="(item, index) in headerSlider" :key="index+'-header-slider'" class="slider-item">
                 <div class="slider-item-header px-0 md:px-8">
-                  <h3>Estamos certificados</h3>
-                  <p>Nuestro personal cuenta con licencia SEC clase A.</p>
+                  <h3>{{ item.Titulo }}</h3>
+                  <p>{{ item.Bajada }}</p>
                 </div>
-                <div class="img-container">
-                  <img src="@/static/sec.png" alt="sec certificación">
-                </div>
-              </div>
-              <div class="slider-item">
-                <div class="slider-item-header px-0 md:px-8">
-                  <h3>Acreditados por el INN</h3>
-                  <p>Nuestros equipos se encuentran calibrados por laboratorios acreditados por el Instituto Nacional de Normalización</p>
-                </div>
-                <div class="img-container">
-                  <img src="@/static/inn.png" alt="logo inn">
+                <div v-if="item.Imagen.data" class="img-container">
+                  <img
+                    :src="apiUrl+item.Imagen.data.attributes.url"
+                    :onerror="`this.onerror=null; this.src='${item.Imagen.data.attributes.url}'`"
+                    :alt="'imagen de '+ item.Titulo">
                 </div>
               </div>
             </Slider>
@@ -37,47 +31,38 @@
         <div class="col-span-2 md:col-span-1">
           <div class="us-container pr-0 md:pr-16 text-center md:text-left">
             <h3 class="h2">
-              Nosotros
+              {{ data.about_us.title }}
             </h3>
-            <p>Somos una empresa chilena fundada el año 2021 por jóvenes que se dedica a solucionar problemas de ingeniería eléctrica.</p>
-            <p>Actualmente queremos determinar cómo afectara la sequía en los sistemas de protección a tierra.
-              Además de incorporar información relevante del sistema eléctrico nacional para el uso de la comunidad.</p>
+            <div v-html="marked(data.about_us.description)"></div>
           </div>
         </div>
-        <div class="col-span-2 md:col-span-1">
-          <img class="mb-8 md:md-16 w-full" src="@/static/portada/high-voltage-tower.jpg" alt="torre de alto voltage">
-          <img class="mb-8 md:md-16 w-full" src="@/static/portada/santiago.jpg" alt="santiago">
-        </div>
+        <template v-if="data.about_us && data.about_us.gallery && data.about_us.gallery.data">
+          <div class="col-span-2 md:col-span-1">
+            <img v-for="(item, index) in data.about_us.gallery.data" :key="'gallery-'+index" class="mb-8 md:md-16 w-full" :src="item.attributes.url" alt="imagen">
+          </div>
+        </template>
       </div>
 
-      <div class="flex flex-col-reverse md:grid grid-cols-2 md:mt-16">
-        <div class="col-span-2 md:col-span-1">
-          <img class="mb-8 md:md-16 w-full" src="@/static/portada/gis.png" alt="torre de alto voltage">
+      <div
+        v-for="(item, index) in data.slide"
+        :key="index+'-slide'"
+        class="flex flex-col-reverse md:grid grid-cols-2 md:mt-16"
+      >
+        <div v-if="item.image" class="col-span-2 md:col-span-1">
+          <img class="mb-8 md:md-16 w-full" :src="item.image.data.attributes.url" alt="torre de alto voltage">
         </div>
         <div class="col-span-2 md:col-span-1 flex">
           <div class="pr-0 md:pl-16 text-center m-auto">
             <h3 class="uppercase">
-              Infomap
+              {{ item.title }}
             </h3>
-            <p>Queremos construir el <strong>repositorio de estudios de mallas tierra más grande del país</strong></p>
+            <div v-html="marked(item.description)">
+
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="flex flex-col-reverse md:grid grid-cols-2">
-        <div class="col-span-2 md:col-span-1">
-          <img class="mb-8 md:md-16 w-full" src="@/static/portada/studies.jpg" alt="estudios">
-        </div>
-        <div class="col-span-2 md:col-span-1 flex">
-          <div class="pr-0 md:pl-16 text-center m-auto">
-            <h3 class="uppercase">
-              Puedes ser parte del proyecto
-            </h3>
-            <p>Cooperar con nosotros y con el desarrollo de la ingeniería nacional, enviando tus estudios de mallas tierra al correo: <strong><a href="mailto:estudios@infomap.cl">estudios@infomap.cl</a></strong></p>
-            <p>Tu estudio sera validado y agregado a nuestro repositorio</p>
-          </div>
-        </div>
-      </div>
     </AppSection>
     <AppSection background="primary">
       <div class="md:grid flex flex-col-reverse grid-cols-2">
@@ -155,10 +140,10 @@
   </div>
 </template>
 <script>
-
+import { marked } from 'marked/src/marked.js'
 export default {
   async asyncData(context) {
-    const data = await context.$api.get('api/inicio?populate=Header_Slider,servicios.image,about_us,slide,section_services').then(res => {
+    const data = await context.$api.get('api/inicio?populate=Header_Slider.Imagen,servicios.image,about_us.gallery,slide.image,section_services').then(res => {
       return res.data.data.attributes
     })
     return { data }
@@ -183,11 +168,17 @@ export default {
     apiUrl() {
       return this.$config.apiUrl.slice(0,-1)
     },
+    headerSlider() {
+      return this.data?.Header_Slider
+    },
     services() {
       return this.data?.servicios?.data
     }
   },
   methods: {
+    marked(val) {
+      return marked(val)
+    },
     submitForm(e) {
       this.contactData.contactEmpty = ''
       this.$nextTick(() => {
