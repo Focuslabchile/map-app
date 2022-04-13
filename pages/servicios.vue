@@ -12,7 +12,7 @@
       </div>
       <div  class="grid grid-cols-12 gap-8">
         <div class="col-span-12 md:col-span-2 hidden md:block">
-          <nav class="side-nav sticky top-[10vh]">
+          <nav class="side-nav sticky top-[3rem]">
             <ul class="text-[14px]">
               <li
                 v-for="(item, index) in data"
