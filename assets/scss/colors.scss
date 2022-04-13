@@ -1,48 +1,57 @@
 body {
-  --black: #232628;
-  --primary: rgb(49, 119,195);
-  --light: rgba(49, 119,195, .3);
-  --dark: #212796;
-  --darker: #321367;
-  --white: #fff;
-  --gray: lightgrey;
-  --gray2: #f5f6f8;
-  --darkgray: #0a0a0a;
-  --box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+    --black: #232628;
+    --primary: rgb(49, 119, 195);
+    --light: rgba(49, 119, 195, .3);
+    --dark: #212796;
+    --darker: #321367;
+    --white: #fff;
+    --gray: lightgrey;
+    --gray2: #f5f6f8;
+    --darkgray: #0a0a0a;
+    --dark-blue: #142133;
+    --box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+}
+
+.dark {
+    background-color: var(--light);
 }
 
 .disabled {
-  opacity: .3;
-  pointer-events: none;
+    opacity: .3;
+    pointer-events: none;
 }
 
 .main {
-  background: var(--primary);
-  color: var(--white);
+    background: var(--primary);
+    color: var(--white);
 }
 
 .primary {
-  background: var(--white);
-  color: var(--black);
+    background: var(--white);
+    color: var(--black);
 }
 
 .secondary {
-  background: var(--gray2);
-  color: var(--black);
+    background: var(--gray2);
+    color: var(--black);
 }
 
 body {
-  &.dark-mode {
-    .dark-invert {
-      filter: invert(1);
+    &.dark-mode {
+        .dark-invert {
+            filter: invert(1);
+        }
+        .primary {
+            background: var(--black);
+            color: var(--white);
+        }
+        .secondary {
+            background: var(--darkgray);
+            color: var(--white);
+        }
+        .dark {
+            background-color: var(--dark-blue);
+            color: var(--white);
+        }
     }
-    .primary {
-      background: var(--black);
-      color: var(--white);
-    }
-    .secondary {
-      background: var(--darkgray);
-      color: var(--white);
-    }
-  }
 }

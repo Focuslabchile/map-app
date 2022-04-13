@@ -1,20 +1,64 @@
 <template>
   <AppSection background="primary">
-    <div class="grid grid-cols-6 gap-16">
+    <div>
 
-      <div class="col-span-6 md:col-span-2">
-        <div class="us-container relative md:sticky md:top-[20vh] top-0">
+      <div class="max-w-[730px]">
+        <div class="us-container mb-16">
           <h3 class="h2">
             Nuestros servicios
           </h3>
           <p>Somos profesionales con licencia SEC y nuestros equipos se encuentran calibrados por laboratorios acreditado por el instituto nacional de normalización (INN). Somos especialistas en buscar soluciones a la medida de nuestros clientes.</p>
         </div>
       </div>
-      <div class="col-span-6 md:col-span-4">
-        <div>
-          <div v-for="(item, index) in data" :key="index" class="font-bold service mb-16">
-            <h3>{{item.attributes.long_name}}</h3>
-            <p class="description" v-html="marked(item.attributes.description)"></p>
+      <div  class="grid grid-cols-12 gap-8">
+        <div class="col-span-12 md:col-span-2 hidden md:block">
+          <nav class="side-nav sticky top-[10vh]">
+            <ul class="text-[14px]">
+              <li
+                v-for="(item, index) in data"
+                :key="index"
+                @click="current = item.attributes.name"
+                :class="['mb-4', {active: current === item.attributes.name}]"
+              >
+                <a :href="'#'+item.attributes.name">{{item.attributes.long_name}}</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div class="col-span-12 md:col-span-10">
+          <div>
+            <div
+              v-for="(item, index) in data"
+              :key="index"
+              :id="item.attributes.name"
+              class="service grid grid-cols-6 mb-24 md:mb-8 px-0 py-0 md:px-4 md:py-12"
+            >
+              <div class="col-span-6 md:col-span-2">
+                <div v-if="item.attributes.gallery.data" class="img flex items-center mb-4 md:mb-0">
+                  <Slider :id="'slide-'+index">
+                    <div
+                      v-for="(slide, slideIndex) in item.attributes.gallery.data"
+                      :key="slideIndex+'-slide'"
+                      class="slider-item"
+                    >
+                      <img :src="slide.attributes.url" :alt="'slide '+slide.attributes.hash">
+                    </div>
+                  </Slider>
+
+                </div>
+              </div>
+              <div class="col-span-6 md:col-span-4">
+                <h3>{{item.attributes.long_name}}</h3>
+                <div class="description">
+                  <p>{{ item.attributes.description }}</p>
+                  <ul v-if="item.attributes.specs">
+                    <li class="flex items-center" v-for="(i, iindex) in item.attributes.specs" :key="iindex+'-'+index">
+                      <span class="material-icons">done_outlines</span><span>{{i.text}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -27,6 +71,7 @@ import { marked } from 'marked/src/marked.js'
 export default {
   data() {
     return {
+      current: '',
       data: []
     }
   },
@@ -35,7 +80,7 @@ export default {
       return marked(val)
     },
     async getData() {
-      await this.$api.get('api/services?populate=image').then(res => {
+      await this.$api.get('api/services?populate=image,specs,gallery').then(res => {
         this.data = res.data.data
       })
     }
@@ -46,14 +91,34 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '~assets/scss/colors.scss';
+.side-nav {
+  li {
+    border-left: 2px solid black;
+    padding-left: .5rem;
+    &:hover, &.active {
+      font-weight: bold;
+    }
+  }
+  a {
+    &:active, &:focus, &:focus-within {
+      font-weight: bold;
+    }
+  }
+}
+.slider-item {
+  img {
+    margin: auto;
+  }
+}
 .service {
+  &:nth-child(odd) {
+    //@extend .dark;
+  }
   .description{
     white-space: pre-line;
-    ul {
-      li {
-        margin-left: 15px;
-        list-style-type: circle;
-      }
+    .material-icons {
+      font-size: 1rem;
     }
   }
 }

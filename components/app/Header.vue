@@ -1,5 +1,5 @@
 <template>
-  <header class="primary">
+  <header>
     <div class="limit">
       <div class="flex justify-between items-center">
         <nuxt-link to="/">
@@ -57,12 +57,16 @@ export default {
 </script>
 <style lang="scss">
 @import '~assets/scss/colors.scss';
-
 header {
+  @extend .primary;
+  position: relative;
+  z-index: 1;
   .logo {
     height: 88px;
     display: block;
+    padding: 10px 0;
     img {
+      margin: auto;
       height: 75%;
     }
     figcaption {
@@ -80,7 +84,6 @@ header {
     --space: 20px;
     display: none;
     &.active {
-      @extend .primary;
       width: 100%;
       height: 100%;
       position: fixed;
@@ -102,9 +105,6 @@ header {
           align-items: center;
           justify-content: center;
           padding: var(--space);
-        }
-        &.last {
-          //margin-left: 88px;
         }
       }
     }

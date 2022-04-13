@@ -239,7 +239,5 @@ export default {
     position: sticky;
     top: 35vh;
   }
-  #contact-us {
-  }
 }
 </style>
