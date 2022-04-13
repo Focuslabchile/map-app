@@ -92,9 +92,16 @@ export default {
 </script>
 <style lang="scss">
 @import '~assets/scss/colors.scss';
+.dark-mode {
+  .side-nav {
+    li {
+      border-left: 2px solid var(--white);
+    }
+  }
+}
 .side-nav {
   li {
-    border-left: 2px solid black;
+    border-left: 2px solid var(--black);
     padding-left: .5rem;
     &:hover, &.active {
       font-weight: bold;
