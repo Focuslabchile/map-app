@@ -10,7 +10,7 @@
           <p>Somos profesionales con licencia SEC y nuestros equipos se encuentran calibrados por laboratorios acreditado por el instituto nacional de normalización (INN). Somos especialistas en buscar soluciones a la medida de nuestros clientes.</p>
         </div>
       </div>
-      <div  class="grid grid-cols-12 gap-8">
+      <div  class="grid grid-cols-12 md:gap-8">
         <div class="col-span-12 md:col-span-2 hidden md:block">
           <nav class="side-nav sticky top-[3rem]">
             <ul class="text-[14px]">
