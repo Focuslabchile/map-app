@@ -31,7 +31,7 @@
           </div>
           <div class="kmz-list--icons flex items-center">
             <span class="icon-container">
-              <span v-tippy :content="kmz.attributes.description+'<br>'+kmz.attributes.file.data.attributes.size+' mb'" class="material-icons cursor-pointer">info</span>
+              <span v-tippy :content="kmz.attributes.description+'<br>'+(format((kmz.attributes.file.data.attributes.size/1000).toFixed(3)))+' mb'" class="material-icons cursor-pointer">info</span>
             </span>
             <span class="icon-container">
               <span
@@ -81,6 +81,9 @@ export default {
     }
   },
   methods: {
+    format(n) {
+      return new Intl.NumberFormat('es-CL').format(n)
+    },
     turnOffLayer(clickedLayer){
 	    this.map.setPaintProperty( clickedLayer,"fill-color",  "rgba(255,255,255,0)");
     },

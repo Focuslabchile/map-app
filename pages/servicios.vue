@@ -119,9 +119,6 @@ export default {
   }
 }
 .service {
-  &:nth-child(odd) {
-    //@extend .dark;
-  }
   .description{
     white-space: pre-line;
     .material-icons {
