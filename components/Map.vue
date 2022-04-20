@@ -386,7 +386,7 @@ export default {
       })))
     },
     center(polygon) {
-      console.log(polygon)
+      //console.log(polygon)
       this.active = polygon.id
       this.description = polygon.properties.description
       this.tab = 'description'

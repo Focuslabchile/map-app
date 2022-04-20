@@ -9,7 +9,7 @@
         </select>
       </div>
     </form-control>
-    <form-control name="Comuna">
+    <form-control :class="{disabled: !comunas}" name="Comuna">
       <div class="select-wrapper">
         <select v-model="comuna" name="Comuna">
           <option value="1" default>Todas</option>
@@ -38,7 +38,7 @@
                 v-tippy
                 content="Visualizar kmz"
                 class="material-icons cursor-pointer"
-                @click="loadKmz(apiUrl+kmz.attributes.file.data.attributes.url)"
+                @click="loadKmz(kmz.attributes.file.data.attributes.url)"
               >add_circle</span>
             </span>
           </div>
@@ -109,9 +109,20 @@ export default {
           console.log(response)
           var layerName=response.features[0].properties.name; 
           let d = JSON.parse(localStorage.getItem('polygons'))
-          response.features[0].properties.edit = false
-          response.features[0].id = uuidv4()
-          d.push(response.features[0])
+          if(!d) d = []
+          const types = []
+          response.features.forEach((el, index) => {
+            response.features[index].properties.edit = false
+            response.features[index].id = uuidv4()
+            //if array has key
+            const type = el['geometry']['type']
+            if(!types[type]){
+              types[type] = 0
+            }
+            types[type]++
+            d.push(response.features[index])
+          })
+          console.log(types)
           localStorage.setItem('polygons', JSON.stringify(d))
           //self.$parent.init(layerName, response);
 
@@ -120,7 +131,7 @@ export default {
       }); 
     },
     pickComuna() {
-      this.comunas = this.regions.find(region => region.region === this.region).comunas
+      this.comunas = this.regions.find(region => region.region === this.region)?.comunas
     },
     searchKmz(val) {
       this.$emit('search-kmz', this.search)
