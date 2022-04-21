@@ -52,7 +52,7 @@
 import FormControl from './FormControl.vue'
 import regions from '@/assets/regions.json'
 import JSZipUtils from 'jszip-utils'
-import JSZip from 'jszip'
+import { loadAsync } from 'jszip'
 import toGeoJSON from '@mapbox/togeojson'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -88,6 +88,7 @@ export default {
 	    this.map.setPaintProperty( clickedLayer,"fill-color",  "rgba(255,255,255,0)");
     },
     loadKmz(fileURL,show){
+      this.$toast.waiting('Cargando kmz ...')
       const self = this
       JSZipUtils.getBinaryContent(fileURL, function(err, data) {
         if(err) {
@@ -95,7 +96,7 @@ export default {
           throw err; // or handle err
         }
 
-        JSZip.loadAsync(data,{base64: false, optimizedBinaryString:true}).then(function (zip) {
+        loadAsync(data,{base64: false, optimizedBinaryString:true}).then(function (zip) {
           return zip
         }).then(function (zip) {
           var props = Object.getOwnPropertyNames(zip["files"]);
@@ -106,7 +107,6 @@ export default {
           var parser = new DOMParser();
           var textXML = parser.parseFromString(text, "text/xml"); //important to use "text/xml"
           var response = toGeoJSON.kml(textXML);
-          console.log(response)
           var layerName=response.features[0].properties.name; 
           let d = JSON.parse(localStorage.getItem('polygons'))
           if(!d) d = []
@@ -122,11 +122,15 @@ export default {
             types[type]++
             d.push(response.features[index])
           })
-          console.log(types)
-          localStorage.setItem('polygons', JSON.stringify(d))
-          //self.$parent.init(layerName, response);
+          //localStorage.setItem('polygons', JSON.stringify(d))
+          const callback = () => {
+            self.$toast.close()
+            self.$toast.success('kmz cargado')
+            self.$parent.tab = 'mis-zonas'
+          }
+          self.$parent.init(layerName, d, callback);
 
-            self.kmlLayers.push(layerName);
+          self.kmlLayers.push(layerName);
         });
       }); 
     },

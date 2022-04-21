@@ -43,7 +43,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .form-control {
-  margin-bottom: 10px;
+  &:not(.mb-0) {
+    margin-bottom: 10px;
+  }
   label {
     font-weight: bold;
     display: block;

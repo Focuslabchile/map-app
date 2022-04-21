@@ -1,5 +1,22 @@
 <template>
 <article :class="['map', {fullscreen:fullscreen}]">
+  <Modal :open.sync="clearLayers" title="Se eliminaran las capas agregadas">
+    Este paso no es reversible. ¿Está seguro?
+    <template slot="modalFooter">
+      <FormControl class="mb-0">
+        <button class="btn w-10" @click="clearLayers = false">
+          <slot name="modal-footer-btn">
+            No
+          </slot>
+        </button>
+        <button class="btn main w-10" @click="init('clear', {});$toast.success('Las capas se eliminaron correctamente');clearLayers = false">
+          <slot name="modal-footer-btn">
+            Si 
+          </slot>
+        </button>
+      </FormControl>
+    </template>
+  </Modal>
   <div id="map"></div>
   <div class="map-controls">
     <span @click="restart()" class="material-icons block control">
@@ -16,11 +33,17 @@
     />
   </div>
   <div :class="['map-info', {open:menu}]">
-    <div class="map-info-title p-3">
+    <div class="map-info-title p-3 flex justify-between">
       Herramientas
+      <div
+       @click="clearLayers = true"
+       v-tippy
+       content="Limpiar capas"
+       class="cursor-pointer material-icons"
+      >layers_clear</div>
     </div>
     <div class="map-info-body">
-      <div class="map-info-tabs">
+      <div class="map-info-tabs sticky top-0 secondary">
         <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
         <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
         <div v-if="description" @click="tab = 'description'" :class="['map-info-tabs--item', {active: tab === 'description'}]">Descripcion</div>
@@ -78,13 +101,13 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw"
 import * as turf from '@turf/turf'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { tippy } from "vue-tippy";
 
 export default {
   data () {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
+      clearLayers: false,
       tab: 'mis-zonas',
       mapType: 'Mapa',
       active: '',
@@ -189,7 +212,7 @@ export default {
         value: Math.round(length * 100) / 100
       }
     },
-    init(layerid = null, addkmz =null) {
+    init(layerid = null, addkmz =null, callback = null) {
       this.mapbox.init()
       this.mapbox.addControls()
       const map = this.mapbox.map
@@ -219,7 +242,7 @@ export default {
       map.once('load', e => {
         map.on('zoom', mapUpdateZoom)
         map.on('move', mapUpdateCenter)
-        self.loadLocalPolygons(layerid, addkmz)
+        self.loadLocalPolygons(layerid, addkmz, callback)
         if(localStorage.getItem('center')) {
           setTimeout(() => {
             const to = {
@@ -313,8 +336,8 @@ export default {
         }
       }
     },
-    loadLocalPolygons(layerid, addkmz) {
-      let features = JSON.parse(localStorage.getItem('polygons'))
+    loadLocalPolygons(layerid, addkmz, callback = null) {
+      let features = addkmz
       this.polygons = Array.isArray(features) ? features : []
       features = this.polygons
       const geojson = {
@@ -330,7 +353,10 @@ export default {
         //addLayer(response,layerid){
         this.mapbox.map.addSource(layerid, {
           type: "geojson",
-          data: addkmz
+          data: {
+            type: "FeatureCollection",
+            features: addkmz
+          }
         });
         this.mapbox.map.addLayer({
           "id": layerid,
@@ -338,6 +364,9 @@ export default {
           "source":layerid,
           "paint": { "fill-color":  [ "string", ["get", "fill"]]}
         }, 'aeroway-taxiway');
+        if(callback) {
+          callback()
+        }
       }
 
       return
@@ -386,7 +415,6 @@ export default {
       })))
     },
     center(polygon) {
-      //console.log(polygon)
       this.active = polygon.id
       this.description = polygon.properties.description
       this.tab = 'description'

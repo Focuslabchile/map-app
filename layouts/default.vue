@@ -1,5 +1,6 @@
 <template>
 <main>
+  <Toast />
   <AppHeader />
   <Nuxt />
   <AppFooter />
