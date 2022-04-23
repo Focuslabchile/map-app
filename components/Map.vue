@@ -454,8 +454,13 @@ export default {
     },
     center(polygon) {
       this.active = polygon.id
+      const container = document.querySelector('.map-info-body')
+      const child = document.getElementById(this.active)
+      container.scroll({top: child.offsetTop - 96 , behavior: 'smooth'})
+      this.properties = polygon.properties
+
       this.description = polygon.properties.description
-      this.tab = 'description'
+      this.tab = 'mis-zonas'
       var bbox = turf.bbox(polygon)
       
       const corners = {
