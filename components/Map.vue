@@ -313,10 +313,7 @@ export default {
         localStorage.setItem('polygons', JSON.stringify(self.polygons))
       }
       function mapSelectionChange(e) {
-        if(!e.features[0]) {
-          console.log('No features selected')
-          return
-        }
+        
         const container = document.querySelector('.map-info-body')
         const child = document.getElementById(e.features[0].id)
         //flag data soruce
