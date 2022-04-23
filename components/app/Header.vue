@@ -60,7 +60,6 @@ export default {
 header {
   @extend .primary;
   position: relative;
-  z-index: 1;
   .logo {
     height: 88px;
     display: block;

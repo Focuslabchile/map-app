@@ -23,6 +23,20 @@
       {{fullscreen ? 'fullscreen_exit' : 'fullscreen'}}
     </span>
     <span v-if="fullscreen" @click="menu = !menu" class="mt-1 control block material-icons">{{!menu ? 'menu' : 'menu_open'}}</span>
+    <span @click="showProperties = !showProperties" class="material-icons block control mt-2">info</span>
+    <div class="properties-table">
+      <table v-show="showProperties">
+        <tr
+          v-for="(item, index) in Object.entries(properties)"
+          :key="index+'-table-item'"
+        >
+          <template v-if="showItem(item)">
+            <th class="text-left">{{item[0]}}</th>
+            <td><span v-html="tableContent(item[1])"></span></td>
+          </template>
+        </tr>
+      </table>
+    </div>
   </div>
   <div class="map-filters">
     <InputRadio
@@ -50,8 +64,9 @@
       </div>
       <div v-show="tab === 'description'" class="pt-3 map-feature-description" v-html="description"></div>
       <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col pt-3">
-        <div class="info-items">
+        <div id="info-items-container" class="info-items">
           <div
+            :id="polygon.id"
             :class="['info-item p-3', {active:active === polygon.id}]"
             v-for="(polygon, index) in polygons"
             :key="index"
@@ -107,11 +122,13 @@ export default {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
+      showProperties: false,
       clearLayers: false,
       tab: 'mis-zonas',
       mapType: 'Mapa',
       active: '',
       description: '',
+      properties: {},
       menu: true,
       polygons: [],
       fullscreen: false,
@@ -145,6 +162,22 @@ export default {
     }
   },
   methods: {
+    tableContent(item) {
+      return item && item.includes('http') ? `<a href="${item}" class="text-blue-500 underline" target="_blank">${item}</a>` : item
+    },
+    showItem(item) {
+      const hidenKeys = [
+        "name",
+        "styleUrl",
+        "styleHash",
+        "styleMapHash",
+        "stroke",
+        "stroke-opacity",
+        "stroke-width",
+        "edit"
+      ]
+      return !hidenKeys.includes(item[0])
+    },
     handleUpload() {
       const reader = new FileReader();
       reader.onload = (file) => {
@@ -284,7 +317,12 @@ export default {
           console.log('No features selected')
           return
         }
+        const container = document.querySelector('.map-info-body')
+        const child = document.getElementById(e.features[0].id)
+        //flag data soruce
+        container.scroll({top: child.offsetTop - 96 , behavior: 'smooth'})
         self.active = e.features[0].id
+        self.properties = e.features[0].properties
         const calc = getCalc(e.features[0].geometry);
       }
 
@@ -485,7 +523,7 @@ export default {
       left: 0;
     }
     .map-info {
-      top: 70px;
+      top: 102px;
       max-width: var(--info);
       position: absolute;
       height: calc(100vh - 150px);
@@ -564,5 +602,27 @@ export default {
     }
   }
 }
-
+.properties-table {
+  position: absolute;
+  top: 92px;
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 4px;
+  overflow: hidden;
+  @extend .secondary;
+  th, td {
+    white-space: nowrap;
+    padding: 0.5rem;
+  }
+  th {
+    position: relative;
+    &:after {
+      position: absolute;
+      right: 0;
+      content: ':';
+    }
+  }
+  td {
+    padding-left: 0.75rem;
+  }
+}
 </style>

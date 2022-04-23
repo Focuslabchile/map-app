@@ -1,7 +1,7 @@
 <template>
   <article v-if="open" class="modal">
     <div class="modal-content">
-      <div class="modal-title">
+      <div v-if="close || title" class="modal-title">
         <span class="title mr-4">
           <slot name="modal-title">
               {{title}}
@@ -21,6 +21,10 @@
 <script>
 export default {
   props: {
+    close: {
+      type: Boolean,
+      default: true
+    },
     open: {
       type: Boolean,
       default: false
@@ -31,7 +35,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this)
+    // console.log(this)
   }
 }
 </script>

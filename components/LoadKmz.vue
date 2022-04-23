@@ -1,5 +1,11 @@
 <template>
 <div class="load-kmz">
+  <Modal :open.sync="loadingModal" :close="false">
+    <span class="text-black flex flex-col items-center">
+      <Hourglass />
+      Cargando kmz ...
+    </span>
+  </Modal>
   <div class="load-kmz--search-box">
     <form-control name="Región">
       <div class="select-wrapper">
@@ -67,6 +73,7 @@ export default {
   data() {
     return {
       regions: regions,
+      loadingModal: false,
       kmlLayers: [],
       kmzs: [],
       comunas: [],
@@ -88,7 +95,8 @@ export default {
 	    this.map.setPaintProperty( clickedLayer,"fill-color",  "rgba(255,255,255,0)");
     },
     loadKmz(fileURL,show){
-      this.$toast.waiting('Cargando kmz ...')
+      this.loadingModal = true
+      //this.$toast.waiting('Cargando kmz ...')
       const self = this
       JSZipUtils.getBinaryContent(fileURL, function(err, data) {
         if(err) {
@@ -124,7 +132,8 @@ export default {
           })
           //localStorage.setItem('polygons', JSON.stringify(d))
           const callback = () => {
-            self.$toast.close()
+            self.loadingModal = false
+            //self.$toast.close()
             self.$toast.success('kmz cargado')
             self.$parent.tab = 'mis-zonas'
           }
