@@ -402,6 +402,7 @@ export default {
           "source":layerid,
           "paint": { "fill-color":  [ "string", ["get", "fill"]]}
         }, 'aeroway-taxiway');
+        console.log(callback)
         if(callback) {
           callback()
         }

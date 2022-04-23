@@ -96,6 +96,9 @@ export default {
     },
     loadKmz(fileURL,show){
       this.loadingModal = true
+      setTimeout(() => {
+        this.loadingModal = false
+      }, 10000)
       //this.$toast.waiting('Cargando kmz ...')
       const self = this
       JSZipUtils.getBinaryContent(fileURL, function(err, data) {
