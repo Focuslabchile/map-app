@@ -18,11 +18,11 @@
     </template>
   </Modal>
   <div id="map"></div>
+  <span v-if="fullscreen" @click="menu = !menu" class="mt-1 control block material-icons side-control cursor-pointer">{{!menu ? 'menu' : 'menu_open'}}</span>
   <div class="map-controls">
     <span @click="restart()" class="material-icons block control">
       {{fullscreen ? 'fullscreen_exit' : 'fullscreen'}}
     </span>
-    <span v-if="fullscreen" @click="menu = !menu" class="mt-1 control block material-icons">{{!menu ? 'menu' : 'menu_open'}}</span>
     <span @click="showProperties = !showProperties" class="material-icons block control mt-2">info</span>
     <div class="properties-table">
       <table v-show="showProperties">
@@ -122,7 +122,7 @@ export default {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
-      showProperties: false,
+      showProperties: true,
       clearLayers: false,
       tab: 'mis-zonas',
       mapType: 'Mapa',
@@ -523,11 +523,12 @@ export default {
       left: 0;
     }
     .map-info {
-      top: 102px;
+      top: 10px;
+      left: auto;
+      right: 80px;
       max-width: var(--info);
       position: absolute;
       height: calc(100vh - 150px);
-      left: var(--left);
       display: none;
       &.open {
         display: flex;
@@ -624,5 +625,11 @@ export default {
   td {
     padding-left: 0.75rem;
   }
+}
+.side-control {
+  top: 6px;
+  position: fixed;
+  right: 48px;
+  background: white;
 }
 </style>
