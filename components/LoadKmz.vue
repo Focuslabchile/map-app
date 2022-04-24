@@ -1,7 +1,7 @@
 <template>
 <div class="load-kmz">
   <Modal :open.sync="loadingModal" :close="false">
-    <span class="text-black flex flex-col items-center">
+    <span v-if="loadingModal" class="text-black flex flex-col items-center">
       <Hourglass />
       Cargando kmz ...
     </span>
