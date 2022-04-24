@@ -191,16 +191,12 @@ export default {
         return
       }
       this.contactData.contactEmpty = ''
-      this.$axios.post(this.$config.apiUrl+'api/contacts', {
+      this.$axios.post('api/contacts', {
         data: {
           name: e.target.name?.value,
           contact: e.target.contact?.value,
           message: e.target.message?.value,
           ...this.contactData
-        }
-      }, {
-        headers: {
-          Authorization: `Bearer ${this.$config.contactApiToken}`
         }
       })
         .then(response => {
