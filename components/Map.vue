@@ -125,7 +125,7 @@ export default {
       showProperties: true,
       clearLayers: false,
       tab: 'mis-zonas',
-      mapType: 'Mapa',
+      mapType: 'Satelite',
       active: '',
       description: '',
       properties: {},
