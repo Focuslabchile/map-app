@@ -14,25 +14,25 @@
         <nav :class="{active:menu}" >
           <ul class="flex list-none">
             <li>
-              <nuxt-link @click="menu = false" to="/">
+              <nuxt-link @click.native="menu = false" to="/">
                 <span class="material-icons">home</span>
                 <span class="desktop">Inicio</span>
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link @click="menu = false" to="/mapa">
+              <nuxt-link @click.native="menu = false" to="/mapa">
                 <span class="material-icons">public</span>
                 <span class="desktop">Mapa</span>
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link @click="menu = false" to="/#contacto">
+              <nuxt-link @click.native="menu = false" to="/#contacto">
                 <span class="material-icons">contact_support</span>
                 <span>Contacto</span>
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link @click="menu = false" to="/servicios">
+              <nuxt-link @click.native="menu = false" to="/servicios">
                 <span class="material-icons">electrical_services</span>
                 <span>Servicios</span>
               </nuxt-link>
