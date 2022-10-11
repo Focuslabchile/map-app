@@ -11,28 +11,28 @@
         <div class="menu">
           <span @click="menu = !menu" class="material-icons cursor-pointer">menu</span>
         </div>
-        <nav :class="{active:menu}">
+        <nav :class="{active:menu}" >
           <ul class="flex list-none">
             <li>
-              <nuxt-link to="/">
+              <nuxt-link @click="menu = false" to="/">
                 <span class="material-icons">home</span>
                 <span class="desktop">Inicio</span>
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link to="/mapa">
+              <nuxt-link @click="menu = false" to="/mapa">
                 <span class="material-icons">public</span>
                 <span class="desktop">Mapa</span>
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link to="/#contacto">
+              <nuxt-link @click="menu = false" to="/#contacto">
                 <span class="material-icons">contact_support</span>
                 <span>Contacto</span>
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link to="/servicios">
+              <nuxt-link @click="menu = false" to="/servicios">
                 <span class="material-icons">electrical_services</span>
                 <span>Servicios</span>
               </nuxt-link>
@@ -89,10 +89,10 @@ header {
       left: 0;
       top: 0;
       z-index: 99;
-
       display: flex;
       align-items: center;
       justify-content: center;
+      @extend .primary;
       ul {
         flex-direction: column;
       }
