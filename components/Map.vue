@@ -484,7 +484,7 @@ export default {
 
     document.addEventListener('dark-mode', (e) => {
       this.mapbox.mode = e.detail ? 'dark' : 'light'
-      if(this.mapType !== 'Mapa') return
+      // if(this.mapType !== 'Mapa') return
       this.mapbox.init()
       this.init()
     })
