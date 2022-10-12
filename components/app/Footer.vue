@@ -13,7 +13,7 @@
               <span class="material-icons">home</span>Calle Huérfanos Nº1055, Santiago
             </p>
             <p class="flex items-center mb-2">
-              <span class="material-icons">alternate_email</span>renematusza@gmail.com
+              <span class="material-icons">alternate_email</span>rene@infomap.cl
             </p>
             <p class="flex items-center">
               <span class="material-icons">phone</span>+56 9 5200 0241
