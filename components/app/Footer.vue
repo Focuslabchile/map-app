@@ -23,8 +23,8 @@
         <div class="col-span-6 sm:col-span-1 flex justify-center">
           <span>
             <p>Siguenos en nuestras redes sociales</p>
-            <a href="#">
-              <img class="social" src="/linkedin.svg" alt="linkedin">
+            <a href="https://www.facebook.com/IngenieriaZambrano">
+              <img class="social" src="/facebook.svg" alt="facebook">
             </a>
           </span>
         </div>

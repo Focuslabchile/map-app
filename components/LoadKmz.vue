@@ -26,6 +26,7 @@
     <form-control :class="{disabled: !filters}" name="Filtro">
       <div class="select-wrapper">
         <select v-model="filter" @change="filter=filter" name="Filtro">
+          <option value="-1" default disabled>Seleccione un filtro</option>
           <option value="0" default>Todas</option>
           <option v-for="(filter, index) in filters" :key="index" :value="filter">{{filter}}</option>
         </select>
@@ -33,11 +34,11 @@
     </form-control>
     <search-input v-if="false" name="Buscar" placeholder="Buscar" />
     <div class="kmz-list">
-      <div class="kmz-list--item" v-for="(kmz, index) in filteredKmzs" :key="index">
+      <div :class="['kmz-list--item', (!kmz.attributes.disable || !kmz.attributes.disable.disable) || 'disabled']" v-for="(kmz, index) in filteredKmzs" :key="index">
         <div class="flex justify-between">
           <div class="flex items-center">
             <div class="kmz-list--item--name">
-              {{kmz.attributes.name}}
+              {{kmz.attributes.name}} {{(kmz.attributes.disable && kmz.attributes.disable.disable) ? '(deshabilitado)' : ''}}
             </div>
             <div class="kmz-list--item--type ml-2">
               {{kmz.attributes.type}}
@@ -89,7 +90,7 @@ export default {
       search: '',
       region: '0',
       comuna: '',
-      filter: '0',
+      filter: '-1',
     }
   },
   computed: {
@@ -178,7 +179,7 @@ export default {
       this.$emit('search-kmz', this.search)
     },
     async fetchSomething() {
-      const ip = await this.$api.get('api/geo-data?populate=file,category,region').then(res => {
+      const ip = await this.$api.get('api/geo-data?populate=file,category,region,disable').then(res => {
         this.kmzs = res.data.data.map(el => {
           return {
             ...el,
