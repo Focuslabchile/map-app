@@ -481,7 +481,7 @@ export default {
     localStorage.getItem('darkMode') === 'true' ? this.mapbox.mode = 'dark' : this.mapbox.mode = 'light'
     this.mapbox.init()
     this.init()
-    this.switchStyle()
+    this.switchStyle('Satelite')
     document.addEventListener('dark-mode', (e) => {
       this.mapbox.mode = e.detail ? 'dark' : 'light'
       // if(this.mapType !== 'Mapa') return
