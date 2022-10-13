@@ -10,12 +10,12 @@
     <form-control name="Región">
       <div class="select-wrapper">
         <select v-model="region" @change="pickComuna" name="Región">
-          <option value="1" default>Todas</option>
-          <option v-for="(region, index) in regions" :key="index" :value="region.region">{{region.region}}</option>
+          <option value="0" default>Todas</option>
+          <option v-for="(region, index) in regions" :key="index" :value="region">{{region}}</option>
         </select>
       </div>
     </form-control>
-    <form-control :class="{disabled: !comunas}" name="Comuna">
+    <form-control v-if="false" :class="{disabled: !comunas}" name="Comuna">
       <div class="select-wrapper">
         <select v-model="comuna" name="Comuna">
           <option value="1" default>Todas</option>
@@ -23,9 +23,17 @@
         </select>
       </div>
     </form-control>
-    <search-input name="Buscar" placeholder="Buscar" />
+    <form-control :class="{disabled: !filters}" name="Filtro">
+      <div class="select-wrapper">
+        <select v-model="filter" @change="filter=filter" name="Filtro">
+          <option value="0" default>Todas</option>
+          <option v-for="(filter, index) in filters" :key="index" :value="filter">{{filter}}</option>
+        </select>
+      </div>
+    </form-control>
+    <search-input v-if="false" name="Buscar" placeholder="Buscar" />
     <div class="kmz-list">
-      <div class="kmz-list--item" v-for="(kmz, index) in kmzs" :key="index">
+      <div class="kmz-list--item" v-for="(kmz, index) in filteredKmzs" :key="index">
         <div class="flex justify-between">
           <div class="flex items-center">
             <div class="kmz-list--item--name">
@@ -56,7 +64,7 @@
 </template>
 <script>
 import FormControl from './FormControl.vue'
-import regions from '@/assets/regions.json'
+// import regions from '@/assets/regions.json'
 import JSZipUtils from 'jszip-utils'
 import { loadAsync } from 'jszip'
 import toGeoJSON from '@mapbox/togeojson'
@@ -72,17 +80,34 @@ export default {
   },
   data() {
     return {
-      regions: regions,
+      regions: [],
       loadingModal: false,
       kmlLayers: [],
       kmzs: [],
       comunas: [],
+      filters: [],
       search: '',
-      region: '',
-      comuna: ''
+      region: '0',
+      comuna: '',
+      filter: '0',
     }
   },
   computed: {
+    filteredKmzs() {
+      let kmzs = [...new Set([...this.kmzs])]
+      if (this.region !== '0') {
+        kmzs = kmzs.filter(el => {
+          return el.region.includes(this.region)
+        })
+      }
+      console.log(kmzs.length)
+      if (this.filter !== '0') {
+        kmzs = kmzs.filter(el => {
+          return el.category.includes(this.filter)
+        })
+      }
+      return kmzs
+    },
     apiUrl() {
       return this.$config.apiUrl
     }
@@ -153,8 +178,22 @@ export default {
       this.$emit('search-kmz', this.search)
     },
     async fetchSomething() {
-      const ip = await this.$api.get('api/geo-data?populate=file').then(res => {
-        this.kmzs = res.data.data
+      const ip = await this.$api.get('api/geo-data?populate=file,category,region').then(res => {
+        this.kmzs = res.data.data.map(el => {
+          return {
+            ...el,
+            region: el.attributes.region.map(reg => reg.region),
+            category: [...el.attributes.category.map(reg => reg.category_filter)]
+          }
+        })
+
+        this.regions = this.kmzs.reduce((carry, el) => {
+          return [...(new Set([...carry, ...el.region]))]
+        }, [])
+
+        this.filters = this.kmzs.reduce((carry, el) => {
+          return [...(new Set([...carry, ...el.category]))]
+        }, [])
       })
     }
   },
