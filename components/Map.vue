@@ -142,10 +142,11 @@ export default {
           mapboxgl.accessToken = MAPBOX_API_URL
           this.map = new mapboxgl.Map({
             container: 'map',
-            style: `mapbox://styles/mapbox/${this.mode}-v10`,
+            style: `mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f`,
             center: this.center,
             zoom: this.zoom,
-            attributionControl: false
+            attributionControl: false,
+            ...options
           })
         },
         addControls() {
@@ -219,6 +220,9 @@ export default {
         this.mapbox.map.setStyle('mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f')
       }
     },
+    getStyle(val) {
+      return val === 'Mapa' ? `mapbox://styles/mapbox/${this.mapbox.mode}-v10` : 'mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f'
+    },
     calcArea(geometry) {
       const polygon = turf.polygon(geometry.coordinates)
       const area = turf.area(polygon)
@@ -246,7 +250,9 @@ export default {
       }
     },
     init(layerid = null, addkmz =null, callback = null) {
-      this.mapbox.init()
+      this.mapbox.init({
+        style: this.getStyle()
+      })
       this.mapbox.addControls()
       const map = this.mapbox.map
       
@@ -479,9 +485,10 @@ export default {
   },
   mounted() {
     localStorage.getItem('darkMode') === 'true' ? this.mapbox.mode = 'dark' : this.mapbox.mode = 'light'
-    this.mapbox.init()
+    this.mapbox.init({
+        style: this.getStyle()
+      })
     this.init()
-    this.switchStyle('Satelite')
     document.addEventListener('dark-mode', (e) => {
       this.mapbox.mode = e.detail ? 'dark' : 'light'
       // if(this.mapType !== 'Mapa') return
