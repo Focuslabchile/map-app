@@ -20,7 +20,7 @@
   <div id="map"></div>
   <span v-if="fullscreen" @click="menu = !menu" class="mt-1 control block material-icons side-control cursor-pointer">{{!menu ? 'menu' : 'menu_open'}}</span>
   <div class="map-controls">
-    <span content="Pantalla completa" v-tippy='{ sticky: true, showOnInit : true, hideOnClick: false, size: "large", arrow: true}' @click="restart()" class="material-icons block control">
+    <span @click="restart()" class="material-icons block control">
       {{fullscreen ? 'fullscreen_exit' : 'fullscreen'}}
     </span>
     <span @click="showProperties = !showProperties" class="material-icons block control mt-2">info</span>
