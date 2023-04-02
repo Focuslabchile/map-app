@@ -102,7 +102,7 @@
                   >
                 </td>
                 <td>
-                  <span v-if="validationGetRoCalculados(item) === schlumbergerGetRoCalculados(item)" class="p-1">
+                  <span v-if="validationRoCalculados(item)" class="p-1">
                     {{ schlumbergerGetRoCalculados(item).toFixed(3) }}
                   </span>
                   <span
@@ -416,12 +416,16 @@ export default {
       const rMedidas = Number(item.rMedidas)
       return (Math.PI * a * (a + d) * rMedidas)/d
     },
-    validationGetRoCalculados(item) {
+    validationRoCalculados(item) {
       const d = Number(item.d)
       const a = Number(item.a)
       const rMedidas = Number(item.rMedidas)
       // return Math.PI * d * (d + 1) * a * rMedidas
-      return Math.PI * a * (a + 1) * d * rMedidas
+
+      const val1 = Math.PI * a * (a + 1) * d * rMedidas
+      const val2 = (2*Math.PI*rMedidas)*(d/2)*(((d+a+a)/2)**2-(1/4))
+      const val3 = this.schlumbergerGetRoCalculados(item)
+      return val1 === val2 && val2 === val3
     },
     wennerGetRoCalculados(item) {
       const a = Number(item.a)
