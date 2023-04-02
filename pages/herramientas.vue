@@ -81,7 +81,7 @@
 
           <div class="flex justify-between flex-col-reverse flex-grow max-h-full text-center max-w-xs">
             <div @click="addRecord()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear registro</div>
-            <div v-if="sendChartForm"  @click="sendChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Enviar</div>
+            <div v-if="showChart"  @click="sendChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Enviar</div>
             <div v-if="schlumbergerRecords.length > 1 || wennerRecords.length > 1" @click="drawChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear gráfico</div>
           </div>
         </div>
@@ -92,11 +92,11 @@
           <span v-if="formulaTab === 'Schlumberger'" @click="schlumbergerRecords = dataDummie" class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
             dummie data
           </span>
-          <span @click="schlumbergerRecords = []; wennerRecords = []" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
+          <span @click="schlumbergerRecords = []; wennerRecords = []; showChart= false" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
             limpiar datos
           </span>
         </div>
-        <div style="width: 70%;"><canvas id="logaritmic_chart"></canvas></div>
+        <div v-show="showChart" class="mt-8" style="width: 70%;"><canvas id="logaritmic_chart"></canvas></div>
         <Modal :open.sync="chartGenerate" title="Enviar documentos">
           <form>
             <div class="flex space-x-2 justify-between">
@@ -172,7 +172,7 @@ export default {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     return {
       coordinates: [],
-      sendChartForm: false,
+      showChart: false,
       chartGenerate: false,
       toolsTab: 'GIS Chile',
       formulaTab: 'Schlumberger',
@@ -206,6 +206,54 @@ export default {
         {nLectura:	11	,distanciaAb2:12.5, a:1, d:12, rMedidas:0.17, roCalculados:83.31258}
       ],
     }
+  },
+  mounted() {
+    this.chart = new Chart(
+      document.getElementById('logaritmic_chart'),
+      {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'Gráfico logarítmico',
+            data: [],
+            pointBackgroundColor: 'rgba(54, 196, 240, 1)'
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              type: 'logarithmic',
+              title: {
+                display: true,
+                text: 'DISTANCIA AB/2'
+              },
+              min: 1,
+              max: 100,
+              ticks: {
+                callback: function(value, index, values) {
+                  return Number(value.toString()); // convert to number
+                }
+              }
+            },
+            y: {
+              type: 'logarithmic',
+              title: {
+                display: true,
+                text: 'RESISTIVIDAD (Ωm)'
+              },
+              min: 0,
+              // max: Math.pow(10, Math.ceil(Math.log10(maxY))),
+              max: 1000,
+              ticks: {
+                callback: function(value, index, values) {
+                  return Number(value.toString()); // convert to number
+                }
+              }
+            }
+          }
+        }
+      }
+    )
   },
   methods: {
     drawMap() {
@@ -265,7 +313,7 @@ export default {
       link.click();
     },
     drawChart() {
-      this.sendChartForm = true
+      this.showChart = true
       const data = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
       const chartData = data
         .map(item => {
@@ -275,61 +323,13 @@ export default {
           }
         })
 
-      const maxX = chartData.reduce((max, obj) => {
-        return obj.x > max ? obj.x : max;
-      }, 0);
-
       const maxY = chartData.reduce((max, obj) => {
-        return obj.y > max ? obj.y : max;
-      }, 0);
-
-      new Chart(
-        document.getElementById('logaritmic_chart'),
-        {
-          type: 'scatter',
-          data: {
-            datasets: [{
-              label: 'Logarithmic Domain and Range Example',
-              data: chartData,
-              pointBackgroundColor: 'rgba(255, 99, 132, 1)'
-            }]
-          },
-          options: {
-            scales: {
-              x: {
-                type: 'logarithmic',
-                title: {
-                  display: true,
-                  text: 'Logarithmic Domain'
-                },
-                min: 1,
-                //max: 1000,
-                max: 100,
-                ticks: {
-                  callback: function(value, index, values) {
-                    return Number(value.toString()); // convert to number
-                  }
-                }
-              },
-              y: {
-                type: 'logarithmic',
-                title: {
-                  display: true,
-                  text: 'Logarithmic Range'
-                },
-                min: 0,
-                //max: 1000,
-                max: Math.pow(10, Math.ceil(Math.log10(maxY))),
-                ticks: {
-                  callback: function(value, index, values) {
-                    return Number(value.toString()); // convert to number
-                  }
-                }
-              }
-            }
-          }
-        }
-      );
+        return obj.y > max ? obj.y : max
+      }, 0)
+      
+      this.chart.data.datasets[0].data = chartData
+      this.chart.options.scales.y.max = Math.pow(10, Math.ceil(Math.log10(maxY)))
+      this.chart.update()
 
       this.$toast.success('Gráfico generado correctamente');
     },
