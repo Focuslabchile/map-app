@@ -30,7 +30,7 @@
           </p>
           <img src="/wenner.png" alt="Wenner" />
         </div>
-        <div class="flex">
+        <div class="flex jusrify-between flex-wrap">
           <div class="table-container grow-0">
             <div class="table-controls mb-4">
               
@@ -65,7 +65,9 @@
               </tr>
               <tr v-for="(item, index) in schlumbergerRecords" :key="index+'-table-item'">
                 <td>{{ item.nLectura }}</td>
-                <td>{{ schlumbergerGetAb(item) }}</td>
+                <td>
+                  {{ schlumbergerGetAb(item) }}
+                </td>
                 <td>
                   <template v-if="!schlumbergerEditList.includes(index)">
                     {{ item.a }}
@@ -99,7 +101,19 @@
                     v-model="schlumbergerRecords[index].rMedidas"
                   >
                 </td>
-                <td>{{ schlumbergerGetRoCalculados(item).toFixed(3) }}</td>
+                <td>
+                  <span v-if="validationGetRoCalculados(item) === schlumbergerGetRoCalculados(item)" class="p-1">
+                    {{ schlumbergerGetRoCalculados(item).toFixed(3) }}
+                  </span>
+                  <span
+                    v-else
+                    v-tippy
+                    content="Hay inconsistencias en los datos ingresados"
+                    class="bg-red-600 text-white p-1"
+                  >
+                    {{ schlumbergerGetRoCalculados(item).toFixed(3) }}
+                  </span>
+                </td>
                 <td>
                   <button
                     @click="editRecord(index)"
@@ -172,8 +186,9 @@
                 <td>
                   <button
                     @click="editRecord(index)"
-                    class="rounded-lg border-1 border-gray-500 text-center p-1"
-                  >editar
+                    class="rounded-lg border-1 border-gray-500 text-center p-1 material-icons"
+                  >
+                    {{ wennerEditList.includes(index) ? 'edit_off' : 'edit' }}
                   </button>
                 </td>
               </tr>
@@ -197,6 +212,9 @@
                 <td></td>
               </tr>
             </table>
+          </div>
+          <div>
+
           </div>
         </div>
         <div class="mt-4">
@@ -396,7 +414,14 @@ export default {
       const d = Number(item.d)
       const a = Number(item.a)
       const rMedidas = Number(item.rMedidas)
-      return Math.PI * d * (d + 1) * a * rMedidas
+      return (Math.PI * a * (a + d) * rMedidas)/d
+    },
+    validationGetRoCalculados(item) {
+      const d = Number(item.d)
+      const a = Number(item.a)
+      const rMedidas = Number(item.rMedidas)
+      // return Math.PI * d * (d + 1) * a * rMedidas
+      return Math.PI * a * (a + 1) * d * rMedidas
     },
     wennerGetRoCalculados(item) {
       const a = Number(item.a)
