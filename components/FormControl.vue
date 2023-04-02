@@ -1,8 +1,9 @@
 <template>
   <div :class="['form-control', {'animate__animated animate__headShake':shake}]">
     <label v-if="name && name.length" :for="name">{{name}}</label>
+    <slot name="horizonal-description"></slot>
     <small v-if="alertPosition === 'top'" :class="['alert', alertColor]">{{ alert }}</small>
-    <slot />
+    <slot name="default" />
     <small class="description" v-if="description">{{description}}</small>
     <br v-if="alert && description.length && alertPosition === 'bottom'">
     <small v-if="alert && alertPosition === 'bottom'" :class="['alert', alertColor]">{{alert}}</small>

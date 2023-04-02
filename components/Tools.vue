@@ -299,6 +299,11 @@
           description="Lugar donde se realizaron las mediciones"
           :required="true"
         >
+          <template slot="horizonal-description">
+            <small style="max-width: 700px; display: block;">
+              Si el lugar donde se realizo el estudio <strong>aún no tiene dirección</strong> puedes hacer click en el boton <i class="my-location"></i> para agegar un punto en el lugar donde se realizo el estudio. Recuerda que puedes usar el buscador para encontrar un punto de referencia cercano.
+            </small>
+          </template>
           <div id="map"></div>
         </FormControl>
         <button ref="submitform" class="hidden" type="submit"></button>
@@ -692,5 +697,11 @@ export default {
   bottom: 0;
   height: 400px;
   width: 700px;
+}
+.my-location {
+  background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="17">%3Cpath d="m10 2c-3.3 0-6 2.7-6 6s6 9 6 9 6-5.7 6-9-2.7-6-6-6zm0 2c2.1 0 3.8 1.7 3.8 3.8 0 1.5-1.8 3.9-2.9 5.2h-1.7c-1.1-1.4-2.9-3.8-2.9-5.2-.1-2.1 1.6-3.8 3.7-3.8z"/>%3C/svg>');
+  display: inline-block;
+  width: 16px;
+  height: 17px;
 }
 </style>
