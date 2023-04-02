@@ -207,16 +207,17 @@
       </div>
     </div>
     <div class="mt-4">
-      <span
+      <button
         v-if="showChart"
         @click="sendChart()"
-        class="rounded-lg border-2 border-gray-500 p-1 cursor-pointer items-center"
+        :disabled="schlumbergerRecords.find(el => !validationRoCalculados(el))"
+        :class="['rounded-lg border-2 border-gray-500 p-1 cursor-pointer items-center', { disabled: schlumbergerRecords.find(el => !validationRoCalculados(el)) }]"
       >
         Enviar documentos
         <span class="material-icons align-bottom">
           email
         </span>
-      </span>
+      </button>
       <span
         @click="downloadChart()"
         class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
@@ -229,10 +230,14 @@
       >dummie data
       </span>
     </div>
-    <div class="my-4">
-      <strong class="text-red-600" v-if="schlumbergerRecords.find(el => !validationRoCalculados(el))">
-        Los datos ingresados son inconsistentes por lo que el gráfico no sera válido
-      </strong>
+    <div v-if="showChart" class="my-4">
+      <span class="text-red-600" v-if="schlumbergerRecords.find(el => !validationRoCalculados(el))">
+        Los datos ingresados son inconsistentes por lo que el gráfico no es válido.
+        <br>
+        <strong>
+          Para enviar los documentos debe corregir los datos ingresados.
+        </strong>
+      </span>
       <strong v-else>
         Los datos ingresados son consistentes según las validaciones realizadas
       </strong>
