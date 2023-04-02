@@ -408,7 +408,7 @@ export default {
   },
   methods: {
     schlumbergerGetAb(item) {
-      return (item.a / 2) + Number(item.d)
+      return (Number(item.d) / 2) + Number(item.a)
     },
     schlumbergerGetRoCalculados(item) {
       const d = Number(item.d)
@@ -420,12 +420,14 @@ export default {
       const d = Number(item.d)
       const a = Number(item.a)
       const rMedidas = Number(item.rMedidas)
-      // return Math.PI * d * (d + 1) * a * rMedidas
+      const ab = this.schlumbergerGetAb(item)
 
       const val1 = Math.PI * a * (a + 1) * d * rMedidas
-      const val2 = (2*Math.PI*rMedidas)*(d/2)*(((d+a+a)/2)**2-(1/4))
+      const val2 = (2 * Math.PI * rMedidas) * (d / 2) * (ab**2 - (1 / 4))
       const val3 = this.schlumbergerGetRoCalculados(item)
-      return val1 === val2 && val2 === val3
+      const val4 = Math.PI * rMedidas * d * ((ab**2 / d**2) - (1 / 4))
+      
+      return val1 === val2 && val2 === val3 && val3 === val4
     },
     wennerGetRoCalculados(item) {
       const a = Number(item.a)
