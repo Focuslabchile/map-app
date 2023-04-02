@@ -2,7 +2,7 @@
   <div :class="['form-control', {'animate__animated animate__headShake':shake}]">
     <label v-if="name && name.length" :for="name">{{name}}</label>
     <slot />
-    <span class="description" v-if="description">{{description}}</span>
+    <small class="description" v-if="description">{{description}}</small>
     <br v-if="alert">
     <small v-if="alert" class="alert">{{alert}}</small>
   </div>

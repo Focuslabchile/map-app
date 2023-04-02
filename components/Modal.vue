@@ -52,6 +52,7 @@ export default {
   justify-content: center;
   background-color: rgba(0, 0, 0, .5);
   backdrop-filter: blur(2px);
+  color: black;
   .modal-content {
     padding: 10px;
     background-color: white;
