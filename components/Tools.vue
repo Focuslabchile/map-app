@@ -229,6 +229,14 @@
       >dummie data
       </span>
     </div>
+    <div class="my-4">
+      <strong class="text-red-600" v-if="schlumbergerRecords.find(el => !validationRoCalculados(el))">
+        Los datos ingresados son inconsistentes por lo que el gráfico no sera válido
+      </strong>
+      <strong v-else>
+        Los datos ingresados son consistentes según las validaciones realizadas
+      </strong>
+    </div>
     <div
       v-show="showChart"
       class="mt-8"
@@ -416,7 +424,7 @@ export default {
     wennerGetRoCalculados(item) {
       const a = Number(item.a)
       const rMedidas = Number(item.rMedidas)
-      return 2 * Math.PI * a * rMedidas
+      return 2 * Math.PI * (a*3) * rMedidas
     },
     editRecord(index) {
       const item = this.formulaTab === 'Schlumberger' ? this.schlumbergerEditList : this.wennerEditList
