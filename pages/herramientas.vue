@@ -2,83 +2,129 @@
   <AppSection>
     <h2>Herramientas</h2>
     <div class="tabs">
-      <div :class="['tab h3 tab-big', {'tab-active': toolsTab=='log-chart'}]">gráfico logaritmico</div>
-      <div :class="['tab h3 tab-big', {'tab-active': toolsTab=='log-chart'}]">GIS Chile</div>
+      <div class="filters text-2xl">
+        <InputRadio
+          @update="(val) => toolsTab = val"
+          group-name="tool_type"
+          :value="toolsTab"
+          :options="['GIS Chile', 'Gráfico logaritmico']"
+        />
+      </div>
       <div class="tab-content">
-        <p class="mb-16">Con herramienta podras crear tablas y gráficos para el estudio de tierras usando los métodos de Wenner y Schlumberger. Los usuarios pueden ingresar los datos de resistencia eléctrica y profundidad, y exportar los resultados en un gráfico en escala logarítmica y formato PDF.</p>
+        <p class="my-8">Con herramienta podras crear tablas y gráficos para el estudio de tierras usando los métodos de Wenner y Schlumberger. Los usuarios pueden ingresar los datos de resistencia eléctrica y profundidad, y exportar los resultados en un gráfico en escala logarítmica y formato PDF.</p>
+        <div class="filters mb-4">
+          <InputRadio
+            @update="(val) => formulaTab = val"
+            group-name="formula_type"
+            :value="formulaTab"
+            :options="['Schlumberger', 'Wenner']"
+          />
+        </div>
+        <div class="flex flex-col lg:flex-row items-center" v-if="formulaTab === 'Schlumberger'">
+          <p>La resistividad del suelo Schlumberger es una técnica de investigación geofísica empleada para medir la resistividad eléctrica de los diferentes estratos del subsuelo. Esta técnica es fundamental en la identificación de estructuras geológicas, detección de agua subterránea y en la exploración de recursos minerales, entre otras aplicaciones. El método Schlumberger utiliza una configuración de electrodos específica, donde dos electrodos de corriente (A y B) inyectan una corriente eléctrica en el suelo y dos electrodos de potencial (M y N) miden la diferencia de potencial generada. La resistividad se calcula utilizando las mediciones de corriente y potencial, así como las distancias entre los electrodos.</p>
+          <img src="/schlumberger.png" alt="Schlumberger" />
+        </div>
+        <div class="flex flex-col lg:flex-row items-center" v-else>
+          <p>
+            La resistividad del suelo Wenner es una técnica de investigación geofísica empleada para medir la resistividad eléctrica de los diferentes estratos del subsuelo. Esta técnica es esencial en la identificación de estructuras geológicas, detección de agua subterránea y en la exploración de recursos minerales, entre otras aplicaciones. El método Wenner utiliza una configuración específica de electrodos, en la cual cuatro electrodos linealmente espaciados (A, M, N y B) se colocan en el suelo a intervalos regulares. Dos electrodos de corriente (A y B) inyectan una corriente eléctrica en el suelo, mientras que los dos electrodos de potencial (M y N) miden la diferencia de potencial generada. La resistividad se calcula utilizando las mediciones de corriente y potencial, así como la distancia entre los electrodos.
+          </p>
+          <img src="/wenner.png" alt="Wenner" />
+        </div>
+
         <div class="table-container flex">
-          <table id="log-table" class="table table-logaritmic">
+          <table v-if="formulaTab === 'Schlumberger'" id="schlumberger-table" class="table table-logaritmic">
             <tr>
               <th>Nº<br>Lecturas</th>
               <th>DISTANCIA<br>AB/2</th>
               <th>a</th>
-              <th>n</th>
+              <th>d</th>
               <th>R<br>Medidas</th>
               <th>Ro<br>Calculados</th>
             </tr>
-            <tr v-for="(item, index) in logaritmicRecords" :key="index+'-table-item'">
+            <tr v-for="(item, index) in schlumbergerRecords" :key="index+'-table-item'">
               <td>{{ item.nLectura }}</td>
               <td>{{ item.distanciaAb2 }}</td>
               <td>{{ item.a }}</td>
-              <td>{{ item.n }}</td>
+              <td>{{ item.d }}</td>
               <td>{{ item.rMedidas }}</td>
               <td>{{ item.roCalculados.toFixed(3) }}</td>
             </tr>
             <tr>
               <td></td>
               <td></td>
-              <td><input ref="a" @keypress.enter="addRecord(logaritmicRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="logaritmicRecordBlank.a"></td>
-              <td><input @keypress.enter="addRecord(logaritmicRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="logaritmicRecordBlank.n"></td>
-              <td><input @keypress.enter="addRecord(logaritmicRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="logaritmicRecordBlank.rMedidas"></td>
+              <td><input ref="a" @keypress.enter="addRecord(schlumbergerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecordBlank.a"></td>
+              <td><input @keypress.enter="addRecord(schlumbergerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecordBlank.d"></td>
+              <td><input @keypress.enter="addRecord(schlumbergerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecordBlank.rMedidas"></td>
               <td></td>
             </tr>
           </table>
+          <table v-if="formulaTab=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
+            <tr>
+              <th>Nº<br>Lecturas</th>
+              <th>A</th>
+              <th>R<br>Medidas</th>
+              <th>Ro<br>Calculados</th>
+            </tr>
+            <tr v-for="(item, index) in wennerRecords" :key="index+'-table-item'">
+              <td>{{ item.nLectura }}</td>
+              <td>{{ item.a }}</td>
+              <td>{{ item.rMedidas }}</td>
+              <td>{{ item.roCalculados.toFixed(3) }}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><input ref="a" @keypress.enter="addRecord(wennerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="wennerRecordBlank.a"></td>
+              <td><input @keypress.enter="addRecord(wennerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="wennerRecordBlank.rMedidas"></td>
+              <td></td>
+            </tr>
+          </table>
+
           <div class="flex justify-between flex-col-reverse flex-grow max-h-full text-center max-w-xs">
-            <div @click="addRecord(logaritmicRecordBlank)" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear registro</div>
-            <div v-if="logaritmicRecords.length > 1" @click="makeChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear gráfico</div>
+            <div @click="addRecord()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear registro</div>
+            <div v-if="schlumbergerRecords.length > 1 || wennerRecords.length > 1" @click="makeChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear gráfico</div>
           </div>
         </div>
+        <div class="mt-4">
+          <span @click="downloadChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
+            downloadChart
+          </span>
+          <span v-if="formulaTab === 'Schlumberger'" @click="schlumbergerRecords = dataDummie" class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
+            dummie data
+          </span>
+          <span @click="schlumbergerRecords = []; wennerRecords = []" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
+            limpiar datos
+          </span>
+        </div>
+        <div style="width: 70%;"><canvas id="logaritmic_chart"></canvas></div>
+        <Modal :open.sync="chartGenerate" title="Generar gráfico">
+          <form>
+            <FormControl name="Nombre:">
+              <InputText name="name" />
+            </FormControl>
+            <FormControl name="E-mail:">
+              <InputText name="email" />
+            </FormControl>
+            <FormControl name="Dirección:" description="lugar donde se realizo el estudio">
+              <InputText name="password" />
+            </FormControl>
+          </form>
+          <template slot="modalFooter">
+            <FormControl class="mb-0">
+              <button class="btn" @click="chartGenerate = false">
+                <slot name="modal-footer-btn">
+                  cancelar
+                </slot>
+              </button>
+              <button class="btn main" @click="drawChart()">
+                <slot name="modal-footer-btn">
+                  Generar gráfico
+                </slot>
+              </button>
+            </FormControl>
+          </template>
+        </Modal>
       </div>
     </div>
-    <div>
-      <span @click="downloadChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
-        downloadChart
-      </span>
-      <span @click="logaritmicRecords = logaritmicRecords2" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
-        dummie data
-      </span>
-      <span @click="logaritmicRecords = []" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
-        limpiar datos
-      </span>
-    </div>
-    <div style="width: 70%;"><canvas id="logaritmic_chart"></canvas></div>
-    <Modal :open.sync="chartGenerate" title="Generar gráfico">
-      <form>
-        <FormControl name="Nombre:">
-          <InputText name="name" />
-        </FormControl>
-        <FormControl name="E-mail:">
-          <InputText name="email" />
-        </FormControl>
-        <FormControl name="Dirección:" description="lugar donde se realizo el estudio">
-          <InputText name="password" />
-        </FormControl>
-      </form>
-      <template slot="modalFooter">
-        <FormControl class="mb-0">
-          <button class="btn" @click="chartGenerate = false">
-            <slot name="modal-footer-btn">
-              cancelar
-            </slot>
-          </button>
-          <button class="btn main" @click="showChart()">
-            <slot name="modal-footer-btn">
-              Generar gráfico
-            </slot>
-          </button>
-        </FormControl>
-      </template>
-    </Modal>
   </AppSection>
 </template>
 
@@ -92,28 +138,36 @@ export default {
   data() {
     return {
       chartGenerate: false,
-      toolsTab: 'log-chart',
-      logaritmicRecordBlank: {
+      toolsTab: 'GIS Chile',
+      formulaTab: 'Schlumberger',
+      schlumbergerRecordBlank: {
         nLectura: null,
         distanciaAb2: null,
         a: null,
-        n: null,
+        d: null,
         rMedidas: null,
         roCalculados: null,
       },
-      logaritmicRecords: [],
-      logaritmicRecords2: [
-        {nLectura:	1	,distanciaAb2:1, a:1, n:0.5, rMedidas:27.7, roCalculados:65.2646625},
-        {nLectura:	2	,distanciaAb2:1.5, a:1, n:1, rMedidas:15.97, roCalculados:100.33951},
-        {nLectura:	3	,distanciaAb2:2, a:1, n:1.5, rMedidas:10.08, roCalculados:118.7487},
-        {nLectura:	4	,distanciaAb2:2.5, a:1, n:2, rMedidas:7.73, roCalculados:145.70277},
-        {nLectura:	5	,distanciaAb2:3, a:1, n:2.5, rMedidas:6.15, roCalculados:169.0519688},
-        {nLectura:	6	,distanciaAb2:3.5, a:1, n:3, rMedidas:4.12, roCalculados:155.31576},
-        {nLectura:	7	,distanciaAb2:6, a:1, n:4, rMedidas:2, roCalculados:125.66},
-        {nLectura:	8	,distanciaAb2:6.5, a:1, n:6, rMedidas:1.11, roCalculados:146.45673},
-        {nLectura:	9	,distanciaAb2:8.5, a:1, n:8, rMedidas:0.59, roCalculados:133.45092},
-        {nLectura:	10	,distanciaAb2:10.5, a:1, n:10, rMedidas:0.32, roCalculados:110.5808},
-        {nLectura:	11	,distanciaAb2:12.5, a:1, n:12, rMedidas:0.17, roCalculados:83.31258}
+      wennerRecordBlank: {
+        nLectura: null,
+        a: null,
+        rMedidas: null,
+        roCalculados: null,
+      },
+      wennerRecords: [],
+      schlumbergerRecords: [],
+      dataDummie: [
+        {nLectura:	1	,distanciaAb2:1, a:1, d:0.5, rMedidas:27.7, roCalculados:65.2646625},
+        {nLectura:	2	,distanciaAb2:1.5, a:1, d:1, rMedidas:15.97, roCalculados:100.33951},
+        {nLectura:	3	,distanciaAb2:2, a:1, d:1.5, rMedidas:10.08, roCalculados:118.7487},
+        {nLectura:	4	,distanciaAb2:2.5, a:1, d:2, rMedidas:7.73, roCalculados:145.70277},
+        {nLectura:	5	,distanciaAb2:3, a:1, d:2.5, rMedidas:6.15, roCalculados:169.0519688},
+        {nLectura:	6	,distanciaAb2:3.5, a:1, d:3, rMedidas:4.12, roCalculados:155.31576},
+        {nLectura:	7	,distanciaAb2:6, a:1, d:4, rMedidas:2, roCalculados:125.66},
+        {nLectura:	8	,distanciaAb2:6.5, a:1, d:6, rMedidas:1.11, roCalculados:146.45673},
+        {nLectura:	9	,distanciaAb2:8.5, a:1, d:8, rMedidas:0.59, roCalculados:133.45092},
+        {nLectura:	10	,distanciaAb2:10.5, a:1, d:10, rMedidas:0.32, roCalculados:110.5808},
+        {nLectura:	11	,distanciaAb2:12.5, a:1, d:12, rMedidas:0.17, roCalculados:83.31258}
       ],
     }
   },
@@ -129,9 +183,12 @@ export default {
       link.href = canvas.toDataURL('image/png');
       link.click();
     },
-    showChart() {
+    drawChart() {
       this.chartGenerate = false
-      const chartData = this.logaritmicRecords
+      console.log(this.wennerRecords)
+      const data = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
+      console.log(data)
+      const chartData = data
         .map(item => {
           return {
             x: item.distanciaAb2,
@@ -200,28 +257,53 @@ export default {
     makeChart() {
       this.chartGenerate = true
     },
-    addRecord(item) {
-      item.a = Number(item.a?.replace(',', '.'))
-      item.n = Number(item.n?.replace(',', '.'))
-      item.rMedidas = Number(item.rMedidas?.replace(',', '.'))
+    addRecord() {
+      const item = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecordBlank : this.wennerRecordBlank
+      const items = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
 
-      if (!item.a || !item.n || !item.rMedidas) {
-        this.logaritmicRecordBlank.a = ''
-        this.logaritmicRecordBlank.n = ''
-        this.logaritmicRecordBlank.rMedidas = ''
-        return
+      console.log(item, items)
+      item.a = Number(item.a?.replace(',', '.'))
+      item.rMedidas = Number(item.rMedidas?.replace(',', '.'))
+      
+      if (this.formulaTab === 'Schlumberger') {
+        console.log(item.d, item.a, item.rMedidas);
+        item.d = Number(item.d?.replace(',', '.'))
+        console.log('1');
+        console.log(item.d, item.a, item.rMedidas);
+        if (!item.a || !item.d || !item.rMedidas) {
+          console.log('2');
+          item.a = ''
+          item.d = ''
+          item.rMedidas = ''
+          return
+        }
+      } else {
+        if (!item.a || !item.rMedidas) {
+          item.a = ''
+          item.rMedidas = ''
+          return
+        }
       }
 
-      this.logaritmicRecords.push({
-        ...item,
-        nLectura: this.logaritmicRecords.length + 1,
-        distanciaAb2: (item.a / 2) + item.n,
-        roCalculados: Math.PI * item.n * (item.n + 1) * item.a * item.rMedidas
-      })
+      if(this.formulaTab === 'Schlumberger') {
+        this.schlumbergerRecords.push({
+          ...item,
+          nLectura: items.length + 1,
+          distanciaAb2: (item.a / 2) + item.d,
+          roCalculados: Math.PI * item.d * (item.d + 1) * item.a * item.rMedidas
+        })
+        item.d = ''
+      } else {
+        this.wennerRecords.push({
+          ...item,
+          nLectura: items.length + 1,
+          distanciaAb2: item.a * 1.5,
+          roCalculados: 2 * Math.PI * item.a * item.rMedidas
+        })
+      }
 
-      this.logaritmicRecordBlank.a = ''
-      this.logaritmicRecordBlank.n = ''
-      this.logaritmicRecordBlank.rMedidas = ''
+      item.a = ''
+      item.rMedidas = ''
       this.$refs.a.focus()
     },
   }
@@ -245,6 +327,14 @@ export default {
           border: 1px solid black;
         }
       }
+    }
+  }
+}
+.tabs {
+  .tab {
+    &.tab-active {
+      background-color: #f5f5f5;
+      color: blue;
     }
   }
 }
