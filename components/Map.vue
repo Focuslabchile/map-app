@@ -1,114 +1,117 @@
 <template>
-<article :class="['map', {fullscreen:fullscreen}]">
-  <Modal :open.sync="clearLayers" title="Se eliminaran las capas agregadas">
-    Este paso no es reversible. ¿Está seguro?
-    <template slot="modalFooter">
-      <FormControl class="mb-0">
-        <button class="btn w-10" @click="clearLayers = false">
-          <slot name="modal-footer-btn">
-            No
-          </slot>
-        </button>
-        <button class="btn main w-10" @click="init('clear', {});$toast.success('Las capas se eliminaron correctamente');clearLayers = false">
-          <slot name="modal-footer-btn">
-            Si 
-          </slot>
-        </button>
-      </FormControl>
-    </template>
-  </Modal>
-  <div id="map"></div>
-  <span v-if="fullscreen" @click="menu = !menu" class="mt-1 control block material-icons side-control cursor-pointer">{{!menu ? 'menu' : 'menu_open'}}</span>
-  <div class="map-controls">
-    <span @click="restart()" class="material-icons block control">
-      {{fullscreen ? 'fullscreen_exit' : 'fullscreen'}}
-    </span>
-    <span @click="showProperties = !showProperties" class="material-icons block control mt-2">info</span>
-    <div class="properties-table">
-      <table v-show="showProperties">
-        <tr
-          v-for="(item, index) in Object.entries(properties)"
-          :key="index+'-table-item'"
-        >
-          <template v-if="showItem(item)">
-            <th class="text-left">{{item[0]}}</th>
-            <td><span v-html="tableContent(item[1])"></span></td>
-          </template>
-        </tr>
-      </table>
-    </div>
-  </div>
-  <div class="map-filters">
-    <InputRadio
-      @update="switchStyle"
-      group-name="map_type"
-      :value="mapType"
-      :options="['Mapa', 'Satelite']"
-    />
-  </div>
-  <div :class="['map-info', {open:menu}]">
-    <div class="map-info-title p-3 flex justify-between">
-      Herramientas
-      <div
-       @click="clearLayers = true"
-       v-tippy
-       content="Limpiar capas"
-       class="cursor-pointer material-icons"
-      >layers_clear</div>
-    </div>
-    <div class="map-info-body">
-      <div class="map-info-tabs sticky top-0 secondary">
-        <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
-        <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
-        <div v-if="description" @click="tab = 'description'" :class="['map-info-tabs--item', {active: tab === 'description'}]">Descripcion</div>
-      </div>
-      <div v-show="tab === 'description'" class="pt-3 map-feature-description" v-html="description"></div>
-      <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col pt-3">
-        <div id="info-items-container" class="info-items">
-          <div
-            :id="polygon.id"
-            :class="['info-item p-3', {active:active === polygon.id}]"
-            v-for="(polygon, index) in polygons"
-            :key="index"
+<section>
+  <slot name="description" />
+  <article :class="['map', {fullscreen:fullscreen}]">
+    <Modal :open.sync="clearLayers" title="Se eliminaran las capas agregadas">
+      Este paso no es reversible. ¿Está seguro?
+      <template slot="modalFooter">
+        <FormControl class="mb-0">
+          <button class="btn w-10" @click="clearLayers = false">
+            <slot name="modal-footer-btn">
+              No
+            </slot>
+          </button>
+          <button class="btn main w-10" @click="init('clear', {});$toast.success('Las capas se eliminaron correctamente');clearLayers = false">
+            <slot name="modal-footer-btn">
+              Si 
+            </slot>
+          </button>
+        </FormControl>
+      </template>
+    </Modal>
+    <div id="map"></div>
+    <span v-if="fullscreen" @click="menu = !menu" class="mt-1 control block material-icons side-control cursor-pointer">{{!menu ? 'menu' : 'menu_open'}}</span>
+    <div class="map-controls">
+      <span @click="restart()" class="material-icons block control">
+        {{fullscreen ? 'fullscreen_exit' : 'fullscreen'}}
+      </span>
+      <span @click="showProperties = !showProperties" class="material-icons block control mt-2">info</span>
+      <div class="properties-table">
+        <table v-show="showProperties">
+          <tr
+            v-for="(item, index) in Object.entries(properties)"
+            :key="index+'-table-item'"
           >
-            <div class="flex justify-between items-center">
-
-              <div>
-                <div>
-                  {{polygon.properties.name}}
-                </div>
-                <div>
-                  {{ polygon.properties.calc }}: {{ polygon.properties.value }} {{ polygon.properties.unit }}
-                </div>
-              </div>
-              <div class="icons">
-                <span @click="center(polygon)" class="material-icons cursor-pointer">my_location</span>
-                <span @click="polygon.properties.edit = !polygon.properties.edit" class="material-icons cursor-pointer">edit</span>
-              </div>
-            </div>
-            <div v-if="polygon.properties.edit" class="edit mt-2">
-              <div>id: {{ polygon.id }}</div>
-              <InputText @update="updateLocalStorage" autocomplete="off" class="mb-2" label="Nombre" name="name" :model.sync="polygon.properties.name" />
-              <InputTextarea @update="updateLocalStorage" class="mb-2" label="Descripción" name="description" :model.sync="polygon.properties.description" />
-            </div>
-          </div>
-        </div>
-        <div class="controls flex justify-between p-3">
-          <div @click="$refs.fileElem.click()" class="disabled:opacity-50 cursor-pointer flex items-center">
-            <form>
-              <input type="file" ref="fileElem" style="display:none" @change="handleUpload">
-            </form>
-            <span content="Cargar zonas" v-tippy class="material-icons">upload_file</span>
-          </div>
-          <div content="Descargar zonas" v-tippy @click="download" class="cursor-pointer flex items-center">
-            <span class="material-icons">save</span>
-          </div>
-        </div>
+            <template v-if="showItem(item)">
+              <th class="text-left">{{item[0]}}</th>
+              <td><span v-html="tableContent(item[1])"></span></td>
+            </template>
+          </tr>
+        </table>
       </div>
-      <load-kmz :map="mapbox.map" class="p-3" v-show="tab === 'kmz'" />
     </div>
-  </div>
-</article>
+    <div class="map-filters">
+      <InputRadio
+        @update="switchStyle"
+        group-name="map_type"
+        :value="mapType"
+        :options="['Mapa', 'Satelite']"
+      />
+    </div>
+    <div :class="['map-info', {open:menu}]">
+      <div class="map-info-title p-3 flex justify-between">
+        Herramientas
+        <div
+         @click="clearLayers = true"
+         v-tippy
+         content="Limpiar capas"
+         class="cursor-pointer material-icons"
+        >layers_clear</div>
+      </div>
+      <div class="map-info-body">
+        <div class="map-info-tabs sticky top-0 secondary">
+          <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
+          <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
+          <div v-if="description" @click="tab = 'description'" :class="['map-info-tabs--item', {active: tab === 'description'}]">Descripcion</div>
+        </div>
+        <div v-show="tab === 'description'" class="pt-3 map-feature-description" v-html="description"></div>
+        <div v-show="tab === 'mis-zonas'" class="map-info-body flex justify-between flex-col pt-3">
+          <div id="info-items-container" class="info-items">
+            <div
+              :id="polygon.id"
+              :class="['info-item p-3', {active:active === polygon.id}]"
+              v-for="(polygon, index) in polygons"
+              :key="index"
+            >
+              <div class="flex justify-between items-center">
+  
+                <div>
+                  <div>
+                    {{polygon.properties.name}}
+                  </div>
+                  <div>
+                    {{ polygon.properties.calc }}: {{ polygon.properties.value }} {{ polygon.properties.unit }}
+                  </div>
+                </div>
+                <div class="icons">
+                  <span @click="center(polygon)" class="material-icons cursor-pointer">my_location</span>
+                  <span @click="polygon.properties.edit = !polygon.properties.edit" class="material-icons cursor-pointer">edit</span>
+                </div>
+              </div>
+              <div v-if="polygon.properties.edit" class="edit mt-2">
+                <div>id: {{ polygon.id }}</div>
+                <InputText @update="updateLocalStorage" autocomplete="off" class="mb-2" label="Nombre" name="name" :model.sync="polygon.properties.name" />
+                <InputTextarea @update="updateLocalStorage" class="mb-2" label="Descripción" name="description" :model.sync="polygon.properties.description" />
+              </div>
+            </div>
+          </div>
+          <div class="controls flex justify-between p-3">
+            <div @click="$refs.fileElem.click()" class="disabled:opacity-50 cursor-pointer flex items-center">
+              <form>
+                <input type="file" ref="fileElem" style="display:none" @change="handleUpload">
+              </form>
+              <span content="Cargar zonas" v-tippy class="material-icons">upload_file</span>
+            </div>
+            <div content="Descargar zonas" v-tippy @click="download" class="cursor-pointer flex items-center">
+              <span class="material-icons">save</span>
+            </div>
+          </div>
+        </div>
+        <load-kmz :map="mapbox.map" class="p-3" v-show="tab === 'kmz'" />
+      </div>
+    </div>
+  </article>
+</section>
 </template>
 <script>
 import mapboxgl from 'mapbox-gl'
