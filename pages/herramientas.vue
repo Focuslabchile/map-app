@@ -43,11 +43,29 @@
             </tr>
             <tr v-for="(item, index) in schlumbergerRecords" :key="index+'-table-item'">
               <td>{{ item.nLectura }}</td>
-              <td>{{ item.distanciaAb2 }}</td>
-              <td>{{ item.a }}</td>
-              <td>{{ item.d }}</td>
-              <td>{{ item.rMedidas }}</td>
-              <td>{{ item.roCalculados.toFixed(3) }}</td>
+              <td>{{ schlumbergerGetAb(item) }}</td>
+              <td>
+                <template v-if="!schlumbergerEditList.includes(index)">
+                  {{ item.a }}
+                </template>
+                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecords[index].a">
+              </td>
+              <td>
+                <template v-if="!schlumbergerEditList.includes(index)">
+                  {{ item.d }}
+                </template>
+                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecords[index].d">
+              </td>
+              <td>
+                <template v-if="!schlumbergerEditList.includes(index)">
+                  {{ item.rMedidas }}
+                </template>
+                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecords[index].rMedidas">
+              </td>
+              <td>{{ schlumbergerGetRoCalculados(item).toFixed(3) }}</td>
+              <td>
+                <button @click="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1">editar</button>
+              </td>
             </tr>
             <tr>
               <td></td>
@@ -67,9 +85,20 @@
             </tr>
             <tr v-for="(item, index) in wennerRecords" :key="index+'-table-item'">
               <td>{{ item.nLectura }}</td>
-              <td>{{ item.a }}</td>
-              <td>{{ item.rMedidas }}</td>
-              <td>{{ item.roCalculados.toFixed(3) }}</td>
+              <td>
+                <template v-if="!wennerEditList.includes(index)">
+                  {{ item.a }}
+                </template>
+                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="wennerRecords[index].a">
+              </td>
+              <td>
+                <template v-if="!wennerEditList.includes(index)">
+                  {{ item.rMedidas }}
+                </template>
+                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="wennerRecords[index].rMedidas">
+              </td>
+              <td>{{ wennerGetRoCalculados(item).toFixed(3) }}</td>
+              <td><button @click="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1">editar</button></td>
             </tr>
             <tr>
               <td></td>
@@ -171,6 +200,8 @@ export default {
   data() {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     return {
+      schlumbergerEditList: [],
+      wennerEditList: [],
       coordinates: [],
       showChart: false,
       chartGenerate: false,
@@ -256,6 +287,24 @@ export default {
     )
   },
   methods: {
+    schlumbergerGetAb(item) {
+      return (item.a / 2) + item.d
+    },
+    schlumbergerGetRoCalculados(item) {
+      return Math.PI * item.d * (item.d + 1) * item.a * item.rMedidas
+    },
+    wennerGetRoCalculados(item) {
+      return 2 * Math.PI * item.a * item.rMedidas
+    },
+    editRecord(index) {
+      const item = this.formulaTab === 'Schlumberger' ? this.schlumbergerEditList : this.wennerEditList
+      if(item.includes(index)) {
+        item.splice(item.indexOf(index), 1)
+      } else {
+        item.push(index)
+      }
+      return
+    },
     drawMap() {
       mapboxgl.accessToken = this.$config.mapboxApiUrl
       setTimeout(() => {
@@ -314,6 +363,18 @@ export default {
     },
     drawChart() {
       this.showChart = true
+
+      if(this.formulaTab === 'Schlumberger') {
+        this.schlumbergerRecords.forEach(item => {
+          item.distanciaAb2 = this.schlumbergerGetAb(item)
+          item.roCalculados = this.schlumbergerGetRoCalculados(item)
+        })
+      } else {
+        this.wennerRecords.forEach(item => {
+          item.roCalculados = this.wennerGetRoCalculados(item)
+          item.distanciaAb2 = item.a * 1.5
+        })
+      }
       const data = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
       const chartData = data
         .map(item => {
@@ -364,16 +425,12 @@ export default {
         this.schlumbergerRecords.push({
           ...item,
           nLectura: items.length + 1,
-          distanciaAb2: (item.a / 2) + item.d,
-          roCalculados: Math.PI * item.d * (item.d + 1) * item.a * item.rMedidas
         })
         item.d = ''
       } else {
         this.wennerRecords.push({
           ...item,
           nLectura: items.length + 1,
-          distanciaAb2: item.a * 1.5,
-          roCalculados: 2 * Math.PI * item.a * item.rMedidas
         })
       }
 
