@@ -498,7 +498,13 @@ export default {
       const val3 = this.schlumbergerGetRoCalculados(item)
       const val4 = Math.PI * r * d * ((ab**2 / d**2) - (1 / 4))
 
-      return val1 === val2 && val2 === val3 && val3 === val4
+      const accuarcy = 0.002 // 0.2%
+      const threshold = 1 + accuarcy
+
+      const minValue = Math.min(val1, val2, val3, val4)
+      const maxValue = Math.max(val1, val2, val3, val4)
+
+      return maxValue / minValue <= threshold
     },
     wennerGetRoCalculados(item) {
       const a = Number(item.a)
