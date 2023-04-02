@@ -61,7 +61,7 @@
           <table v-if="formulaTab=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
             <tr>
               <th>Nº<br>Lecturas</th>
-              <th>A</th>
+              <th>a</th>
               <th>R<br>Medidas</th>
               <th>Ro<br>Calculados</th>
             </tr>
@@ -161,6 +161,8 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import MapboxDraw from "@mapbox/mapbox-gl-draw"
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 export default {
   name: 'Herramientas',
   components: {
@@ -169,6 +171,7 @@ export default {
   data() {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     return {
+      coordinates: [],
       sendChartForm: false,
       chartGenerate: false,
       toolsTab: 'GIS Chile',
@@ -214,17 +217,42 @@ export default {
           zoom: 3,
           center: [-73.17561116302086, -39.27770932403337],
         });
-          
+        
+        map.addControl(new mapboxgl.AttributionControl({
+            compact: false,
+            customAttribution: 'Desarrollado por Sebastian Vega'
+        }))
+
         // Add the control to the map.
         map.addControl(
           new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             placeholder: 'Buscar dirección',
-            language: 'es-CL',
+            language: 'es',
+            getItemValue: (item) => {
+              this.setCoordinates(item)
+              return item.place_name
+            },
             mapboxgl
           })
         );
+        map.addControl(new MapboxDraw({
+          displayControlsDefault: false,
+          controls: {
+            trash: true,
+            point: true,
+          },
+          defaultMode: 'simple_select'
+        }))
+
+        map.on('draw.create', (el) => {
+          this.coordinates = el.features[0].geometry.coordinates
+        })
+
       }, 100)
+    },
+    setCoordinates(item) {
+      this.coordinates = item.center
     },
     tableToCanvas() {
     },
@@ -357,6 +385,14 @@ export default {
 }
 </script>
 <style lang="scss">
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+  &:nth-child(2) {
+    display: none;
+  }
+  .mapbox-improve-map {
+    display: none;
+  }
+}
 .table {
   &.table-logaritmic {
     th {
