@@ -3,6 +3,7 @@
     <h2>Herramientas</h2>
     <div class="tabs">
       <div :class="['tab h3 tab-big', {'tab-active': toolsTab=='log-chart'}]">gráfico logaritmico</div>
+      <div :class="['tab h3 tab-big', {'tab-active': toolsTab=='log-chart'}]">GIS Chile</div>
       <div class="tab-content">
         <p class="mb-16">Con herramienta podras crear tablas y gráficos para el estudio de tierras usando los métodos de Wenner y Schlumberger. Los usuarios pueden ingresar los datos de resistencia eléctrica y profundidad, y exportar los resultados en un gráfico en escala logarítmica y formato PDF.</p>
         <div class="table-container flex">

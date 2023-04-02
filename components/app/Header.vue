@@ -20,9 +20,9 @@
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link @click.native="menu = false" to="/mapa">
+              <nuxt-link @click.native="menu = false" to="/gischile">
                 <span class="material-icons">public</span>
-                <span class="desktop">Mapa</span>
+                <span class="desktop">GIS Chile</span>
               </nuxt-link>
             </li>
             <li>
