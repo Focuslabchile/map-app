@@ -143,7 +143,7 @@
         <table v-if="formulaTab=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
           <tr>
             <th>Nº<br>Lecturas</th>
-            <th>a</th>
+            <th>A</th>
             <th>R<br>Medidas</th>
             <th>Ro<br>Calculados</th>
           </tr>
@@ -229,8 +229,14 @@
         class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
       >dummie data
       </span>
+      <span
+        v-if="formulaTab === 'Wenner'"
+        @click="wennerRecords = wennerDataDummie"
+        class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
+      >dummie data
+      </span>
     </div>
-    <div v-if="showChart" class="my-4">
+    <div v-if="showChart && formulaTab === 'Schlumberger'" class="my-4">
       <span class="text-red-600" v-if="schlumbergerRecords.find(el => !validationRoCalculados(el))">
         Los datos ingresados son inconsistentes por lo que el gráfico no es válido.
         <br>
@@ -355,6 +361,22 @@ export default {
       },
       wennerRecords: [],
       schlumbergerRecords: [],
+      wennerDataDummie: [
+        { a: 0.6, rMedidas:133.7 },
+        { a: 0.8, rMedidas:158.9 },
+        { a: 1.0, rMedidas:71.3 },
+        { a: 1.6, rMedidas:19.5 },
+        { a: 2.0, rMedidas:11.99 },
+        { a: 2.5, rMedidas:8.02 },
+        { a: 3.0, rMedidas:5.58 },
+        { a: 4.0, rMedidas:4.09 },
+        { a: 5.0, rMedidas:3.46 },
+        { a: 7.0, rMedidas:3.62 },
+        { a: 9.0, rMedidas:3.09 },
+        { a: 11.0, rMedidas:3.88 },
+        { a: 13.0, rMedidas:2.3 },
+        { a: 16.0, rMedidas:1.73 },
+      ],
       dataDummie: [
         {nLectura:	1	,distanciaAb2:1, a:1, d:0.5, rMedidas:27.7, roCalculados:65.2646625},
         {nLectura:	2	,distanciaAb2:1.5, a:1, d:1, rMedidas:15.97, roCalculados:100.33951},
@@ -390,7 +412,7 @@ export default {
                 display: true,
                 text: 'DISTANCIA AB/2'
               },
-              min: 1,
+              min: 0,
               max: 100,
               ticks: {
                 callback: function(value, index, values) {
@@ -405,8 +427,7 @@ export default {
                 text: 'RESISTIVIDAD (Ωm)'
               },
               min: 0,
-              // max: Math.pow(10, Math.ceil(Math.log10(maxY))),
-              max: 1000,
+              max: 100,
               ticks: {
                 callback: function(value, index, values) {
                   return Number(value.toString()); // convert to number
@@ -420,7 +441,7 @@ export default {
   },
   methods: {
     sendDocuments(e) {
-      console.log()
+      console.log(e.target)
       this.sendDocumentsData.emailEmpty = ''
       this.sendDocumentsData.directionEmpty = ''
       this.$nextTick(() => {
@@ -436,13 +457,15 @@ export default {
       }
       this.sendDocumentsData.emailEmpty = ''
       this.sendDocumentsData.directionEmpty = ''
-      return
-      this.$axios.post('api/contacts', {
+      this.$axios.post('api/logarithmic-charts', {
         data: {
-          name: e.target.name?.value,
-          contact: e.target.contact?.value,
-          message: e.target.message?.value,
-          ...this.contactData
+          email: e.target.email?.value,
+          latitud: this.coordinates[0],
+          longitud: this.coordinates[1],
+          data: {
+            schlumberger: this.schlumbergerRecords,
+            wenner: this.wennerRecords
+          },
         }
       })
         .then(response => {
@@ -450,7 +473,7 @@ export default {
           this.contactData.send = true
         })
         .catch(_ => {
-          this.res = response.data
+          this.res = response?.data
           this.contactData.error = true
         })
     },
@@ -460,26 +483,27 @@ export default {
     schlumbergerGetRoCalculados(item) {
       const d = Number(item.d)
       const a = Number(item.a)
-      const rMedidas = Number(item.rMedidas)
-      return (Math.PI * a * (a + d) * rMedidas)/d
+      const r = Number(item.rMedidas)
+      return (Math.PI * a * (a + d) * r)/d
     },
     validationRoCalculados(item) {
+      if (this.formulaTab === 'Wenner') return true
       const d = Number(item.d)
       const a = Number(item.a)
-      const rMedidas = Number(item.rMedidas)
+      const r = Number(item.rMedidas)
       const ab = this.schlumbergerGetAb(item)
 
-      const val1 = Math.PI * a * (a + 1) * d * rMedidas
-      const val2 = (2 * Math.PI * rMedidas) * (d / 2) * (ab**2 - (1 / 4))
+      const val1 = Math.PI * a * (a + 1) * d * r
+      const val2 = (2 * Math.PI * r) * (d / 2) * (ab**2 - (1 / 4))
       const val3 = this.schlumbergerGetRoCalculados(item)
-      const val4 = Math.PI * rMedidas * d * ((ab**2 / d**2) - (1 / 4))
+      const val4 = Math.PI * r * d * ((ab**2 / d**2) - (1 / 4))
 
       return val1 === val2 && val2 === val3 && val3 === val4
     },
     wennerGetRoCalculados(item) {
       const a = Number(item.a)
       const rMedidas = Number(item.rMedidas)
-      return 2 * Math.PI * (a*3) * rMedidas
+      return 2 * Math.PI * (a) * rMedidas
     },
     editRecord(index) {
       const item = this.formulaTab === 'Schlumberger' ? this.schlumbergerEditList : this.wennerEditList
@@ -495,7 +519,7 @@ export default {
       setTimeout(() => {
         const map = new mapboxgl.Map({
           container: 'map',
-          style: 'mapbox://styles/mapbox/light-v10',
+          style: 'mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f',
           zoom: 3,
           center: [-73.17561116302086, -39.27770932403337],
         });
@@ -574,6 +598,7 @@ export default {
       }, 0)
       
       this.chart.data.datasets[0].data = chartData
+      this.chart.options.scales.y.min = 0
       this.chart.options.scales.y.max = Math.pow(10, Math.ceil(Math.log10(maxY)))
       this.chart.update()
 
