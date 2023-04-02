@@ -249,25 +249,28 @@
       <canvas id="logaritmic_chart"></canvas>
     </div>
     <Modal :open.sync="chartGenerate" title="Enviar documentos">
-      <form>
+      <form ref="senddocumentform" @submit.prevent="sendDocuments">
         <div class="flex space-x-2 justify-between">
           <div class="grow">
             <FormControl name="Nombre:">
-              <InputText name="name" />
+              <InputText name="name" placeholder="Juan Perez" />
             </FormControl>
-            <FormControl name="E-mail:" :required="true">
-              <InputText name="email" />
+            <FormControl
+              name="E-mail:"
+              :required="true"
+              :alert="sendDocumentsData.emailEmpty"
+              alert-color="text-red-600"
+              alert-position="top"
+            >
+              <InputText name="email" placeholder="juan.perez@email.com" />
             </FormControl>
             <FormControl name="Nombre del proyecto:">
-              <InputText name="name" placeholder="Medición para Engie Chile" />
+              <InputText name="project_name" placeholder="Medición para Engie Chile" />
             </FormControl>
           </div>
           <div class="grow">
-            <FormControl name="Nombre del proyecto:">
-              <InputText name="name" placeholder="Medición para Engie Chile" />
-            </FormControl>
             <FormControl name="Fecha:">
-              <InputText name="name" placeholder="20-02-2023" />
+              <InputText name="name" placeholder="20-02-2023"/>
             </FormControl>
             <FormControl name="Temperatura:">
               <InputText name="name" placeholder="25" />
@@ -282,9 +285,17 @@
             </FormControl>
           </div>
         </div>
-        <FormControl name="Dirección:" description="Lugar donde se realizaron las mediciones" :required="true">
+        <FormControl
+          name="Dirección:"
+          alert-color="text-red-600"
+          alert-position="top"
+          :alert="sendDocumentsData.directionEmpty"
+          description="Lugar donde se realizaron las mediciones"
+          :required="true"
+        >
           <div id="map"></div>
         </FormControl>
+        <button ref="submitform" class="hidden" type="submit"></button>
       </form>
       <template slot="modalFooter">
         <FormControl class="mb-0">
@@ -293,7 +304,7 @@
               cancelar
             </slot>
           </button>
-          <button class="btn main" @click="drawChart()">
+          <button class="btn main" @click="$refs.submitform.click()">
             <slot name="modal-footer-btn">
               Enviar documentos
             </slot>
@@ -318,6 +329,10 @@ export default {
   },
   data() {
     return {
+      sendDocumentsData: {
+        emailEmpty: '',
+        directionEmpty: ''
+      },
       schlumbergerEditList: [],
       wennerEditList: [],
       coordinates: [],
@@ -404,6 +419,41 @@ export default {
     )
   },
   methods: {
+    sendDocuments(e) {
+      console.log()
+      this.sendDocumentsData.emailEmpty = ''
+      this.sendDocumentsData.directionEmpty = ''
+      this.$nextTick(() => {
+        if(!e.target.email?.value.length) {
+          this.sendDocumentsData.emailEmpty = 'Este campo es obligatorio'
+        }
+        if(!this.coordinates.length) {
+          this.sendDocumentsData.directionEmpty = 'Este campo es obligatorio'
+        }
+      })
+      if(!e.target.email?.value.length || !this.coordinates.length) {
+        return
+      }
+      this.sendDocumentsData.emailEmpty = ''
+      this.sendDocumentsData.directionEmpty = ''
+      return
+      this.$axios.post('api/contacts', {
+        data: {
+          name: e.target.name?.value,
+          contact: e.target.contact?.value,
+          message: e.target.message?.value,
+          ...this.contactData
+        }
+      })
+        .then(response => {
+          this.res = response.data
+          this.contactData.send = true
+        })
+        .catch(_ => {
+          this.res = response.data
+          this.contactData.error = true
+        })
+    },
     schlumbergerGetAb(item) {
       return (Number(item.d) / 2) + Number(item.a)
     },

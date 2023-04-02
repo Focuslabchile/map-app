@@ -1,28 +1,28 @@
 export default ({ app }, inject) => {
   const toast = {
     timeout: null,
-    success: (message, duration = 10000) => {
+    success: (message, duration = 3000) => {
       app.$toast.open({
         message,
         type: 'success',
         duration: duration
       })
     },
-    danger: (message, duration = 10000) => {
+    danger: (message, duration = 3000) => {
       app.$toast.open({
         message,
         type: 'danger',
         duration: duration
       })
     },
-    warning: (message, duration = 10000) => {
+    warning: (message, duration = 3000) => {
       app.$toast.open({
         message,
         type: 'warning',
         duration: duration
       })
     },
-    waiting: (message, duration = 10000) => {
+    waiting: (message, duration = 3000) => {
       app.$toast.open({
         message,
         type: 'waiting',

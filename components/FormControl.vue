@@ -1,15 +1,24 @@
 <template>
   <div :class="['form-control', {'animate__animated animate__headShake':shake}]">
     <label v-if="name && name.length" :for="name">{{name}}</label>
+    <small v-if="alertPosition === 'top'" :class="['alert', alertColor]">{{ alert }}</small>
     <slot />
     <small class="description" v-if="description">{{description}}</small>
-    <br v-if="alert">
-    <small v-if="alert" class="alert">{{alert}}</small>
+    <br v-if="alert && description.length && alertPosition === 'bottom'">
+    <small v-if="alert && alertPosition === 'bottom'" :class="['alert', alertColor]">{{alert}}</small>
   </div>
 </template>
 <script>
 export default {
   props: {
+    alertColor: {
+      type: String,
+      default: ''
+    },
+    alertPosition: {
+      type: String,
+      default: 'bottom'
+    },
     alert: {
       type: String,
       default: ''
@@ -48,7 +57,7 @@ export default {
   }
   label {
     font-weight: bold;
-    display: block;
+    display: inline-block;
   }
   .description {
     font-weight: 300;

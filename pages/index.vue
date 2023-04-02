@@ -191,7 +191,6 @@ export default {
         return
       }
       this.contactData.contactEmpty = ''
-      console.log('test...')
       this.$axios.post('api/contacts', {
         data: {
           name: e.target.name?.value,
@@ -209,8 +208,6 @@ export default {
           this.contactData.error = true
         })
     }
-  },
-  created() {
   }
 }
 </script>
