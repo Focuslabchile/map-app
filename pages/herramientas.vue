@@ -11,7 +11,7 @@
         />
       </div>
       <div class="tab-content">
-        <p class="my-8">Con herramienta podras crear tablas y gráficos para el estudio de tierras usando los métodos de Wenner y Schlumberger. Los usuarios pueden ingresar los datos de resistencia eléctrica y profundidad, y exportar los resultados en un gráfico en escala logarítmica y formato PDF.</p>
+        <p class="my-8">Con herramienta podras crear tablas y gráficos para el estudio de tierras usando los métodos de <strong>Wenner</strong> y <strong>Schlumberger</strong>. Los usuarios pueden ingresar los datos de resistencia eléctrica y profundidad, y exportar los resultados en un gráfico en escala logarítmica y formato PDF.</p>
         <div class="filters mb-4">
           <InputRadio
             @update="(val) => formulaTab = val"
@@ -30,102 +30,204 @@
           </p>
           <img src="/wenner.png" alt="Wenner" />
         </div>
-
-        <div class="table-container flex">
-          <table v-if="formulaTab === 'Schlumberger'" id="schlumberger-table" class="table table-logaritmic">
-            <tr>
-              <th>Nº<br>Lecturas</th>
-              <th>DISTANCIA<br>AB/2</th>
-              <th>a</th>
-              <th>d</th>
-              <th>R<br>Medidas</th>
-              <th>Ro<br>Calculados</th>
-            </tr>
-            <tr v-for="(item, index) in schlumbergerRecords" :key="index+'-table-item'">
-              <td>{{ item.nLectura }}</td>
-              <td>{{ schlumbergerGetAb(item) }}</td>
-              <td>
-                <template v-if="!schlumbergerEditList.includes(index)">
-                  {{ item.a }}
-                </template>
-                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecords[index].a">
-              </td>
-              <td>
-                <template v-if="!schlumbergerEditList.includes(index)">
-                  {{ item.d }}
-                </template>
-                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecords[index].d">
-              </td>
-              <td>
-                <template v-if="!schlumbergerEditList.includes(index)">
-                  {{ item.rMedidas }}
-                </template>
-                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecords[index].rMedidas">
-              </td>
-              <td>{{ schlumbergerGetRoCalculados(item).toFixed(3) }}</td>
-              <td>
-                <button @click="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1">editar</button>
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td><input ref="a" @keypress.enter="addRecord(schlumbergerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecordBlank.a"></td>
-              <td><input @keypress.enter="addRecord(schlumbergerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecordBlank.d"></td>
-              <td><input @keypress.enter="addRecord(schlumbergerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="schlumbergerRecordBlank.rMedidas"></td>
-              <td></td>
-            </tr>
-          </table>
-          <table v-if="formulaTab=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
-            <tr>
-              <th>Nº<br>Lecturas</th>
-              <th>a</th>
-              <th>R<br>Medidas</th>
-              <th>Ro<br>Calculados</th>
-            </tr>
-            <tr v-for="(item, index) in wennerRecords" :key="index+'-table-item'">
-              <td>{{ item.nLectura }}</td>
-              <td>
-                <template v-if="!wennerEditList.includes(index)">
-                  {{ item.a }}
-                </template>
-                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="wennerRecords[index].a">
-              </td>
-              <td>
-                <template v-if="!wennerEditList.includes(index)">
-                  {{ item.rMedidas }}
-                </template>
-                <input v-else @keypress.enter="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="wennerRecords[index].rMedidas">
-              </td>
-              <td>{{ wennerGetRoCalculados(item).toFixed(3) }}</td>
-              <td><button @click="editRecord(index)" class="rounded-lg border-1 border-gray-500 text-center p-1">editar</button></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td><input ref="a" @keypress.enter="addRecord(wennerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="wennerRecordBlank.a"></td>
-              <td><input @keypress.enter="addRecord(wennerRecordBlank)" class="rounded-lg border-1 border-gray-500 text-center p-1" v-model="wennerRecordBlank.rMedidas"></td>
-              <td></td>
-            </tr>
-          </table>
-
-          <div class="flex justify-between flex-col-reverse flex-grow max-h-full text-center max-w-xs">
-            <div @click="addRecord()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear registro</div>
-            <div v-if="showChart"  @click="sendChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Enviar</div>
-            <div v-if="schlumbergerRecords.length > 1 || wennerRecords.length > 1" @click="drawChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear gráfico</div>
+        <div class="flex">
+          <div class="table-container grow-0">
+            <div class="table-controls mb-4">
+              
+              <span
+                @click="schlumbergerRecords = []; wennerRecords = []; showChart= false"
+                class="rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
+              >
+                Limpiar datos
+                <span class="material-icons align-bottom">
+                  cleaning_services
+                </span>
+              </span>
+              <span
+                v-if="schlumbergerRecords.length > 1 || wennerRecords.length > 1"
+                @click="drawChart()"
+                class="rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
+              >
+                Visualizar gráfico
+                <span class="material-icons align-bottom">
+                  timeline
+                </span>
+              </span>
+            </div>
+            <table v-if="formulaTab === 'Schlumberger'" id="schlumberger-table" class="table table-logaritmic">
+              <tr>
+                <th>Nº<br>Lecturas</th>
+                <th>DISTANCIA<br>AB/2</th>
+                <th>a</th>
+                <th>d</th>
+                <th>R<br>Medidas</th>
+                <th>Ro<br>Calculados</th>
+              </tr>
+              <tr v-for="(item, index) in schlumbergerRecords" :key="index+'-table-item'">
+                <td>{{ item.nLectura }}</td>
+                <td>{{ schlumbergerGetAb(item) }}</td>
+                <td>
+                  <template v-if="!schlumbergerEditList.includes(index)">
+                    {{ item.a }}
+                  </template>
+                  <input
+                    v-else
+                    @keypress.enter="editRecord(index)"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="schlumbergerRecords[index].a"
+                  >
+                </td>
+                <td>
+                  <template v-if="!schlumbergerEditList.includes(index)">
+                    {{ item.d }}
+                  </template>
+                  <input
+                    v-else
+                    @keypress.enter="editRecord(index)"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="schlumbergerRecords[index].d"
+                  >
+                </td>
+                <td>
+                  <template v-if="!schlumbergerEditList.includes(index)">
+                    {{ item.rMedidas }}
+                  </template>
+                  <input
+                    v-else
+                    @keypress.enter="editRecord(index)"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="schlumbergerRecords[index].rMedidas"
+                  >
+                </td>
+                <td>{{ schlumbergerGetRoCalculados(item).toFixed(3) }}</td>
+                <td>
+                  <button
+                    @click="editRecord(index)"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1 material-icons"
+                  >
+                    {{ schlumbergerEditList.includes(index) ? 'edit_off' : 'edit' }}
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td>
+                  <input
+                    ref="a"
+                    @keypress.enter="addRecord()"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="schlumbergerRecordBlank.a"
+                  >
+                </td>
+                <td>
+                  <input
+                    @keypress.enter="addRecord()"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="schlumbergerRecordBlank.d"
+                  >
+                </td>
+                <td>
+                  <input
+                    @keypress.enter="addRecord()"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="schlumbergerRecordBlank.rMedidas"
+                  >
+                </td>
+                <td></td>
+              </tr>
+            </table>
+            <table v-if="formulaTab=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
+              <tr>
+                <th>Nº<br>Lecturas</th>
+                <th>a</th>
+                <th>R<br>Medidas</th>
+                <th>Ro<br>Calculados</th>
+              </tr>
+              <tr v-for="(item, index) in wennerRecords" :key="index+'-table-item'">
+                <td>{{ item.nLectura }}</td>
+                <td>
+                  <template v-if="!wennerEditList.includes(index)">
+                    {{ item.a }}
+                  </template>
+                  <input
+                    v-else
+                    @keypress.enter="editRecord(index)"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="wennerRecords[index].a"
+                  >
+                </td>
+                <td>
+                  <template v-if="!wennerEditList.includes(index)">
+                    {{ item.rMedidas }}
+                  </template>
+                  <input
+                    v-else
+                    @keypress.enter="editRecord(index)"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="wennerRecords[index].rMedidas"
+                  >
+                </td>
+                <td>{{ wennerGetRoCalculados(item).toFixed(3) }}</td>
+                <td>
+                  <button
+                    @click="editRecord(index)"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  >editar
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <input
+                    ref="a"
+                    @keypress.enter="addRecord()"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="wennerRecordBlank.a"
+                  >
+                </td>
+                <td>
+                  <input
+                    @keypress.enter="addRecord()"
+                    class="rounded-lg border-1 border-gray-500 text-center p-1"
+                    v-model="wennerRecordBlank.rMedidas"
+                  >
+                </td>
+                <td></td>
+              </tr>
+            </table>
           </div>
         </div>
         <div class="mt-4">
-          <span @click="downloadChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
-            downloadChart
+          <span
+            v-if="showChart"
+            @click="sendChart()"
+            class="rounded-lg border-2 border-gray-500 p-1 cursor-pointer items-center"
+          >
+            Enviar documentos
+            <span class="material-icons align-bottom">
+              email
+            </span>
           </span>
-          <span v-if="formulaTab === 'Schlumberger'" @click="schlumbergerRecords = dataDummie" class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
-            dummie data
+          <span
+            @click="downloadChart()"
+            class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
+          >downloadChart
           </span>
-          <span @click="schlumbergerRecords = []; wennerRecords = []; showChart= false" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">
-            limpiar datos
+          <span
+            v-if="formulaTab === 'Schlumberger'"
+            @click="schlumbergerRecords = dataDummie"
+            class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
+          >dummie data
           </span>
         </div>
-        <div v-show="showChart" class="mt-8" style="width: 70%;"><canvas id="logaritmic_chart"></canvas></div>
+        <div
+          v-show="showChart"
+          class="mt-8"
+        >
+          <canvas id="logaritmic_chart"></canvas>
+        </div>
         <Modal :open.sync="chartGenerate" title="Enviar documentos">
           <form>
             <div class="flex space-x-2 justify-between">
@@ -288,13 +390,18 @@ export default {
   },
   methods: {
     schlumbergerGetAb(item) {
-      return (item.a / 2) + item.d
+      return (item.a / 2) + Number(item.d)
     },
     schlumbergerGetRoCalculados(item) {
-      return Math.PI * item.d * (item.d + 1) * item.a * item.rMedidas
+      const d = Number(item.d)
+      const a = Number(item.a)
+      const rMedidas = Number(item.rMedidas)
+      return Math.PI * d * (d + 1) * a * rMedidas
     },
     wennerGetRoCalculados(item) {
-      return 2 * Math.PI * item.a * item.rMedidas
+      const a = Number(item.a)
+      const rMedidas = Number(item.rMedidas)
+      return 2 * Math.PI * a * rMedidas
     },
     editRecord(index) {
       const item = this.formulaTab === 'Schlumberger' ? this.schlumbergerEditList : this.wennerEditList
