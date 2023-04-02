@@ -81,7 +81,8 @@
 
           <div class="flex justify-between flex-col-reverse flex-grow max-h-full text-center max-w-xs">
             <div @click="addRecord()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear registro</div>
-            <div v-if="schlumbergerRecords.length > 1 || wennerRecords.length > 1" @click="makeChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear gráfico</div>
+            <div v-if="sendChartForm"  @click="sendChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Enviar</div>
+            <div v-if="schlumbergerRecords.length > 1 || wennerRecords.length > 1" @click="drawChart()" class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer">Crear gráfico</div>
           </div>
         </div>
         <div class="mt-4">
@@ -96,16 +97,42 @@
           </span>
         </div>
         <div style="width: 70%;"><canvas id="logaritmic_chart"></canvas></div>
-        <Modal :open.sync="chartGenerate" title="Generar gráfico">
+        <Modal :open.sync="chartGenerate" title="Enviar documentos">
           <form>
-            <FormControl name="Nombre:">
-              <InputText name="name" />
-            </FormControl>
-            <FormControl name="E-mail:">
-              <InputText name="email" />
-            </FormControl>
-            <FormControl name="Dirección:" description="lugar donde se realizo el estudio">
-              <InputText name="password" />
+            <div class="flex space-x-2 justify-between">
+              <div class="grow">
+                <FormControl name="Nombre:">
+                  <InputText name="name" />
+                </FormControl>
+                <FormControl name="E-mail:" :required="true">
+                  <InputText name="email" />
+                </FormControl>
+                <FormControl name="Nombre del proyecto:">
+                  <InputText name="name" placeholder="Medición para Engie Chile" />
+                </FormControl>
+              </div>
+              <div class="grow">
+                <FormControl name="Nombre del proyecto:">
+                  <InputText name="name" placeholder="Medición para Engie Chile" />
+                </FormControl>
+                <FormControl name="Fecha:">
+                  <InputText name="name" placeholder="20-02-2023" />
+                </FormControl>
+                <FormControl name="Temperatura:">
+                  <InputText name="name" placeholder="25" />
+                </FormControl>
+              </div>
+              <div class="grow">
+                <FormControl name="Clima:">
+                  <InputText name="name" placeholder="Lluvioso" />
+                </FormControl>
+                <FormControl name="Sondeador:">
+                  <InputText name="name" placeholder="Quien que realizo el estudio" />
+                </FormControl>
+              </div>
+            </div>
+            <FormControl name="Dirección:" description="Lugar donde se realizaron las mediciones" :required="true">
+              <div id="map"></div>
             </FormControl>
           </form>
           <template slot="modalFooter">
@@ -117,7 +144,7 @@
               </button>
               <button class="btn main" @click="drawChart()">
                 <slot name="modal-footer-btn">
-                  Generar gráfico
+                  Enviar documentos
                 </slot>
               </button>
             </FormControl>
@@ -130,13 +157,19 @@
 
 <script>
 import Chart from 'chart.js/auto'
+import mapboxgl from 'mapbox-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 export default {
   name: 'Herramientas',
   components: {
     Chart
   },
   data() {
+    const MAPBOX_API_URL = this.$config.mapboxApiUrl
     return {
+      sendChartForm: false,
       chartGenerate: false,
       toolsTab: 'GIS Chile',
       formulaTab: 'Schlumberger',
@@ -172,8 +205,28 @@ export default {
     }
   },
   methods: {
+    drawMap() {
+      mapboxgl.accessToken = this.$config.mapboxApiUrl
+      setTimeout(() => {
+        const map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/light-v10',
+          zoom: 3,
+          center: [-73.17561116302086, -39.27770932403337],
+        });
+          
+        // Add the control to the map.
+        map.addControl(
+          new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            placeholder: 'Buscar dirección',
+            language: 'es-CL',
+            mapboxgl
+          })
+        );
+      }, 100)
+    },
     tableToCanvas() {
-      
     },
     downloadChart() {
       var canvas = document.getElementById('logaritmic_chart');
@@ -184,10 +237,8 @@ export default {
       link.click();
     },
     drawChart() {
-      this.chartGenerate = false
-      console.log(this.wennerRecords)
+      this.sendChartForm = true
       const data = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
-      console.log(data)
       const chartData = data
         .map(item => {
           return {
@@ -254,24 +305,20 @@ export default {
 
       this.$toast.success('Gráfico generado correctamente');
     },
-    makeChart() {
+    sendChart() {
       this.chartGenerate = true
+      this.drawMap()
     },
     addRecord() {
       const item = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecordBlank : this.wennerRecordBlank
       const items = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
 
-      console.log(item, items)
       item.a = Number(item.a?.replace(',', '.'))
       item.rMedidas = Number(item.rMedidas?.replace(',', '.'))
       
       if (this.formulaTab === 'Schlumberger') {
-        console.log(item.d, item.a, item.rMedidas);
         item.d = Number(item.d?.replace(',', '.'))
-        console.log('1');
-        console.log(item.d, item.a, item.rMedidas);
         if (!item.a || !item.d || !item.rMedidas) {
-          console.log('2');
           item.a = ''
           item.d = ''
           item.rMedidas = ''
@@ -329,6 +376,13 @@ export default {
       }
     }
   }
+}
+#map {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  height: 400px;
+  width: 700px;
 }
 .tabs {
   .tab {

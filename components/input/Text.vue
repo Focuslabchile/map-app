@@ -3,6 +3,7 @@
     <label :for="name">{{label}}</label>
     <input
       :autocomplete="autocomplete"
+      :placeholder="placeholder"
       :name="name"
       v-model="value"
       @input="$emit('update:model', value); $emit('update', value)"
@@ -12,6 +13,10 @@
 <script>
 export default {
   props: {
+    placeholder: {
+      type: String,
+      default: ''
+    },
     autocomplete: {
       type: String,
       default: 'on'
