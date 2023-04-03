@@ -219,11 +219,6 @@
         </span>
       </button>
       <span
-        @click="downloadChart()"
-        class="create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
-      >downloadChart
-      </span>
-      <span
         v-if="formulaTab === 'Schlumberger'"
         @click="schlumbergerRecords = dataDummie"
         class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
