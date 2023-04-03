@@ -254,7 +254,7 @@
         <div class="flex space-x-2 justify-between">
           <div class="grow">
             <FormControl name="Nombre:">
-              <InputText name="name" placeholder="Juan Perez" />
+              <InputText name="nombre" placeholder="Juan Perez" />
             </FormControl>
             <FormControl
               name="E-mail:"
@@ -271,7 +271,7 @@
           </div>
           <div class="grow">
             <FormControl name="Fecha:">
-              <InputText name="fecha" placeholder="20-02-2023"/>
+              <InputText name="fecha" placeholder="20/02/2023"/>
             </FormControl>
             <FormControl name="Temperatura:">
               <InputText name="temperatura" placeholder="25" />
@@ -468,7 +468,7 @@ export default {
           }
         })
       }
-      appendData(['name', 'email', 'nombre_proyecto', 'fecha', 'temperatura', 'clima', 'sondeador', 'email'])
+      appendData(['nombre', 'email', 'nombre_proyecto', 'fecha', 'temperatura', 'clima', 'sondeador', 'email'])
       const csv = ((data) => {
         const csvRows = []
         const headers = Object.keys(data[0])
@@ -489,6 +489,7 @@ export default {
           latitud: this.coordinates[0],
           longitud: this.coordinates[1],
           chart: chart,
+          rawData: chartData,
           data: csv,
         }
       })
@@ -589,8 +590,6 @@ export default {
     },
     setCoordinates(item) {
       this.coordinates = item.center
-    },
-    tableToCanvas() {
     },
     drawChart() {
       this.showChart = true
