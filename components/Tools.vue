@@ -271,23 +271,23 @@
               <InputText name="email" placeholder="juan.perez@email.com" />
             </FormControl>
             <FormControl name="Nombre del proyecto:">
-              <InputText name="project_name" placeholder="Medición para Engie Chile" />
+              <InputText name="nombre_proyecto" placeholder="Medición para Engie Chile" />
             </FormControl>
           </div>
           <div class="grow">
             <FormControl name="Fecha:">
-              <InputText name="name" placeholder="20-02-2023"/>
+              <InputText name="fecha" placeholder="20-02-2023"/>
             </FormControl>
             <FormControl name="Temperatura:">
-              <InputText name="name" placeholder="25" />
+              <InputText name="temperatura" placeholder="25" />
             </FormControl>
           </div>
           <div class="grow">
             <FormControl name="Clima:">
-              <InputText name="name" placeholder="Lluvioso" />
+              <InputText name="clima" placeholder="Lluvioso" />
             </FormControl>
             <FormControl name="Sondeador:">
-              <InputText name="name" placeholder="Quien que realizo el estudio" />
+              <InputText name="sondeador" placeholder="Quien que realizo el estudio" />
             </FormControl>
           </div>
         </div>
@@ -445,8 +445,7 @@ export default {
     )
   },
   methods: {
-    sendDocuments(e) {
-      console.log(e.target)
+    async sendDocuments(e) {
       this.sendDocumentsData.emailEmpty = ''
       this.sendDocumentsData.directionEmpty = ''
       this.$nextTick(() => {
@@ -462,15 +461,40 @@ export default {
       }
       this.sendDocumentsData.emailEmpty = ''
       this.sendDocumentsData.directionEmpty = ''
+      const chartData = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
+
+      const chart = document.getElementById('logaritmic_chart').toDataURL()
+
+      const data = {}
+      const appendData = (keys) => {
+        keys.forEach(key => {
+          if (e.target[key]?.value !== '') {
+            data[key] = e.target[key]?.value
+          }
+        })
+      }
+      appendData(['name', 'email', 'nombre_proyecto', 'fecha', 'temperatura', 'clima', 'sondeador', 'email'])
+      const csv = ((data) => {
+        const csvRows = []
+        const headers = Object.keys(data[0])
+        csvRows.push(headers.join(';'))
+        for (const row of data) {
+          const values = headers.map(header => {
+            const escaped = ('' + row[header]).replace(/"/g, '\\"')
+            return `"${escaped}"`
+          })
+          csvRows.push(values.join(';'))
+        }
+        return csvRows.join('\n')
+      })(chartData)
       this.$axios.post('api/logarithmic-charts', {
         data: {
-          email: e.target.email?.value,
+          ...data,
+          formulaTab: this.formulaTab,
           latitud: this.coordinates[0],
           longitud: this.coordinates[1],
-          data: {
-            schlumberger: this.schlumbergerRecords,
-            wenner: this.wennerRecords
-          },
+          chart: chart,
+          data: csv,
         }
       })
         .then(response => {
@@ -572,14 +596,6 @@ export default {
       this.coordinates = item.center
     },
     tableToCanvas() {
-    },
-    downloadChart() {
-      var canvas = document.getElementById('logaritmic_chart');
-      const link = document.createElement('a');
-
-      link.download = 'logaritmic_chart.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
     },
     drawChart() {
       this.showChart = true
