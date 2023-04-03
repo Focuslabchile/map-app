@@ -23,9 +23,14 @@
         <div class="col-span-6 sm:col-span-1 flex justify-center">
           <span>
             <p>Siguenos en nuestras redes sociales</p>
-            <a href="https://www.facebook.com/IngenieriaZambrano">
-              <img class="social" src="/facebook.svg" alt="facebook">
-            </a>
+            <span class="flex space-x-2">
+              <a href="https://www.facebook.com/IngenieriaZambrano">
+                <img class="social" src="/facebook.svg" alt="facebook">
+              </a>
+              <a href="https://www.instagram.com/infomap_cl/">
+                <img class="social" src="/instagram.svg" alt="instagram">
+              </a>
+            </span>
           </span>
         </div>
       </div>

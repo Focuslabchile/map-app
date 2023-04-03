@@ -405,6 +405,7 @@ export default {
           }]
         },
         options: {
+          tension: 0.4,
           scales: {
             x: {
               type: 'logarithmic',
