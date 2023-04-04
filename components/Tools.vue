@@ -501,7 +501,14 @@ export default {
           direccion: this.direccion,
           chart: chart,
           rawData: chartData,
-          data: csv,
+          csv,
+          data: {
+            ...chartData,
+            tipo: this.formulaTab,
+            latitud: this.coordinates[0],
+            longitud: this.coordinates[1],
+            direccion: this.direccion,
+          },
         }
       })
         .then(_ => {

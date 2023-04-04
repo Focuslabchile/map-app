@@ -1,59 +1,25 @@
 <template>
-<div class="load-kmz">
-  <Modal :open.sync="loadingModal" :close="false">
-    <span v-if="loadingModal" class="text-black flex flex-col items-center">
-      <Hourglass />
-      Cargando kmz ...
-    </span>
-  </Modal>
+<div class="load-projects">
   <div class="load-kmz--search-box">
-    <form-control name="Región">
-      <div class="select-wrapper">
-        <select v-model="region" @change="pickComuna" name="Región">
-          <option value="0" default>Todas</option>
-          <option v-for="(region, index) in regions" :key="index" :value="region">{{region}}</option>
-        </select>
-      </div>
-    </form-control>
-    <form-control v-if="false" :class="{disabled: !comunas}" name="Comuna">
-      <div class="select-wrapper">
-        <select v-model="comuna" name="Comuna">
-          <option value="1" default>Todas</option>
-          <option v-for="(comuna, index) in comunas" :key="index" :value="comuna">{{comuna}}</option>
-        </select>
-      </div>
-    </form-control>
-    <form-control :class="{disabled: !filters}" name="Filtro">
-      <div class="select-wrapper">
-        <select v-model="filter" @change="filter=filter" name="Filtro">
-          <option value="-1" default disabled>Seleccione un filtro</option>
-          <option value="0" default>Todas</option>
-          <option v-for="(filter, index) in filters" :key="index" :value="filter">{{filter}}</option>
-        </select>
-      </div>
-    </form-control>
-    <search-input v-if="false" name="Buscar" placeholder="Buscar" />
+    <search-input name="Buscar" placeholder="Buscar" />
     <div class="kmz-list">
-      <div :class="['kmz-list--item', (!kmz.attributes.disable || !kmz.attributes.disable.disable) || 'disabled']" v-for="(kmz, index) in filteredKmzs" :key="index">
+      <div :class="['kmz-list--item', (!medicion.disabled) || 'disabled']" v-for="(medicion, index) in mediciones" :key="index">
         <div class="flex justify-between">
           <div class="flex items-center">
             <div class="kmz-list--item--name">
-              {{kmz.attributes.name}} {{(kmz.attributes.disable && kmz.attributes.disable.disable) ? '(deshabilitado)' : ''}}
+              {{medicion.nombre_proyecto ? medicion.nombre_proyecto : `lat: ${medicion.latitud} lng: ${medicion.longitud}` }} {{medicion.disable ? '(deshabilitado)' : ''}}
             </div>
             <div class="kmz-list--item--type ml-2">
-              {{kmz.attributes.type}}
+              {{medicion.data?.type}}
             </div>
           </div>
           <div class="kmz-list--icons flex items-center">
-            <span class="icon-container">
-              <span v-tippy :content="kmz.attributes.description+'<br>'+(format((kmz.attributes.file.data.attributes.size/1000).toFixed(3)))+' mb'" class="material-icons cursor-pointer">info</span>
-            </span>
             <span class="icon-container">
               <span
                 v-tippy
                 content="Visualizar kmz"
                 class="material-icons cursor-pointer"
-                @click="loadKmz(kmz.attributes.file.data.attributes.url)"
+                @click="loadProject(medicion)"
               >add_circle</span>
             </span>
           </div>
@@ -65,7 +31,6 @@
 </template>
 <script>
 import FormControl from './FormControl.vue'
-// import regions from '@/assets/regions.json'
 import JSZipUtils from 'jszip-utils'
 import { loadAsync } from 'jszip'
 import toGeoJSON from '@mapbox/togeojson'
@@ -81,36 +46,11 @@ export default {
   },
   data() {
     return {
-      geodata: {},
       mediciones: [],
-      regions: [],
-      loadingModal: false,
-      kmlLayers: [],
-      kmzs: [],
-      comunas: [],
-      filters: [],
       search: '',
-      region: '0',
-      comuna: '',
-      filter: '-1',
     }
   },
   computed: {
-    filteredKmzs() {
-      let kmzs = [...new Set([...this.kmzs])]
-      if (this.region !== '0') {
-        kmzs = kmzs.filter(el => {
-          return el.region.includes(this.region)
-        })
-      }
-      console.log(kmzs.length)
-      if (this.filter !== '0') {
-        kmzs = kmzs.filter(el => {
-          return el.category.includes(this.filter)
-        })
-      }
-      return kmzs
-    },
     apiUrl() {
       return this.$config.apiUrl
     }
@@ -118,9 +58,6 @@ export default {
   methods: {
     format(n) {
       return new Intl.NumberFormat('es-CL').format(n)
-    },
-    turnOffLayer(clickedLayer){
-	    this.map.setPaintProperty( clickedLayer,"fill-color",  "rgba(255,255,255,0)");
     },
     loadKmz(fileURL,show){
       this.loadingModal = true
@@ -174,43 +111,22 @@ export default {
         });
       }); 
     },
-    pickComuna() {
-      this.comunas = this.regions.find(region => region.region === this.region)?.comunas
-    },
-    searchKmz(val) {
-      this.$emit('search-kmz', this.search)
-    },
     async fetchSomething() {
-      const geodata = sessionStorage.getItem('geodata')
-      if(geodata !== null) {
-        const { kmzs, regions, filters } = JSON.parse(geodata)
-        this.kmzs = kmzs
-        this.regions = regions
-        this.filters = filters
-        return
+      const mediciones = sessionStorage.getItem('mediciones')
+      if(mediciones !== null) {
+        this.mediciones = JSON.parse(mediciones)
       }
-      await this.$api.get('api/geo-data?populate=file,category,region,disable').then(res => {
-        this.kmzs = res.data.data.map(el => {
+      const fields = 'fields=latitud,longitud,clima,temperatura,instrumento,fecha,fecha_calibracion,nombre_proyecto,direccion'
+      const limit = 'pagination[limit]=10000'
+      const filters = `${fields}&${limit}`
+      await this.$api.get(`/api/logarithmic-charts?${filters}`).then(res => {
+        this.mediciones = res.data.data.map(el => {
+          const keys = Object.keys(el.attributes)
           return {
-            ...el,
-            region: el.attributes.region.map(reg => reg.region),
-            category: [...el.attributes.category.map(reg => reg.category_filter)]
+            ...el.attributes
           }
         })
-
-        this.regions = this.kmzs.reduce((carry, el) => {
-          return [...(new Set([...carry, ...el.region]))]
-        }, [])
-
-        this.filters = this.kmzs.reduce((carry, el) => {
-          return [...(new Set([...carry, ...el.category]))]
-        }, [])
-        const data = {
-          kmzs: this.kmzs,
-          regions: this.regions,
-          filters: this.filters
-        }
-        sessionStorage.setItem('geodata', JSON.stringify(data))
+        sessionStorage.setItem('mediciones', JSON.stringify(mediciones))
         return
       })
     }
