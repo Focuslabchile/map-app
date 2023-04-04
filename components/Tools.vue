@@ -277,7 +277,7 @@
               <InputText name="temperatura" placeholder="25" />
             </FormControl>
             <FormControl name="Instrumento:">
-              <InputText name="instrumento" placeholder="25" />
+              <InputText name="instrumento" placeholder="Telurometro MI3290" />
             </FormControl>
           </div>
           <div class="grow">
