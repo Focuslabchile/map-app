@@ -618,14 +618,13 @@ export default {
       } else {
         this.wennerRecords.forEach(item => {
           item.roCalculados = this.wennerGetRoCalculados(item)
-          item.distanciaAb2 = item.a * 1.5
         })
       }
       const data = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
       const chartData = data
         .map(item => {
           return {
-            x: item.distanciaAb2,
+            x: this.formulaTab === 'Schlumberger' ? item.distanciaAb2 : item.a,
             y: item.roCalculados
           }
         })
@@ -634,6 +633,7 @@ export default {
         return obj.y > max ? obj.y : max
       }, 0)
       
+      this.chart.options.scales.x.title.text = this.formulaTab === 'Schlumberger' ? 'DISTANCIA AB/2' : 'DISTANCIA A'
       this.chart.data.datasets[0].data = chartData
       this.chart.options.scales.y.min = 0
       this.chart.options.scales.y.max = Math.pow(10, Math.ceil(Math.log10(maxY)))
