@@ -533,15 +533,15 @@ export default {
       const ab = this.schlumbergerGetAb(item)
 
       const val1 = Math.PI * a * (a + 1) * d * r
-      const val2 = (2 * Math.PI * r) * (d / 2) * (ab**2 - (1 / 4))
+      const magabras = (2 * Math.PI * r) * (a / 2) * ((ab/a)**2 - (1 / 4))
       const val3 = this.schlumbergerGetRoCalculados(item)
-      const val4 = Math.PI * r * d * ((ab**2 / d**2) - (1 / 4))
+      const val4 = Math.PI * r * a * ((ab**2 / a**2) - (1 / 4))
 
       const accuracy = 0.002 // 0.2%
       const threshold = 1 + accuracy
 
-      const minValue = Math.min(val1, val2, val3, val4)
-      const maxValue = Math.max(val1, val2, val3, val4)
+      const minValue = Math.min(val1, magabras, val3, val4)
+      const maxValue = Math.max(val1, magabras, val3, val4)
 
       return maxValue / minValue <= threshold
     },
