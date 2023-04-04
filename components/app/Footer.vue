@@ -24,10 +24,10 @@
           <span>
             <p>Siguenos en nuestras redes sociales</p>
             <span class="flex space-x-2">
-              <a href="https://www.facebook.com/IngenieriaZambrano">
+              <a target="_blank" href="https://www.facebook.com/IngenieriaZambrano">
                 <img class="social" src="/facebook.svg" alt="facebook">
               </a>
-              <a href="https://www.instagram.com/infomap_cl/">
+              <a target="_blank" href="https://www.instagram.com/infomap_cl/">
                 <img class="social" src="/instagram.svg" alt="instagram">
               </a>
             </span>

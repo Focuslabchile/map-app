@@ -270,11 +270,14 @@
             </FormControl>
           </div>
           <div class="grow">
-            <FormControl name="Fecha:">
+            <FormControl name="Fecha medición:">
               <InputText name="fecha" placeholder="20/02/2023"/>
             </FormControl>
             <FormControl name="Temperatura:">
               <InputText name="temperatura" placeholder="25" />
+            </FormControl>
+            <FormControl name="Instrumento:">
+              <InputText name="instrumento" placeholder="25" />
             </FormControl>
           </div>
           <div class="grow">
@@ -283,6 +286,9 @@
             </FormControl>
             <FormControl name="Sondeador:">
               <InputText name="sondeador" placeholder="Quien que realizo el estudio" />
+            </FormControl>
+            <FormControl name="Fecha calibración:">
+              <InputText name="fecha_calibracion" placeholder="20/02/2023" />
             </FormControl>
           </div>
         </div>
@@ -310,7 +316,7 @@
               cancelar
             </slot>
           </button>
-          <button class="btn main" @click="$refs.submitform.click()">
+          <button :class="`btn main ${disabled ? 'disabled' : ''}`" @click="$refs.submitform.click()">
             <slot name="modal-footer-btn">
               Enviar documentos
             </slot>
@@ -335,10 +341,12 @@ export default {
   },
   data() {
     return {
+      disabled: false,
       sendDocumentsData: {
         emailEmpty: '',
         directionEmpty: ''
       },
+      direccion: '',
       schlumbergerEditList: [],
       wennerEditList: [],
       coordinates: [],
@@ -469,7 +477,7 @@ export default {
           }
         })
       }
-      appendData(['nombre', 'email', 'nombre_proyecto', 'fecha', 'temperatura', 'clima', 'sondeador', 'email'])
+      appendData(['nombre', 'email', 'nombre_proyecto', 'fecha', 'temperatura', 'clima', 'sondeador', 'email', 'fecha_calibracion', 'instrumento'])
       const csv = ((data) => {
         const csvRows = []
         const headers = Object.keys(data[0])
@@ -483,24 +491,29 @@ export default {
         }
         return csvRows.join('\n')
       })(chartData)
+      this.disabled = true
       this.$axios.post('api/logarithmic-charts', {
         data: {
           ...data,
           formulaTab: this.formulaTab,
           latitud: this.coordinates[0],
           longitud: this.coordinates[1],
+          direccion: this.direccion,
           chart: chart,
           rawData: chartData,
           data: csv,
         }
       })
-        .then(response => {
-          this.res = response.data
-          this.contactData.send = true
+        .then(_ => {
+          this.$toast.success('Los documentos se han enviado correctamente')
         })
         .catch(_ => {
           this.res = response?.data
-          this.contactData.error = true
+          this.$toast.danger('Ha ocurrido un error al enviar los documentos')
+        })
+        .finally(_ => {
+          this.disabled = false
+          this.chartGenerate = false
         })
     },
     schlumbergerGetAb(item) {
@@ -590,6 +603,8 @@ export default {
       }, 100)
     },
     setCoordinates(item) {
+      console.log(item)
+      this.direccion = item.place_name_es
       this.coordinates = item.center
     },
     drawChart() {
