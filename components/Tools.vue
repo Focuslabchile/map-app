@@ -92,7 +92,7 @@
             </td>
             <td>
               <span v-if="validationRoCalculados(item)" class="p-1">
-                {{ schlumbergerGetRoCalculados(item).toFixed(3) }}
+                {{ schlumbergerGetRoCalculados(item).toFixed(2) }}
               </span>
               <span
                 v-else
@@ -100,7 +100,7 @@
                 content="Hay inconsistencias en los datos ingresados"
                 class="bg-red-600 text-white p-1"
               >
-                {{ schlumbergerGetRoCalculados(item).toFixed(3) }}
+                {{ schlumbergerGetRoCalculados(item).toFixed(2) }}
               </span>
             </td>
             <td>
@@ -171,7 +171,7 @@
                 v-model="wennerRecords[index].rMedidas"
               >
             </td>
-            <td>{{ wennerGetRoCalculados(item).toFixed(3) }}</td>
+            <td>{{ wennerGetRoCalculados(item).toFixed(2) }}</td>
             <td>
               <button
                 @click="editRecord(index)"
@@ -541,7 +541,6 @@ export default {
 
       const minValue = Math.min(magabras, schlumberger, val4)
       const maxValue = Math.max(magabras, schlumberger, val4)
-      console.log(magabras, schlumberger, val4)
 
       return maxValue / minValue <= threshold
     },
