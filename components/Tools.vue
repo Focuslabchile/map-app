@@ -500,10 +500,9 @@ export default {
           longitud: this.coordinates[1],
           direccion: this.direccion,
           chart: chart,
-          rawData: chartData,
           csv,
           data: {
-            ...chartData,
+            records: chartData,
             tipo: this.formulaTab,
             latitud: this.coordinates[0],
             longitud: this.coordinates[1],

@@ -324,7 +324,7 @@ export default {
         localStorage.setItem('polygons', JSON.stringify(self.polygons))
       }
       function mapSelectionChange(e) {
-        
+        console.log(e)
         const container = document.querySelector('.map-info-body')
         const child = document.getElementById(e.features[0].id)
         //flag data soruce
@@ -576,6 +576,7 @@ export default {
     height: auto;
     .map-info-tabs {
       display: flex;
+      z-index: 2;
       .map-info-tabs--item {
         padding: 0.75rem;
         flex-grow: 1;

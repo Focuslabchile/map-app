@@ -7,13 +7,16 @@
         <div class="flex justify-between">
           <div class="flex items-center">
             <div class="kmz-list--item--name">
-              {{medicion.nombre_proyecto ? medicion.nombre_proyecto : `lat: ${medicion.latitud} lng: ${medicion.longitud}` }} {{medicion.disable ? '(deshabilitado)' : ''}}
+              {{medicion.nombre_proyecto ? medicion.nombre_proyecto : medicion.direccion ? medicion.direccion : 'proyecto sin nombre' }} {{medicion.disable ? '(deshabilitado)' : ''}}
             </div>
-            <div class="kmz-list--item--type ml-2">
-              {{medicion.data?.type}}
+            <div v-if="medicion.data && medicion.data.tipo" class="kmz-list--item--type ml-2">
+              {{medicion.data.tipo}}
             </div>
           </div>
           <div class="kmz-list--icons flex items-center">
+            <span class="icon-container">
+              <span v-tippy :content="`${medicion.direccion ? `dirección: ${medicion.direccion}<br>`:''}lat: ${medicion.latitud}<br>lng: ${medicion.longitud}`" class="material-icons cursor-pointer">info</span>
+            </span>
             <span class="icon-container">
               <span
                 v-tippy
@@ -35,6 +38,7 @@ import JSZipUtils from 'jszip-utils'
 import { loadAsync } from 'jszip'
 import toGeoJSON from '@mapbox/togeojson'
 import { v4 as uuidv4 } from 'uuid';
+import { polygon } from '@turf/helpers';
 
 export default {
   components: { FormControl },
@@ -58,6 +62,42 @@ export default {
   methods: {
     format(n) {
       return new Intl.NumberFormat('es-CL').format(n)
+    },
+    loadProject(item) {
+      const makePoint = (item) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [
+            item.latitud,
+            item.longitud,
+            0
+          ]
+        },
+        properties: {
+          name: item.nombre_proyecto ? item.nombre_proyecto : item.direccion ? item.direccion : 'proyecto sin nombre',
+          type: 'loaded-project',
+          table: item.data.records,
+          styleUrl: "#msn_placemark_circle610",
+          styleHash: "45c67b74",
+          styleMapHash: {
+            normal: "#sn_placemark_circle2100",
+            highlight: "#sh_placemark_circle_highlight13"
+          },
+          edit: false
+        },
+        "id": uuidv4()
+      })
+      const data = JSON.parse(localStorage.getItem('polygons'))
+      const callback = () => {
+        this.$toast.success('proyecto cargado')
+        this.$parent.tab = 'mis-proyectos'
+      }
+      const project = makePoint(item)
+      console.log(project, data)
+      // return
+      // data.push(project)
+      this.$parent.init('projects', [project], callback);
     },
     loadKmz(fileURL,show){
       this.loadingModal = true
@@ -116,7 +156,7 @@ export default {
       if(mediciones !== null) {
         this.mediciones = JSON.parse(mediciones)
       }
-      const fields = 'fields=latitud,longitud,clima,temperatura,instrumento,fecha,fecha_calibracion,nombre_proyecto,direccion'
+      const fields = 'fields=latitud,longitud,clima,temperatura,instrumento,fecha,fecha_calibracion,nombre_proyecto,direccion,data'
       const limit = 'pagination[limit]=10000'
       const filters = `${fields}&${limit}`
       await this.$api.get(`/api/logarithmic-charts?${filters}`).then(res => {
