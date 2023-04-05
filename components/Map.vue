@@ -2,6 +2,52 @@
 <section>
   <slot name="description" />
   <article :class="['map', {fullscreen:fullscreen}]">
+    <Modal :open.sync="projectInfoModal" :title="`Estudio de resistividad del suelo (${markerInfo.data ? markerInfo.data.tipo : ''})`">
+      <div class="flex">
+        <div class="properties-table">
+          <table style="max-width: 40vw;" class="mr-4">
+            <tr><th class="text-left">NOMBRE DEL PROYECTO</th><td>{{ markerInfo.nombre_proyecto }}</td></tr>
+            <tr><th class="text-left">DIRECCION </th><td class="whitespace-break-spaces">{{ markerInfo.direccion }}</td></tr>
+            <tr><th class="text-left">FECHA MEDICION</th><td>{{ markerInfo.fecha }}</td></tr>
+            <tr><th class="text-left">CLIMA</th><td>{{ markerInfo.clima }}</td></tr>
+            <tr><th class="text-left">TEMPERATURA</th><td>{{ markerInfo.temperatura }}</td></tr>
+            <tr><th class="text-left">SONDEADOR</th><td>{{ markerInfo.sondeador }}</td></tr>
+            <tr><th class="text-left">INSTRUMENTO</th><td>{{ markerInfo.instrumento }}</td></tr>
+            <tr><th class="text-left">FECHA CALIBRACION</th><td>{{ markerInfo.fecha_calibracion }}</td></tr>
+          </table>
+        </div>
+        <div class="properties-table">
+          <table v-if="markerInfo.data" class="properties-table-horizontal text-center">
+            <tr>
+              <th>Nº Lecturas</th>
+              <th v-if="markerInfo.data.tipo === 'Schlumberger'">DISTANCIA AB/2</th>
+              <th v-if="markerInfo.data.tipo === 'Schlumberger'">a</th>
+              <th v-else>A</th>
+              <th v-if="markerInfo.data.tipo === 'Schlumberger'">d</th>
+              <th>R Medidas</th>
+              <th>Ro Calculados</th>
+            </tr>
+            <tr v-for="item in markerInfo.data.records">
+              <td>{{ item.nLectura }}</td>
+              <td v-if="markerInfo.data.tipo === 'Schlumberger'">{{ item.distanciaAb2 }}</td>
+              <td>{{ item.a }}</td>
+              <td v-if="markerInfo.data.tipo === 'Schlumberger'">{{ item.d }}</td>
+              <td>{{ item.rMedidas }}</td>
+              <td>{{ item.roCalculados.toFixed(2) }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <template slot="modalFooter">
+        <FormControl class="mb-0">
+          <button class="btn" @click="projectInfoModal = false">
+            <slot name="modal-footer-btn">
+              Cerrar
+            </slot>
+          </button>
+        </FormControl>
+      </template>
+    </Modal>
     <Modal :open.sync="clearLayers" title="Se eliminaran las capas agregadas">
       Este paso no es reversible. ¿Está seguro?
       <template slot="modalFooter">
@@ -26,7 +72,7 @@
         {{fullscreen ? 'fullscreen_exit' : 'fullscreen'}}
       </span>
       <span @click="showProperties = !showProperties" class="material-icons block control mt-2">info</span>
-      <div class="properties-table">
+      <div class="properties-table colored absolute">
         <table v-show="showProperties">
           <tr
             v-for="(item, index) in Object.entries(properties)"
@@ -127,6 +173,8 @@ export default {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
+      projectInfoModal: false,
+      markerInfo: {},
       showProyectos: false,
       showProperties: true,
       clearLayers: false,
@@ -259,7 +307,7 @@ export default {
       new mapboxgl.Marker(item.el)
         .setLngLat(item.coordinates)
         .addTo(this.mapbox.map)
-
+      this.markerInfo = item.item
       const to = {
         center: item.coordinates,
         zoom: 15
@@ -526,6 +574,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '~assets/scss/colors.scss';
+.whitespace-break-spaces {
+  white-space: break-spaces !important;
+}
 .map {
   position: relative;
   color: #333;
@@ -641,12 +692,20 @@ export default {
   }
 }
 .properties-table {
-  position: absolute;
   top: 92px;
-  border: 1px solid rgba(0,0,0,.1);
   border-radius: 4px;
   overflow: hidden;
-  @extend .secondary;
+  .properties-table-horizontal {
+    th {
+      &:after {
+        content: '';
+      }
+    }
+  }
+  &.colored {
+    border: 1px solid rgba(0,0,0,.1);
+    @extend .secondary;
+  }
   th, td {
     white-space: nowrap;
     padding: 0.5rem;
