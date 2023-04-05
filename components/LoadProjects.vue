@@ -94,10 +94,28 @@ export default {
         this.$parent.tab = 'mis-proyectos'
       }
       const project = makePoint(item)
+      // addMarker(item){
+      //   new mapboxgl.Marker(item.el)
+      //     .setLngLat(item.coordinates)
+      //     .addTo(this.mapbox.map)
+      const el = document.createElement('div');
+      el.className = 'marker';
+      el.style.backgroundImage = `url(https://infomap.cl/logo2.png)`;
+      el.style.width = '30px';
+      el.style.height = '37px';
+      el.stylebackgroundRepeat = 'no-repeat';
+      el.style.backgroundSize = '100%';
+      
+      el.addEventListener('click', () => {
+        console.log(project);
+        window.alert(project);
+      });
+
       console.log(project, data)
-      // return
-      // data.push(project)
-      this.$parent.init('projects', [project], callback);
+      this.$parent.addMarker({
+        el,
+        coordinates: [item.latitud, item.longitud],
+      })
     },
     loadKmz(fileURL,show){
       this.loadingModal = true

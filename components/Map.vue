@@ -62,7 +62,7 @@
         <div class="map-info-tabs sticky top-0 secondary">
           <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
           <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
-          <div v-if="false" @click="tab = 'mis-proyectos'" :class="['map-info-tabs--item', {active: tab === 'mis-proyectos'}]">Proyectos</div>
+          <div v-if="showProyectos" @click="tab = 'mis-proyectos'" :class="['map-info-tabs--item', {active: tab === 'mis-proyectos'}]">Proyectos</div>
           <div v-if="description" @click="tab = 'description'" :class="['map-info-tabs--item', {active: tab === 'description'}]">Descripcion</div>
         </div>
         <div v-show="tab === 'description'" class="pt-3 map-feature-description" v-html="description"></div>
@@ -127,6 +127,7 @@ export default {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
+      showProyectos: false,
       showProperties: true,
       clearLayers: false,
       tab: 'mis-zonas',
@@ -253,6 +254,17 @@ export default {
         unit: 'km',
         value: Math.round(length * 100) / 100
       }
+    },
+    addMarker(item){
+      new mapboxgl.Marker(item.el)
+        .setLngLat(item.coordinates)
+        .addTo(this.mapbox.map)
+
+      const to = {
+        center: item.coordinates,
+        zoom: 15
+      }
+      this.mapbox.map.flyTo(to);
     },
     init(layerid = null, addkmz =null, callback = null) {
       this.mapbox.init({
@@ -489,6 +501,15 @@ export default {
     }
   },
   mounted() {
+    document.addEventListener('keypress', (e) => {
+      let pattern = sessionStorage.getItem('showProjects')
+      pattern = pattern ? pattern : ''
+      pattern += e.key
+      sessionStorage.setItem('showProjects', pattern)
+      if(pattern.includes('123123')) {
+        this.showProyectos = true
+      }
+    })
     localStorage.getItem('darkMode') === 'true' ? this.mapbox.mode = 'dark' : this.mapbox.mode = 'light'
     this.mapbox.init({
         style: this.getStyle()
