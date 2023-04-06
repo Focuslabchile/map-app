@@ -341,6 +341,8 @@ export default {
   },
   data() {
     return {
+      pais: '',
+      region: '',
       disabled: false,
       sendDocumentsData: {
         emailEmpty: '',
@@ -499,6 +501,8 @@ export default {
           latitud: this.coordinates[0],
           longitud: this.coordinates[1],
           direccion: this.direccion,
+          pais: this.pais,
+          region: this.region,
           chart: chart,
           csv,
           data: {
@@ -608,6 +612,9 @@ export default {
       }, 100)
     },
     setCoordinates(item) {
+      console.log(item)
+      this.region = item.context.find(el => el.id.includes('region')).text
+      this.pais = item.context.find(el => el.id.includes('country')).text
       this.direccion = item.place_name_es
       this.coordinates = item.center
     },

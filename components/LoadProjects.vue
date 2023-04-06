@@ -23,12 +23,20 @@
     <div class="kmz-list">
       <div :class="['kmz-list--item', (!medicion.disabled) || 'disabled']" v-for="(medicion, index) in mediciones" :key="index">
         <div class="flex justify-between">
-          <div class="flex items-center">
+          <div class="">
             <div class="kmz-list--item--name">
               {{medicion.nombre_proyecto ? medicion.nombre_proyecto : medicion.direccion ? medicion.direccion : 'proyecto sin nombre' }} {{medicion.disable ? '(deshabilitado)' : ''}}
             </div>
-            <div v-if="medicion.data && medicion.data.tipo" class="kmz-list--item--type ml-2">
-              {{medicion.data.tipo}}
+            <div class="flex flex-wrap gap-1 items-center">
+              <div v-if="medicion.data && medicion.data.tipo" class="kmz-list--item--type">
+                {{medicion.data.tipo}}
+              </div>
+              <div v-if="medicion && medicion.pais" class="kmz-list--item--type">
+                {{medicion.pais}}
+              </div>
+              <div v-if="medicion && medicion.region" class="kmz-list--item--type">
+                {{medicion.region}}
+              </div>
             </div>
           </div>
           <div class="kmz-list--icons flex items-center">
@@ -64,7 +72,7 @@ export default {
     return {
       chileCoordinates: {
         center: [-71.5, -33.5],
-        zoom: 3,
+        zoom: 0,
       },
       filterSclumberger: '',
       filterWenner: '',
@@ -113,25 +121,27 @@ export default {
       
       el.addEventListener('click', () => {
         this.$parent.projectInfoModal = true
-      });
+        this.$parent.markerId = item.id
+      })
       const marker = {
         el,
         item,
         coordinates: [item.latitud, item.longitud],
       }
-      this.$parent.addMarker({item: marker, type: item.data.tipo})
+      this.$parent.addMarker({item: marker, type: item.data.tipo, id: item.id})
     },
     async fetchSomething() {
       const mediciones = sessionStorage.getItem('mediciones')
       if(mediciones !== null) {
         this.mediciones = JSON.parse(mediciones)
       }
-      const fields = 'fields=latitud,longitud,clima,temperatura,instrumento,fecha,fecha_calibracion,nombre_proyecto,direccion,data'
+      const fields = 'fields=id,latitud,longitud,clima,temperatura,instrumento,fecha,fecha_calibracion,nombre_proyecto,direccion,data,pais,region'
       const limit = 'pagination[limit]=10000'
       const filters = `${fields}&${limit}`
       await this.$api.get(`/api/logarithmic-charts?${filters}`).then(res => {
         this.mediciones = res.data.data.map(el => {
           return {
+            id: el.id,
             ...el.attributes
           }
         })

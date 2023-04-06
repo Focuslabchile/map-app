@@ -2,36 +2,36 @@
 <section>
   <slot name="description" />
   <article :class="['map', {fullscreen:fullscreen}]">
-    <Modal :open.sync="projectInfoModal" :title="`Estudio de resistividad del suelo (${markerInfo.data ? markerInfo.data.tipo : ''})`">
+    <Modal v-if="markersInfo[markerId]" :open.sync="projectInfoModal" :title="`Estudio de resistividad del suelo (${markersInfo[markerId].data ? markersInfo[markerId].data.tipo : ''})`">
       <div class="flex">
         <div class="properties-table">
           <table style="max-width: 40vw;" class="mr-4">
-            <tr><th class="text-left">NOMBRE DEL PROYECTO</th><td>{{ markerInfo.nombre_proyecto }}</td></tr>
-            <tr><th class="text-left">DIRECCION </th><td class="whitespace-break-spaces">{{ markerInfo.direccion }}</td></tr>
-            <tr><th class="text-left">FECHA MEDICION</th><td>{{ markerInfo.fecha }}</td></tr>
-            <tr><th class="text-left">CLIMA</th><td>{{ markerInfo.clima }}</td></tr>
-            <tr><th class="text-left">TEMPERATURA</th><td>{{ markerInfo.temperatura }}</td></tr>
-            <tr><th class="text-left">SONDEADOR</th><td>{{ markerInfo.sondeador }}</td></tr>
-            <tr><th class="text-left">INSTRUMENTO</th><td>{{ markerInfo.instrumento }}</td></tr>
-            <tr><th class="text-left">FECHA CALIBRACION</th><td>{{ markerInfo.fecha_calibracion }}</td></tr>
+            <tr><th class="text-left">NOMBRE DEL PROYECTO</th><td>{{ markersInfo[markerId].nombre_proyecto }}</td></tr>
+            <tr v-if="false"><th class="text-left">DIRECCION </th><td class="whitespace-break-spaces">{{ markersInfo[markerId].direccion }}</td></tr>
+            <tr><th class="text-left">FECHA MEDICION</th><td>{{ markersInfo[markerId].fecha }}</td></tr>
+            <tr><th class="text-left">CLIMA</th><td>{{ markersInfo[markerId].clima }}</td></tr>
+            <tr><th class="text-left">TEMPERATURA</th><td>{{ markersInfo[markerId].temperatura }}</td></tr>
+            <tr><th class="text-left">SONDEADOR</th><td>{{ markersInfo[markerId].sondeador }}</td></tr>
+            <tr><th class="text-left">INSTRUMENTO</th><td>{{ markersInfo[markerId].instrumento }}</td></tr>
+            <tr><th class="text-left">FECHA CALIBRACION</th><td>{{ markersInfo[markerId].fecha_calibracion }}</td></tr>
           </table>
         </div>
         <div class="properties-table">
-          <table v-if="markerInfo.data" class="properties-table-horizontal text-center">
+          <table v-if="markersInfo[markerId].data" class="properties-table-horizontal text-center">
             <tr>
               <th>Nº Lecturas</th>
-              <th v-if="markerInfo.data.tipo === 'Schlumberger'">DISTANCIA AB/2</th>
-              <th v-if="markerInfo.data.tipo === 'Schlumberger'">a</th>
+              <th v-if="markersInfo[markerId].data.tipo === 'Schlumberger'">DISTANCIA AB/2</th>
+              <th v-if="markersInfo[markerId].data.tipo === 'Schlumberger'">a</th>
               <th v-else>A</th>
-              <th v-if="markerInfo.data.tipo === 'Schlumberger'">d</th>
+              <th v-if="markersInfo[markerId].data.tipo === 'Schlumberger'">d</th>
               <th>R Medidas</th>
               <th>Ro Calculados</th>
             </tr>
-            <tr v-for="item in markerInfo.data.records">
+            <tr v-for="item in markersInfo[markerId].data.records">
               <td>{{ item.nLectura }}</td>
-              <td v-if="markerInfo.data.tipo === 'Schlumberger'">{{ item.distanciaAb2 }}</td>
+              <td v-if="markersInfo[markerId].data.tipo === 'Schlumberger'">{{ item.distanciaAb2 }}</td>
               <td>{{ item.a }}</td>
-              <td v-if="markerInfo.data.tipo === 'Schlumberger'">{{ item.d }}</td>
+              <td v-if="markersInfo[markerId].data.tipo === 'Schlumberger'">{{ item.d }}</td>
               <td>{{ item.rMedidas }}</td>
               <td>{{ item.roCalculados.toFixed(2) }}</td>
             </tr>
@@ -174,6 +174,8 @@ export default {
     mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
       markers: {},
+      markerId: '',
+      markersInfo: {},
       projectInfoModal: false,
       markerInfo: {},
       showProyectos: false,
@@ -307,13 +309,13 @@ export default {
     removeMarkers(markers) {
       markers.forEach(marker => marker.remove())
     },
-    addMarker({item, type, flyTo = true}){
+    addMarker({item, type, flyTo = true, id}){
       const marker = new mapboxgl.Marker(item.el)
         .setLngLat(item.coordinates)
         .addTo(this.mapbox.map)
       this.markers[type] = this.markers[type] || []
       this.markers[type].push(marker)
-      console.log(this.markers)
+      this.markersInfo[id] = item.item
       this.markerInfo = item.item
       if (!flyTo) return
       const to = {
