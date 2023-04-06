@@ -1,8 +1,8 @@
 <template>
   <div class="radio-container">
-    <span v-for="(item, index) in options" :key="index">
+    <span class="radio-input-container" v-for="(item, index) in options" :key="index">
       <input
-        @click="$emit('update', item)"
+        @click="updateValue(item)"
         type='radio'
         :name='groupName'
         :checked="selected === item ? 'checked' : ''"
@@ -16,6 +16,10 @@
 <script>
 export default {
   props: {
+    allowEmpty: {
+      type: Boolean,
+      default: false
+    },
     options: {
       type: Array,
       required: true
@@ -32,11 +36,22 @@ export default {
   },
   computed: {
     selected() {
+      if(this.allowEmpty && this.value === '') {
+        return ''
+      }
       if(this.value === '') {
-        console.log('no value', this.options[0])
         return this.options[0]
       }
       return this.options.find(item => item === this.value)
+    }
+  },
+  methods: {
+    updateValue(value) {
+      if (this.allowEmpty && value === this.selected) {
+        this.$emit('update', 'delete:'+this.selected)
+        return
+      }
+      this.$emit('update', value)
     }
   }
 }
@@ -49,6 +64,15 @@ export default {
   border-radius: 4px;
   overflow: hidden;
   background-color: #fff;
+  .radio-input-container {
+    text-align: center;
+  }
+  &.w-full {
+    width: 100% !important;
+    .radio-input-container {
+      flex: 1 1 0;
+    }
+  }
   input[type='radio'] {
     display: none;
   }

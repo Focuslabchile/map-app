@@ -608,7 +608,6 @@ export default {
       }, 100)
     },
     setCoordinates(item) {
-      console.log(item)
       this.direccion = item.place_name_es
       this.coordinates = item.center
     },

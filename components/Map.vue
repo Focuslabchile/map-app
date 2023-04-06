@@ -173,6 +173,7 @@ export default {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
+      markers: {},
       projectInfoModal: false,
       markerInfo: {},
       showProyectos: false,
@@ -303,11 +304,18 @@ export default {
         value: Math.round(length * 100) / 100
       }
     },
-    addMarker(item){
-      new mapboxgl.Marker(item.el)
+    removeMarkers(markers) {
+      markers.forEach(marker => marker.remove())
+    },
+    addMarker({item, type, flyTo = true}){
+      const marker = new mapboxgl.Marker(item.el)
         .setLngLat(item.coordinates)
         .addTo(this.mapbox.map)
+      this.markers[type] = this.markers[type] || []
+      this.markers[type].push(marker)
+      console.log(this.markers)
       this.markerInfo = item.item
+      if (!flyTo) return
       const to = {
         center: item.coordinates,
         zoom: 15
@@ -384,7 +392,6 @@ export default {
         localStorage.setItem('polygons', JSON.stringify(self.polygons))
       }
       function mapSelectionChange(e) {
-        console.log(e)
         const container = document.querySelector('.map-info-body')
         const child = document.getElementById(e.features[0].id)
         //flag data soruce
@@ -470,7 +477,6 @@ export default {
           "source":layerid,
           "paint": { "fill-color":  [ "string", ["get", "fill"]]}
         }, 'aeroway-taxiway');
-        console.log(callback)
         if(callback) {
           callback()
         }

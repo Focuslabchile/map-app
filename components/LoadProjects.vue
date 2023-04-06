@@ -1,7 +1,25 @@
 <template>
 <div class="load-projects">
   <div class="load-kmz--search-box">
-    <search-input name="Buscar" placeholder="Buscar" />
+    <search-input v-if="false" name="Buscar" placeholder="Buscar" />
+    <div class="filters flex flex-1 mb-4">
+      <InputRadio
+        class="w-full"
+        @update="(val) => filterSclumberger = val"
+        group-name="filter_type_schlumberger"
+        :allow-empty="true"
+        :value="filterSclumberger"
+        :options="['Schlumberger']"
+      />
+      <InputRadio
+        class="w-full"
+        @update="(val) => filterWenner = val"
+        group-name="filter_type_wenner"
+        :allow-empty="true"
+        :value="filterWenner"
+        :options="['Wenner']"
+      />
+    </div>
     <div class="kmz-list">
       <div :class="['kmz-list--item', (!medicion.disabled) || 'disabled']" v-for="(medicion, index) in mediciones" :key="index">
         <div class="flex justify-between">
@@ -33,14 +51,9 @@
 </div>
 </template>
 <script>
-import FormControl from './FormControl.vue'
-import JSZipUtils from 'jszip-utils'
-import { loadAsync } from 'jszip'
-import toGeoJSON from '@mapbox/togeojson'
-import { v4 as uuidv4 } from 'uuid';
+import { filter } from 'jszip'
 
 export default {
-  components: { FormControl },
   props: {
     map: {
       type: Object,
@@ -49,6 +62,12 @@ export default {
   },
   data() {
     return {
+      chileCoordinates: {
+        center: [-71.5, -33.5],
+        zoom: 3,
+      },
+      filterSclumberger: '',
+      filterWenner: '',
       mediciones: [],
       search: '',
     }
@@ -58,16 +77,32 @@ export default {
       return this.$config.apiUrl
     }
   },
+  watch: {
+    filterSclumberger(val) {
+      this.filter(val)
+    },
+    filterWenner(val) {
+      this.filter(val)
+    },
+  },
   methods: {
+    filter(val) {
+      if(val.includes('delete:')) {
+        const type = val.split(':')[1]
+        this.$parent.removeMarkers(this.$parent.markers[type])
+        return
+      }
+      this.mediciones
+        .filter(medicion => medicion.data.tipo === val)
+        .forEach(medicion => {
+          this.loadProject(medicion, false)
+        })
+      this.$parent.mapbox.map.flyTo(this.chileCoordinates);
+    },
     format(n) {
       return new Intl.NumberFormat('es-CL').format(n)
     },
     loadProject(item) {
-      const callback = () => {
-        this.$toast.success('proyecto cargado')
-        this.$parent.tab = 'mis-proyectos'
-      }
-
       const el = document.createElement('div');
       el.className = 'marker';
       el.style.backgroundImage = `url(https://infomap.cl/logo2.png)`;
@@ -79,13 +114,12 @@ export default {
       el.addEventListener('click', () => {
         this.$parent.projectInfoModal = true
       });
-
-      console.log(item)
-      this.$parent.addMarker({
+      const marker = {
         el,
         item,
         coordinates: [item.latitud, item.longitud],
-      })
+      }
+      this.$parent.addMarker({item: marker, type: item.data.tipo})
     },
     async fetchSomething() {
       const mediciones = sessionStorage.getItem('mediciones')
@@ -97,7 +131,6 @@ export default {
       const filters = `${fields}&${limit}`
       await this.$api.get(`/api/logarithmic-charts?${filters}`).then(res => {
         this.mediciones = res.data.data.map(el => {
-          const keys = Object.keys(el.attributes)
           return {
             ...el.attributes
           }
