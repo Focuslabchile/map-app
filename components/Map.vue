@@ -8,6 +8,8 @@
           <table style="max-width: 40vw;" class="mr-4">
             <tr><th class="text-left">NOMBRE DEL PROYECTO</th><td>{{ markersInfo[markerId].nombre_proyecto }}</td></tr>
             <tr v-if="false"><th class="text-left">DIRECCION </th><td class="whitespace-break-spaces">{{ markersInfo[markerId].direccion }}</td></tr>
+            <tr><th class="text-left">PAIS </th><td class="whitespace-break-spaces">{{ markersInfo[markerId].pais }}</td></tr>
+            <tr><th class="text-left">REGION </th><td class="whitespace-break-spaces">{{ markersInfo[markerId].region }}</td></tr>
             <tr><th class="text-left">FECHA MEDICION</th><td>{{ markersInfo[markerId].fecha }}</td></tr>
             <tr><th class="text-left">CLIMA</th><td>{{ markersInfo[markerId].clima }}</td></tr>
             <tr><th class="text-left">TEMPERATURA</th><td>{{ markersInfo[markerId].temperatura }}</td></tr>

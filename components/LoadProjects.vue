@@ -25,7 +25,7 @@
         <div class="flex justify-between">
           <div class="">
             <div class="kmz-list--item--name">
-              {{medicion.nombre_proyecto ? medicion.nombre_proyecto : medicion.direccion ? medicion.direccion : 'proyecto sin nombre' }} {{medicion.disable ? '(deshabilitado)' : ''}}
+              {{medicion.nombre_proyecto ? medicion.nombre_proyecto : medicion.direccion ? `${medicion.pais}, ${medicion.region}` : 'proyecto sin nombre' }} {{medicion.disable ? '(deshabilitado)' : ''}}
             </div>
             <div class="flex flex-wrap gap-1 items-center">
               <div v-if="medicion.data && medicion.data.tipo" class="kmz-list--item--type">
@@ -72,7 +72,7 @@ export default {
     return {
       chileCoordinates: {
         center: [-71.5, -33.5],
-        zoom: 0,
+        zoom: 0.53,
       },
       filterSclumberger: '',
       filterWenner: '',
