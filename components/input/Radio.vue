@@ -59,7 +59,7 @@ export default {
 <style lang="scss" scoped>
 .radio-container {
   display: flex;
-  width: fit-content;
+  width: fit-content !important;
   box-shadow: var(--box-shadow);
   border-radius: 4px;
   overflow: hidden;
