@@ -41,7 +41,7 @@
           </div>
           <div class="kmz-list--icons flex items-center">
             <span class="icon-container">
-              <span v-tippy :content="`${medicion.direccion ? `dirección: ${medicion.direccion}<br>`:''}lat: ${medicion.latitud}<br>lng: ${medicion.longitud}`" class="material-icons cursor-pointer">info</span>
+              <span v-tippy :content="`${medicion.pais}, ${medicion.region}<br>lat: ${medicion.latitud}<br>lng: ${medicion.longitud}`" class="material-icons cursor-pointer">info</span>
             </span>
             <span class="icon-container">
               <span
