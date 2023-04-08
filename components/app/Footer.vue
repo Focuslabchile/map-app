@@ -4,7 +4,7 @@
       <div class="grid grid-cols-6 gap-4">
         <div class="logo flex items-center col-span-6 md:col-span-2">
           <img src="/logo2.png" alt="m&z">
-          <p>Ingeniería M&Z para todos los profesioanales del sector de la energía, técnologia y contrucción.</p>
+          <p>Ingeniería M&Z para todos los profesionales del sector de la energía, técnologia y contrucción.</p>
         </div>
         <div class="col-span-6 sm:col-span-5 md:col-span-2">
           <span class="flex justify-center md:justify-start flex-col">

@@ -34,14 +34,21 @@ export default {
       default: ''
     }
   },
-  mounted() {
-    // console.log(this)
+  watch: {
+    open(val) {
+      if(val) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = 'auto'
+      }
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
 .modal {
-  z-index: 50;
+  z-index: 100;
+  overflow-y: auto;
   position: fixed;
   left: 0;
   top: 0;
@@ -54,6 +61,8 @@ export default {
   backdrop-filter: blur(2px);
   color: black;
   .modal-content {
+    position: absolute;
+    top: 0;
     padding: 10px;
     background-color: white;
     border-radius: 4px;

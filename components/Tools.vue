@@ -20,7 +20,7 @@
       <img src="/wenner.png" alt="Wenner" />
     </div>
     <div class="flex jusrify-between flex-wrap">
-      <div class="table-container grow-0">
+      <div class="table-container grow-0 pt-4 overflow-x-auto">
         <div class="table-controls mb-4">
           
           <span
@@ -251,46 +251,37 @@
     </div>
     <Modal :open.sync="chartGenerate" title="Enviar documentos">
       <form ref="senddocumentform" @submit.prevent="sendDocuments">
-        <div class="flex space-x-2 justify-between">
-          <div class="grow">
-            <FormControl name="Nombre:">
-              <InputText name="nombre" placeholder="Juan Perez" />
-            </FormControl>
-            <FormControl
-              name="E-mail:"
-              :required="true"
-              :alert="sendDocumentsData.emailEmpty"
-              alert-color="text-red-600"
-              alert-position="top"
-            >
-              <InputText name="email" placeholder="juan.perez@email.com" />
-            </FormControl>
-            <FormControl name="Nombre del proyecto:">
-              <InputText name="nombre_proyecto" placeholder="Medición para Engie Chile" />
-            </FormControl>
-          </div>
-          <div class="grow">
-            <FormControl name="Fecha medición:">
-              <InputText name="fecha" placeholder="20/02/2023"/>
-            </FormControl>
-            <FormControl name="Temperatura:">
-              <InputText name="temperatura" placeholder="25" />
-            </FormControl>
-            <FormControl name="Instrumento:">
-              <InputText name="instrumento" placeholder="Telurometro MI3290" />
-            </FormControl>
-          </div>
-          <div class="grow">
-            <FormControl name="Clima:">
-              <InputText name="clima" placeholder="Lluvioso" />
-            </FormControl>
-            <FormControl name="Sondeador:">
-              <InputText name="sondeador" placeholder="Quien que realizo el estudio" />
-            </FormControl>
-            <FormControl name="Fecha calibración:">
-              <InputText name="fecha_calibracion" placeholder="20/02/2023" />
-            </FormControl>
-          </div>
+        <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-2">
+          <FormControl class="w-full" name="Sondeador:">
+            <InputText name="sondeador" placeholder="Juan Perez" />
+          </FormControl>
+          <FormControl class="w-full"
+            name="E-mail:"
+            :required="true"
+            :alert="sendDocumentsData.emailEmpty"
+            alert-color="text-red-600"
+            alert-position="top"
+          >
+            <InputText name="email" placeholder="juan.perez@email.com" />
+          </FormControl>
+          <FormControl class="w-full" name="Nombre del proyecto:">
+            <InputText name="nombre_proyecto" placeholder="Medición para Engie Chile" />
+          </FormControl>
+          <FormControl class="w-full" name="Fecha medición:">
+            <InputText name="fecha" placeholder="20/02/2023"/>
+          </FormControl>
+          <FormControl class="w-full" name="Temperatura:">
+            <InputText name="temperatura" placeholder="25" />
+          </FormControl>
+          <FormControl class="w-full" name="Instrumento:">
+            <InputText name="instrumento" placeholder="Telurometro MI3290" />
+          </FormControl>
+          <FormControl class="w-full" name="Clima:">
+            <InputText name="clima" placeholder="Lluvioso" />
+          </FormControl>
+          <FormControl class="w-full" name="Fecha calibración:">
+            <InputText name="fecha_calibracion" placeholder="20/02/2023" />
+          </FormControl>
         </div>
         <FormControl
           name="Dirección:"
@@ -717,6 +708,11 @@ export default {
       padding: 0 10px;
     }
     tr {
+      &:not(:nth-child(1)):not(:last-child) {
+        &:hover {
+          background-color: #f5f5f5;
+        }
+      }
       td {
         text-align: center;
         input {
@@ -733,7 +729,7 @@ export default {
   top: 0;
   bottom: 0;
   height: 400px;
-  width: 700px;
+  width: 100%;
 }
 .my-location {
   background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="17">%3Cpath d="m10 2c-3.3 0-6 2.7-6 6s6 9 6 9 6-5.7 6-9-2.7-6-6-6zm0 2c2.1 0 3.8 1.7 3.8 3.8 0 1.5-1.8 3.9-2.9 5.2h-1.7c-1.1-1.4-2.9-3.8-2.9-5.2-.1-2.1 1.6-3.8 3.7-3.8z"/>%3C/svg>');

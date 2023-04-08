@@ -3,22 +3,20 @@
   <slot name="description" />
   <article :class="['map', {fullscreen:fullscreen}]">
     <Modal v-if="markersInfo[markerId]" :open.sync="projectInfoModal" :title="`Estudio de resistividad del suelo (${markersInfo[markerId].data ? markersInfo[markerId].data.tipo : ''})`">
-      <div class="flex">
-        <div class="properties-table">
+      <div class="flex flex-wrap">
+        <div class="map-table vertical-table">
           <table style="max-width: 40vw;" class="mr-4">
-            <tr><th class="text-left">NOMBRE DEL PROYECTO</th><td>{{ markersInfo[markerId].nombre_proyecto }}</td></tr>
             <tr v-if="false"><th class="text-left">DIRECCION </th><td class="whitespace-break-spaces">{{ markersInfo[markerId].direccion }}</td></tr>
             <tr><th class="text-left">PAIS </th><td class="whitespace-break-spaces">{{ markersInfo[markerId].pais }}</td></tr>
             <tr><th class="text-left">REGION </th><td class="whitespace-break-spaces">{{ markersInfo[markerId].region }}</td></tr>
             <tr><th class="text-left">FECHA MEDICION</th><td>{{ markersInfo[markerId].fecha }}</td></tr>
             <tr><th class="text-left">CLIMA</th><td>{{ markersInfo[markerId].clima }}</td></tr>
             <tr><th class="text-left">TEMPERATURA</th><td>{{ markersInfo[markerId].temperatura }}</td></tr>
-            <tr><th class="text-left">SONDEADOR</th><td>{{ markersInfo[markerId].sondeador }}</td></tr>
             <tr><th class="text-left">INSTRUMENTO</th><td>{{ markersInfo[markerId].instrumento }}</td></tr>
             <tr><th class="text-left">FECHA CALIBRACION</th><td>{{ markersInfo[markerId].fecha_calibracion }}</td></tr>
           </table>
         </div>
-        <div class="properties-table">
+        <div class="map-table">
           <table v-if="markersInfo[markerId].data" class="properties-table-horizontal text-center">
             <tr>
               <th>Nº Lecturas</th>
@@ -586,6 +584,35 @@ export default {
 @import '~assets/scss/colors.scss';
 .whitespace-break-spaces {
   white-space: break-spaces !important;
+}
+.map-table {
+  th, td {
+    padding: 0.2rem;
+    min-width: 30px;
+  }
+  tr {
+    &:not(:nth-child(1)) {
+      &:hover {
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}
+.vertical-table {
+  tr {
+    &:hover {
+      background-color: inherit !important;
+    }
+  }
+  th {
+    position: relative;
+    padding-right: 8px;
+    &:after {
+      position: absolute;
+      right: 0;
+      content: ':';
+    }
+  }
 }
 .map {
   position: relative;
