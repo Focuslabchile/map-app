@@ -30,8 +30,8 @@
             <tr v-for="item in markersInfo[markerId].data.records">
               <td>{{ item.nLectura }}</td>
               <td v-if="markersInfo[markerId].data.tipo === 'Schlumberger'">{{ item.distanciaAb2 }}</td>
-              <td v-if="markersInfo[markerId].data.tipo === 'Schlumberger'">{{ item.d }}</td>
               <td>{{ item.a }}</td>
+              <td v-if="markersInfo[markerId].data.tipo === 'Schlumberger'">{{ item.d }}</td>
               <td>{{ item.rMedidas }}</td>
               <td>{{ item.roCalculados.toFixed(2) }}</td>
             </tr>

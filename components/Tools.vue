@@ -379,17 +379,17 @@ export default {
         { nLectura: 14, a: 16.0, rMedidas:1.73 },
       ],
       dataDummie: [
-        {nLectura:	1	,distanciaAb2:1, a:1, d:0.5, rMedidas:27.7, roCalculados:65.2646625},
-        {nLectura:	2	,distanciaAb2:1.5, a:1, d:1, rMedidas:15.97, roCalculados:100.33951},
-        {nLectura:	3	,distanciaAb2:2, a:1, d:1.5, rMedidas:10.08, roCalculados:118.7487},
-        {nLectura:	4	,distanciaAb2:2.5, a:1, d:2, rMedidas:7.73, roCalculados:145.70277},
-        {nLectura:	5	,distanciaAb2:3, a:1, d:2.5, rMedidas:6.15, roCalculados:169.0519688},
-        {nLectura:	6	,distanciaAb2:3.5, a:1, d:3, rMedidas:4.12, roCalculados:155.31576},
-        {nLectura:	7	,distanciaAb2:6, a:1, d:4, rMedidas:2, roCalculados:125.66},
-        {nLectura:	8	,distanciaAb2:6.5, a:1, d:6, rMedidas:1.11, roCalculados:146.45673},
-        {nLectura:	9	,distanciaAb2:8.5, a:1, d:8, rMedidas:0.59, roCalculados:133.45092},
-        {nLectura:	10	,distanciaAb2:10.5, a:1, d:10, rMedidas:0.32, roCalculados:110.5808},
-        {nLectura:	11	,distanciaAb2:12.5, a:1, d:12, rMedidas:0.17, roCalculados:83.31258}
+        {nLectura:	1	,distanciaAb2:1, d:1, a:0.5, rMedidas:27.7, roCalculados:65.2646625},
+        {nLectura:	2	,distanciaAb2:1.5, d:1, a:1, rMedidas:15.97, roCalculados:100.33951},
+        {nLectura:	3	,distanciaAb2:2, d:1, a:1.5, rMedidas:10.08, roCalculados:118.7487},
+        {nLectura:	4	,distanciaAb2:2.5, d:1, a:2, rMedidas:7.73, roCalculados:145.70277},
+        {nLectura:	5	,distanciaAb2:3.5, d:1, a:3, rMedidas:6.15, roCalculados:155.31576},
+        {nLectura:	6	,distanciaAb2:6, d:1, a:4, rMedidas:4.12, roCalculados:125.66},
+        {nLectura:	7	,distanciaAb2:3, d:1, a:5.5, rMedidas:2, roCalculados:169.0519688},
+        {nLectura:	8	,distanciaAb2:6.5, d:1, a:8, rMedidas:1.11, roCalculados:146.45673},
+        {nLectura:	9	,distanciaAb2:8.5, d:1, a:9, rMedidas:0.59, roCalculados:133.45092},
+        {nLectura:	10	,distanciaAb2:10.5, d:1, a:11, rMedidas:0.32, roCalculados:110.5808},
+        {nLectura:	11	,distanciaAb2:12.5, d:1, a:20, rMedidas:0.17, roCalculados:83.31258}
       ],
     }
   },
