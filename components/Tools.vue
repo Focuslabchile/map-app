@@ -59,17 +59,6 @@
             </td>
             <td>
               <template v-if="!schlumbergerEditList.includes(index)">
-                {{ item.d }}
-              </template>
-              <input
-                v-else
-                @keypress.enter="editRecord(index)"
-                class="rounded-lg border-1 border-gray-500 text-center p-1"
-                v-model="schlumbergerRecords[index].d"
-              >
-            </td>
-            <td>
-              <template v-if="!schlumbergerEditList.includes(index)">
                 {{ item.a }}
               </template>
               <input
@@ -77,6 +66,17 @@
                 @keypress.enter="editRecord(index)"
                 class="rounded-lg border-1 border-gray-500 text-center p-1"
                 v-model="schlumbergerRecords[index].a"
+              >
+            </td>
+            <td>
+              <template v-if="!schlumbergerEditList.includes(index)">
+                {{ item.d }}
+              </template>
+              <input
+                v-else
+                @keypress.enter="editRecord(index)"
+                class="rounded-lg border-1 border-gray-500 text-center p-1"
+                v-model="schlumbergerRecords[index].d"
               >
             </td>
             <td>
