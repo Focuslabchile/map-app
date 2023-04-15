@@ -15,6 +15,7 @@
             <tr><th class="text-left">INSTRUMENTO</th><td>{{ markersInfo[markerId].instrumento }}</td></tr>
             <tr><th class="text-left">FECHA CALIBRACION</th><td>{{ markersInfo[markerId].fecha_calibracion }}</td></tr>
           </table>
+          <canvas :id="chartId"></canvas>
         </div>
         <div class="map-table">
           <table v-if="markersInfo[markerId].data" class="properties-table-horizontal text-center">
@@ -167,12 +168,14 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw"
 import * as turf from '@turf/turf'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import ChartMixin from '../utils/ChartMixin'
 
 export default {
+  mixins: [ChartMixin],
   data () {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
-    mapbox://styles/sebakc/cl0d7xql7000y14qnuj9i507f
     return {
+      chartId: 'small_logaritmic_chart',
       markers: {},
       markerId: '',
       markersInfo: {},
@@ -216,6 +219,19 @@ export default {
           this.map.addControl(new mapboxgl.ScaleControl())
           //this.map.addControl(new mapboxgl.FullscreenControl())
         }
+      }
+    }
+  },
+  watch: {
+    projectInfoModal(){
+      if(this.projectInfoModal){
+        this.formulaType = this.markersInfo[this.markerId].data.tipo
+        this.schlumbergerRecords = this.markersInfo[this.markerId].data.records
+        this.wennerRecords = this.markersInfo[this.markerId].data.records
+        setTimeout(() => {
+          this.startChart()
+          this.drawChart()
+        }, 100)
       }
     }
   },
@@ -557,6 +573,7 @@ export default {
     }
   },
   mounted() {
+    this.startChart()
     document.addEventListener('keypress', (e) => {
       let pattern = sessionStorage.getItem('showProjects')
       pattern = pattern ? pattern : ''
@@ -573,7 +590,6 @@ export default {
     this.init()
     document.addEventListener('dark-mode', (e) => {
       this.mapbox.mode = e.detail ? 'dark' : 'light'
-      // if(this.mapType !== 'Mapa') return
       this.mapbox.init()
       this.init()
     })

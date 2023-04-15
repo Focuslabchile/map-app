@@ -3,13 +3,13 @@
     <p class="my-8">Con herramienta podras crear tablas y gráficos para el estudio de tierras usando los métodos de <strong>Wenner</strong> y <strong>Schlumberger</strong>. Los usuarios pueden ingresar los datos de resistencia eléctrica y profundidad, y exportar los resultados en un gráfico en escala logarítmica y formato PDF.</p>
     <div class="filters mb-4">
       <InputRadio
-        @update="(val) => formulaTab = val"
+        @update="(val) => formulaType = val"
         group-name="formula_type"
-        :value="formulaTab"
+        :value="formulaType"
         :options="['Schlumberger', 'Wenner']"
       />
     </div>
-    <div class="flex flex-col lg:flex-row items-center" v-if="formulaTab === 'Schlumberger'">
+    <div class="flex flex-col lg:flex-row items-center" v-if="formulaType === 'Schlumberger'">
       <p>La resistividad del suelo Schlumberger es una técnica de investigación geofísica empleada para medir la resistividad eléctrica de los diferentes estratos del subsuelo. Esta técnica es fundamental en la identificación de estructuras geológicas, detección de agua subterránea y en la exploración de recursos minerales, entre otras aplicaciones. El método Schlumberger utiliza una configuración de electrodos específica, donde dos electrodos de corriente (A y B) inyectan una corriente eléctrica en el suelo y dos electrodos de potencial (M y N) miden la diferencia de potencial generada. La resistividad se calcula utilizando las mediciones de corriente y potencial, así como las distancias entre los electrodos.</p>
       <img src="/schlumberger.png" alt="Schlumberger" />
     </div>
@@ -43,7 +43,7 @@
             </span>
           </span>
         </div>
-        <table v-if="formulaTab === 'Schlumberger'" id="schlumberger-table" class="table table-logaritmic">
+        <table v-if="formulaType === 'Schlumberger'" id="schlumberger-table" class="table table-logaritmic">
           <tr>
             <th>Nº<br>Lecturas</th>
             <th>DISTANCIA<br>AB/2</th>
@@ -140,7 +140,7 @@
             <td></td>
           </tr>
         </table>
-        <table v-if="formulaTab=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
+        <table v-if="formulaType=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
           <tr>
             <th>Nº<br>Lecturas</th>
             <th>A</th>
@@ -219,19 +219,19 @@
         </span>
       </button>
       <span
-        v-if="formulaTab === 'Schlumberger'"
+        v-if="formulaType === 'Schlumberger'"
         @click="schlumbergerRecords = dataDummie"
         class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
       >dummie data
       </span>
       <span
-        v-if="formulaTab === 'Wenner'"
+        v-if="formulaType === 'Wenner'"
         @click="wennerRecords = wennerDataDummie"
         class="mx-2 create-record rounded-lg border-2 border-gray-500 p-1 cursor-pointer"
       >dummie data
       </span>
     </div>
-    <div v-if="showChart && formulaTab === 'Schlumberger'" class="my-4">
+    <div v-if="showChart && formulaType === 'Schlumberger'" class="my-4">
       <span class="text-red-600" v-if="schlumbergerRecords.find(el => !validationRoCalculados(el))">
         Los datos ingresados son inconsistentes por lo que el gráfico no es válido.
         <br>
@@ -247,7 +247,7 @@
       v-show="showChart"
       class="mt-8"
     >
-      <canvas id="logaritmic_chart"></canvas>
+      <canvas :id="chartId"></canvas>
     </div>
     <Modal :open.sync="chartGenerate" title="Enviar documentos">
       <form ref="senddocumentform" @submit.prevent="sendDocuments">
@@ -318,20 +318,19 @@
   </section>
 </template>
 <script>
-import Chart from 'chart.js/auto'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import MapboxDraw from "@mapbox/mapbox-gl-draw"
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
+import ChartMixin from '../utils/ChartMixin'
 export default {
   name: 'Herramientas',
-  components: {
-    Chart
-  },
+  mixins: [ChartMixin],
   data() {
     return {
+      chartId: 'logaritmic_chart',
       pais: '',
       region: '',
       disabled: false,
@@ -345,7 +344,7 @@ export default {
       coordinates: [],
       showChart: false,
       chartGenerate: false,
-      formulaTab: 'Schlumberger',
+      formulaType: 'Schlumberger',
       schlumbergerRecordBlank: {
         nLectura: null,
         distanciaAb2: null,
@@ -360,8 +359,6 @@ export default {
         rMedidas: null,
         roCalculados: null,
       },
-      wennerRecords: [],
-      schlumbergerRecords: [],
       wennerDataDummie: [
         { nLectura: 1, a: 0.6, rMedidas:133.7 },
         { nLectura: 2, a: 0.8, rMedidas:158.9 },
@@ -394,52 +391,7 @@ export default {
     }
   },
   mounted() {
-    this.chart = new Chart(
-      document.getElementById('logaritmic_chart'),
-      {
-        type: 'line',
-        data: {
-          datasets: [{
-            label: 'Gráfico logarítmico',
-            data: [],
-            pointBackgroundColor: 'rgba(54, 196, 240, 1)'
-          }]
-        },
-        options: {
-          tension: 0.4,
-          scales: {
-            x: {
-              type: 'logarithmic',
-              title: {
-                display: true,
-                text: 'DISTANCIA AB/2'
-              },
-              min: 0,
-              max: 100,
-              ticks: {
-                callback: function(value, index, values) {
-                  return Number(value.toString()); // convert to number
-                }
-              }
-            },
-            y: {
-              type: 'logarithmic',
-              title: {
-                display: true,
-                text: 'RESISTIVIDAD (Ωm)'
-              },
-              min: 0,
-              max: 100,
-              ticks: {
-                callback: function(value, index, values) {
-                  return Number(value.toString()); // convert to number
-                }
-              }
-            }
-          }
-        }
-      }
-    )
+    this.startChart()
   },
   methods: {
     async sendDocuments(e) {
@@ -458,9 +410,9 @@ export default {
       }
       this.sendDocumentsData.emailEmpty = ''
       this.sendDocumentsData.directionEmpty = ''
-      const chartData = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
+      const chartData = this.formulaType === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
 
-      const chart = document.getElementById('logaritmic_chart').toDataURL()
+      const chart = document.getElementById(this.chartId).toDataURL()
 
       const data = {}
       const appendData = (keys) => {
@@ -488,7 +440,7 @@ export default {
       this.$axios.post('api/logarithmic-charts', {
         data: {
           ...data,
-          formulaTab: this.formulaTab,
+          formulaType: this.formulaType,
           latitud: this.coordinates[0],
           longitud: this.coordinates[1],
           direccion: this.direccion,
@@ -498,7 +450,7 @@ export default {
           csv,
           data: {
             records: chartData,
-            tipo: this.formulaTab,
+            tipo: this.formulaType,
             latitud: this.coordinates[0],
             longitud: this.coordinates[1],
             direccion: this.direccion,
@@ -527,7 +479,7 @@ export default {
       return (Math.PI * a * (a + d) * r)/d
     },
     validationRoCalculados(item) {
-      if (this.formulaTab === 'Wenner') return true
+      if (this.formulaType === 'Wenner') return true
       const d = Number(item.d)
       const a = Number(item.a)
       const r = Number(item.rMedidas)
@@ -551,7 +503,7 @@ export default {
       return 2 * Math.PI * (a) * rMedidas
     },
     editRecord(index) {
-      const item = this.formulaTab === 'Schlumberger' ? this.schlumbergerEditList : this.wennerEditList
+      const item = this.formulaType === 'Schlumberger' ? this.schlumbergerEditList : this.wennerEditList
       if(item.includes(index)) {
         item.splice(item.indexOf(index), 1)
       } else {
@@ -603,58 +555,23 @@ export default {
       }, 100)
     },
     setCoordinates(item) {
-      console.log(item)
       this.region = item.context.find(el => el.id.includes('region')).text
       this.pais = item.context.find(el => el.id.includes('country')).text
       this.direccion = item.place_name_es
       this.coordinates = item.center
-    },
-    drawChart() {
-      this.showChart = true
-
-      if(this.formulaTab === 'Schlumberger') {
-        this.schlumbergerRecords.forEach(item => {
-          item.distanciaAb2 = this.schlumbergerGetAb(item)
-          item.roCalculados = this.schlumbergerGetRoCalculados(item)
-        })
-      } else {
-        this.wennerRecords.forEach(item => {
-          item.roCalculados = this.wennerGetRoCalculados(item)
-        })
-      }
-      const data = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
-      const chartData = data
-        .map(item => {
-          return {
-            x: this.formulaTab === 'Schlumberger' ? item.distanciaAb2 : item.a,
-            y: item.roCalculados
-          }
-        })
-
-      const maxY = chartData.reduce((max, obj) => {
-        return obj.y > max ? obj.y : max
-      }, 0)
-      
-      this.chart.options.scales.x.title.text = this.formulaTab === 'Schlumberger' ? 'DISTANCIA AB/2' : 'DISTANCIA A'
-      this.chart.data.datasets[0].data = chartData
-      this.chart.options.scales.y.min = 0
-      this.chart.options.scales.y.max = Math.pow(10, Math.ceil(Math.log10(maxY)))
-      this.chart.update()
-
-      this.$toast.success('Gráfico generado correctamente');
     },
     sendChart() {
       this.chartGenerate = true
       this.drawMap()
     },
     addRecord() {
-      const item = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecordBlank : this.wennerRecordBlank
-      const items = this.formulaTab === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
+      const item = this.formulaType === 'Schlumberger' ? this.schlumbergerRecordBlank : this.wennerRecordBlank
+      const items = this.formulaType === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
 
       item.a = Number(item.a?.replace(',', '.'))
       item.rMedidas = Number(item.rMedidas?.replace(',', '.'))
       
-      if (this.formulaTab === 'Schlumberger') {
+      if (this.formulaType === 'Schlumberger') {
         item.d = Number(item.d?.replace(',', '.'))
         if (!item.a || !item.d || !item.rMedidas) {
           item.a = ''
@@ -670,7 +587,7 @@ export default {
         }
       }
 
-      if(this.formulaTab === 'Schlumberger') {
+      if(this.formulaType === 'Schlumberger') {
         this.schlumbergerRecords.push({
           ...item,
           nLectura: items.length + 1,
