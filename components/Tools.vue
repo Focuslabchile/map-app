@@ -45,6 +45,11 @@
         </div>
         <table v-if="formulaType === 'Schlumberger'" id="schlumberger-table" class="table table-logaritmic">
           <tr>
+            <th colspan="4"></th>
+            <th><input v-model="rType" :class="{disabled: schlumbergerRecords.length}" value="r_medidas" type="radio" name="r_type"></th>
+            <th><input v-model="rType" :class="{disabled: schlumbergerRecords.length}" value="ro_calculados" type="radio" name="r_type"></th>
+          </tr>
+          <tr>
             <th>Nº<br>Lecturas</th>
             <th>DISTANCIA<br>AB/2</th>
             <th>a</th>
@@ -80,27 +85,39 @@
               >
             </td>
             <td>
-              <template v-if="!schlumbergerEditList.includes(index)">
-                {{ item.rMedidas }}
+              <template v-if="rType === 'r_medidas'">
+                <template v-if="!schlumbergerEditList.includes(index)">
+                  {{ item.rMedidas }}
+                </template>
+                <input
+                  v-else
+                  @keypress.enter="editRecord(index)"
+                  class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  v-model="schlumbergerRecords[index].rMedidas"
+                >
               </template>
-              <input
-                v-else
-                @keypress.enter="editRecord(index)"
-                class="rounded-lg border-1 border-gray-500 text-center p-1"
-                v-model="schlumbergerRecords[index].rMedidas"
-              >
+              <template v-if="rType === 'ro_calculados'">
+                <span>
+                  {{ schlumbergerGetR(item).toFixed(2) }}
+                </span>
+              </template>
             </td>
             <td>
-              <span v-if="validationRoCalculados(item)" class="p-1">
-                {{ schlumbergerGetRoCalculados(item).toFixed(2) }}
-              </span>
-              <span
-                v-else
-                v-tippy
-                content="Hay inconsistencias en los datos ingresados"
-                class="bg-red-600 text-white p-1"
-              >
-                {{ schlumbergerGetRoCalculados(item).toFixed(2) }}
+              <template v-if="rType === 'r_medidas'">
+                <span v-if="validationRoCalculados(item)" class="p-1">
+                  {{ schlumbergerGetRoCalculados(item).toFixed(2) }}
+                </span>
+                <span
+                  v-else
+                  v-tippy
+                  content="Hay inconsistencias en los datos ingresados"
+                  class="bg-red-600 text-white p-1"
+                >
+                  {{ schlumbergerGetRoCalculados(item).toFixed(2) }}
+                </span>
+              </template>
+              <span v-if="rType === 'ro_calculados'">
+                {{ item.roCalculados.toFixed(2) }}
               </span>
             </td>
             <td>
@@ -131,13 +148,23 @@
               >
             </td>
             <td>
-              <input
-                @keypress.enter="addRecord()"
-                class="rounded-lg border-1 border-gray-500 text-center p-1"
-                v-model="schlumbergerRecordBlank.rMedidas"
-              >
+              <template v-if="rType === 'r_medidas'">
+                <input
+                  @keypress.enter="addRecord()"
+                  class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  v-model="schlumbergerRecordBlank.rMedidas"
+                >
+              </template>
             </td>
-            <td></td>
+            <td>
+              <template v-if="rType === 'ro_calculados'">
+                <input
+                  @keypress.enter="addRecord()"
+                  class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  v-model="schlumbergerRecordBlank.roCalculados"
+                >
+              </template>
+            </td>
           </tr>
         </table>
         <table v-if="formulaType=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
@@ -331,6 +358,7 @@ export default {
   data() {
     return {
       chartId: 'logaritmic_chart',
+      rType: 'r_medidas',
       pais: '',
       region: '',
       disabled: false,
@@ -469,40 +497,8 @@ export default {
           this.chartGenerate = false
         })
     },
-    schlumbergerGetAb(item) {
-      return (Number(item.d) / 2) + Number(item.a)
-    },
-    schlumbergerGetRoCalculados(item) {
-      const d = Number(item.d)
-      const a = Number(item.a)
-      const r = Number(item.rMedidas)
-      return (Math.PI * a * (a + d) * r)/d
-    },
-    validationRoCalculados(item) {
-      if (this.formulaType === 'Wenner') return true
-      const d = Number(item.d)
-      const a = Number(item.a)
-      const r = Number(item.rMedidas)
-      const ab = this.schlumbergerGetAb(item)
-
-      const magabras = (2 * Math.PI * r) * (d/ 2) * ((ab/d)**2 - (1 / 4))
-      const schlumberger = this.schlumbergerGetRoCalculados(item)
-      const val4 = Math.PI * r * d * ((ab**2 / d**2) - (1 / 4))
-
-      const accuracy = 0.002 // 0.2%
-      const threshold = 1 + accuracy
-
-      const minValue = Math.min(magabras, schlumberger, val4)
-      const maxValue = Math.max(magabras, schlumberger, val4)
-
-      return maxValue / minValue <= threshold
-    },
-    wennerGetRoCalculados(item) {
-      const a = Number(item.a)
-      const rMedidas = Number(item.rMedidas)
-      return 2 * Math.PI * (a) * rMedidas
-    },
     editRecord(index) {
+      console.log(index);
       const item = this.formulaType === 'Schlumberger' ? this.schlumbergerEditList : this.wennerEditList
       if(item.includes(index)) {
         item.splice(item.indexOf(index), 1)
@@ -565,19 +561,31 @@ export default {
       this.drawMap()
     },
     addRecord() {
+      console.log(1,this.schlumbergerRecordBlank);
       const item = this.formulaType === 'Schlumberger' ? this.schlumbergerRecordBlank : this.wennerRecordBlank
       const items = this.formulaType === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
-
+      console.log(2,{...this.schlumbergerRecordBlank});
+      
       item.a = Number(item.a?.replace(',', '.'))
       item.rMedidas = Number(item.rMedidas?.replace(',', '.'))
+      item.roCalculados = Number(item.roCalculados?.replace(',', '.'))
       
       if (this.formulaType === 'Schlumberger') {
         item.d = Number(item.d?.replace(',', '.'))
-        if (!item.a || !item.d || !item.rMedidas) {
-          item.a = ''
-          item.d = ''
-          item.rMedidas = ''
-          return
+        if (this.rType==='r_medidas') {
+          if (!item.a || !item.d || !item.rMedidas) {
+            item.a = ''
+            item.d = ''
+            item.rMedidas = ''
+            return
+          }
+        } else if (this.rType==='ro_calculados') {
+          if (!item.a || !item.d || !item.roCalculados) {
+            item.a = ''
+            item.d = ''
+            item.roCalculados = ''
+            return
+          }
         }
       } else {
         if (!item.a || !item.rMedidas) {
@@ -602,6 +610,7 @@ export default {
 
       item.a = ''
       item.rMedidas = ''
+      item.roCalculados = ''
       this.$refs.a.focus()
     },
   }
@@ -626,8 +635,9 @@ export default {
     }
     tr {
       &:not(:nth-child(1)):not(:last-child) {
+        position: relative;
         &:hover {
-          background-color: #f5f5f5;
+          background-color: rgba(0, 0, 0, 0.1);
         }
       }
       td {

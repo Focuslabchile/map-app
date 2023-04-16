@@ -17,6 +17,12 @@ export default {
     schlumbergerGetAb(item) {
       return (Number(item.d) / 2) + Number(item.a)
     },
+    schlumbergerGetR(item) {
+      const d = Number(item.d)
+      const a = Number(item.a)
+      const RO = Number(item.roCalculados)
+      return (RO * d) / (Math.PI * a * (a + d))
+    },
     schlumbergerGetRoCalculados(item) {
       const d = Number(item.d)
       const a = Number(item.a)
@@ -100,10 +106,17 @@ export default {
     drawChart() {
       this.showChart = true
       if(this.formulaType === 'Schlumberger') {
-        this.schlumbergerRecords.forEach(item => {
-          item.distanciaAb2 = this.schlumbergerGetAb(item)
-          item.roCalculados = this.schlumbergerGetRoCalculados(item)
-        })
+        if (this.rType === 'r_medidas') {
+          this.schlumbergerRecords.forEach(item => {
+            item.distanciaAb2 = this.schlumbergerGetAb(item)
+            item.roCalculados = this.schlumbergerGetRoCalculados(item)
+          })
+        } else if (this.rType === 'ro_calculados') {
+          this.schlumbergerRecords.forEach(item => {
+            item.distanciaAb2 = this.schlumbergerGetAb(item)
+            item.rMedidas = this.schlumbergerGetR(item)
+          })
+        }
       } else {
         this.wennerRecords.forEach(item => {
           item.roCalculados = this.wennerGetRoCalculados(item)
