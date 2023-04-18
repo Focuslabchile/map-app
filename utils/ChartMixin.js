@@ -55,8 +55,8 @@ export default {
     },
     startChart() {
       const el = document.getElementById(this.chartId)
-      el.addEventListener("contextmenu", e => e.preventDefault())
       if(el === null) return
+      el.addEventListener("contextmenu", e => e.preventDefault())
       this.chart = new Chart(
         el,
         {
