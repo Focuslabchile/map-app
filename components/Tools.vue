@@ -87,7 +87,7 @@
             <td>
               <template v-if="rType === 'r_medidas'">
                 <template v-if="!schlumbergerEditList.includes(index)">
-                  {{ item.rMedidas }}
+                  {{ item.rMedidas.toFixed(2) }}
                 </template>
                 <input
                   v-else
@@ -259,7 +259,7 @@
       </span>
     </div>
     <div v-if="showChart && formulaType === 'Schlumberger'" class="my-4">
-      <span class="text-red-600" v-if="schlumbergerRecords.find(el => !validationRoCalculados(el))">
+      <span class="text-red-600" v-if="rType !== 'ro_calculados' && schlumbergerRecords.find(el => !validationRoCalculados(el))">
         Los datos ingresados son inconsistentes por lo que el gráfico no es válido.
         <br>
         <strong>
