@@ -103,7 +103,6 @@ export default {
           return el.region.includes(this.region)
         })
       }
-      console.log(kmzs.length)
       if (this.filter !== '0') {
         kmzs = kmzs.filter(el => {
           return el.category.includes(this.filter)

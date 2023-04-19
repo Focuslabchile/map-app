@@ -53,6 +53,11 @@ export default {
       const rMedidas = Number(item.rMedidas)
       return 2 * Math.PI * (a) * rMedidas
     },
+    wennerGetR(item) {
+      const a = Number(item.a)
+      const roCalculados = Number(item.roCalculados)
+      return roCalculados / (2 * Math.PI * (a))
+    },
     startChart() {
       const el = document.getElementById(this.chartId)
       if(el === null) return
@@ -119,9 +124,15 @@ export default {
           })
         }
       } else {
-        this.wennerRecords.forEach(item => {
-          item.roCalculados = this.wennerGetRoCalculados(item)
-        })
+        if (this.rType === 'r_medidas') {
+          this.wennerRecords.forEach(item => {
+            item.roCalculados = this.wennerGetRoCalculados(item)
+          })
+        } else if (this.rType === 'ro_calculados') {
+          this.wennerRecords.forEach(item => {
+            item.rMedidas = this.wennerGetR(item)
+          })
+        }
       }
       const data = this.formulaType === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
       const chartData = data

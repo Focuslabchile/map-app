@@ -169,6 +169,11 @@
         </table>
         <table v-if="formulaType=== 'Wenner'" id="wenner-table" class="table table-logaritmic">
           <tr>
+            <th colspan="2"></th>
+            <th><input v-model="rType" :class="{disabled: wennerRecords.length}" value="r_medidas" type="radio" name="r_type"></th>
+            <th><input v-model="rType" :class="{disabled: wennerRecords.length}" value="ro_calculados" type="radio" name="r_type"></th>
+          </tr>
+          <tr>
             <th>Nº<br>Lecturas</th>
             <th>A</th>
             <th>R<br>Medidas</th>
@@ -188,17 +193,29 @@
               >
             </td>
             <td>
-              <template v-if="!wennerEditList.includes(index)">
-                {{ item.rMedidas }}
+              <template v-if="rType === 'r_medidas'">
+                <template v-if="!wennerEditList.includes(index)">
+                  {{ item.rMedidas.toFixed(2) }}
+                </template>
+                <input
+                  v-else
+                  @keypress.enter="editRecord(index)"
+                  class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  v-model="wennerRecords[index].rMedidas"
+                >
               </template>
-              <input
-                v-else
-                @keypress.enter="editRecord(index)"
-                class="rounded-lg border-1 border-gray-500 text-center p-1"
-                v-model="wennerRecords[index].rMedidas"
-              >
+              <template v-if="rType === 'ro_calculados'">
+                {{ wennerGetR(item).toFixed(2) }}
+              </template>
             </td>
-            <td>{{ wennerGetRoCalculados(item).toFixed(2) }}</td>
+            <td>
+              <template v-if="rType === 'r_medidas'">
+                {{ wennerGetRoCalculados(item).toFixed(2) }}
+              </template>
+              <template v-if="rType === 'ro_calculados'">
+                {{ item.roCalculados.toFixed(2) }}
+              </template>
+            </td>
             <td>
               <button
                 @click="editRecord(index)"
@@ -219,13 +236,23 @@
               >
             </td>
             <td>
-              <input
-                @keypress.enter="addRecord()"
-                class="rounded-lg border-1 border-gray-500 text-center p-1"
-                v-model="wennerRecordBlank.rMedidas"
-              >
+              <template v-if="rType === 'r_medidas'">
+                <input
+                  @keypress.enter="addRecord()"
+                  class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  v-model="wennerRecordBlank.rMedidas"
+                >
+              </template>
             </td>
-            <td></td>
+            <td>
+              <template v-if="rType === 'ro_calculados'">
+                <input
+                  @keypress.enter="addRecord()"
+                  class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  v-model="wennerRecordBlank.roCalculados"
+                >
+              </template>
+            </td>
           </tr>
         </table>
       </div>
@@ -498,7 +525,6 @@ export default {
         })
     },
     editRecord(index) {
-      console.log(index);
       const item = this.formulaType === 'Schlumberger' ? this.schlumbergerEditList : this.wennerEditList
       if(item.includes(index)) {
         item.splice(item.indexOf(index), 1)
@@ -561,10 +587,8 @@ export default {
       this.drawMap()
     },
     addRecord() {
-      console.log(1,this.schlumbergerRecordBlank);
       const item = this.formulaType === 'Schlumberger' ? this.schlumbergerRecordBlank : this.wennerRecordBlank
       const items = this.formulaType === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
-      console.log(2,{...this.schlumbergerRecordBlank});
       
       item.a = Number(item.a?.replace(',', '.'))
       item.rMedidas = Number(item.rMedidas?.replace(',', '.'))
@@ -588,10 +612,18 @@ export default {
           }
         }
       } else {
-        if (!item.a || !item.rMedidas) {
-          item.a = ''
-          item.rMedidas = ''
-          return
+        if (this.rType==='r_medidas') {
+          if (!item.a || !item.rMedidas) {
+            item.a = ''
+            item.rMedidas = ''
+            return
+          }
+        } else if (this.rType==='ro_calculados') {
+          if (!item.a || !item.roCalculados) {
+            item.a = ''
+            item.roCalculados = ''
+            return
+          }
         }
       }
 
