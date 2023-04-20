@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <AppSection>
     <p class="my-8">Con herramienta podras crear tablas y gráficos para el estudio de tierras usando los métodos de <strong>Wenner</strong> y <strong>Schlumberger</strong>. Los usuarios pueden ingresar los datos de resistencia eléctrica y profundidad, y exportar los resultados en un gráfico en escala logarítmica y formato PDF.</p>
     <div class="filters mb-4">
       <InputRadio
@@ -369,7 +369,7 @@
         </FormControl>
       </template>
     </Modal>
-  </section>
+  </AppSection>
 </template>
 <script>
 import mapboxgl from 'mapbox-gl'

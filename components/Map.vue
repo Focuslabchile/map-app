@@ -87,12 +87,26 @@
         </table>
       </div>
     </div>
-    <div class="map-filters">
+    <div class="map-filters flex gap-2">
       <InputRadio
         @update="switchStyle"
         group-name="map_type"
         :value="mapType"
         :options="['Mapa', 'Satelite']"
+      />
+      <InputRadio
+        @update="(val) => filterSclumberger = val"
+        group-name="filter_type_schlumberger"
+        :allow-empty="true"
+        :value="filterSclumberger"
+        :options="['Schlumberger']"
+      />
+      <InputRadio
+        @update="(val) => filterWenner = val"
+        group-name="filter_type_wenner"
+        :allow-empty="true"
+        :value="filterWenner"
+        :options="['Wenner']"
       />
     </div>
     <div :class="['map-info', {open:menu}]">
@@ -109,7 +123,6 @@
         <div class="map-info-tabs sticky top-0 secondary">
           <div @click="tab = 'mis-zonas'" :class="['map-info-tabs--item', {active: tab === 'mis-zonas'}]">Mis zonas</div>
           <div @click="tab = 'kmz'" :class="['map-info-tabs--item', {active: tab === 'kmz'}]">KMZ</div>
-          <div v-if="showProyectos" @click="tab = 'mis-proyectos'" :class="['map-info-tabs--item', {active: tab === 'mis-proyectos'}]">Proyectos</div>
           <div v-if="description" @click="tab = 'description'" :class="['map-info-tabs--item', {active: tab === 'description'}]">Descripcion</div>
         </div>
         <div v-show="tab === 'description'" class="pt-3 map-feature-description" v-html="description"></div>
@@ -156,7 +169,6 @@
           </div>
         </div>
         <load-kmz :map="mapbox.map" class="p-3" v-show="tab === 'kmz'" />
-        <load-projects class="p-3" v-show="tab === 'mis-proyectos'" />
       </div>
     </div>
   </article>
@@ -169,9 +181,10 @@ import * as turf from '@turf/turf'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import ChartMixin from '../utils/ChartMixin'
+import MedicionesMixin from '../utils/MedicionesMixin'
 
 export default {
-  mixins: [ChartMixin],
+  mixins: [ChartMixin, MedicionesMixin],
   data () {
     const MAPBOX_API_URL = this.$config.mapboxApiUrl
     return {
@@ -181,7 +194,6 @@ export default {
       markersInfo: {},
       projectInfoModal: false,
       markerInfo: {},
-      showProyectos: false,
       showProperties: true,
       clearLayers: false,
       tab: 'mis-zonas',
@@ -574,15 +586,6 @@ export default {
   },
   mounted() {
     this.startChart()
-    document.addEventListener('keypress', (e) => {
-      let pattern = sessionStorage.getItem('showProjects')
-      pattern = pattern ? pattern : ''
-      pattern += e.key
-      sessionStorage.setItem('showProjects', pattern)
-      if(pattern.includes('123123')) {
-        this.showProyectos = true
-      }
-    })
     localStorage.getItem('darkMode') === 'true' ? this.mapbox.mode = 'dark' : this.mapbox.mode = 'light'
     this.mapbox.init({
         style: this.getStyle()

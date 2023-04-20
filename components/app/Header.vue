@@ -26,15 +26,21 @@
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link @click.native="menu = false" to="/#contacto">
+              <nuxt-link @click.native="menu = false" to="/estudio-de-resistividad-de-suelo">
                 <span class="material-icons">contact_support</span>
-                <span>Contacto</span>
+                <span>Sev</span>
               </nuxt-link>
             </li>
             <li>
               <nuxt-link @click.native="menu = false" to="/servicios">
                 <span class="material-icons">electrical_services</span>
                 <span>Servicios</span>
+              </nuxt-link>
+            </li>
+            <li>
+              <nuxt-link @click.native="menu = false" to="/#contacto">
+                <span class="material-icons">contact_support</span>
+                <span>Contacto</span>
               </nuxt-link>
             </li>
             <li class="flex items-center justify-center last">

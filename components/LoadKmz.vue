@@ -70,8 +70,10 @@ import JSZipUtils from 'jszip-utils'
 import { loadAsync } from 'jszip'
 import toGeoJSON from '@mapbox/togeojson'
 import { v4 as uuidv4 } from 'uuid';
+import MedicionesMixin from '../utils/MedicionesMixin'
 
 export default {
+  mixins: [MedicionesMixin],
   components: { FormControl },
   props: {
     map: {

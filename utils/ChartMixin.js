@@ -152,8 +152,6 @@ export default {
       this.chart.options.scales.y.min = 0
       this.chart.options.scales.y.max = Math.pow(10, Math.ceil(Math.log10(maxY)))
       this.chart.update()
-
-      this.$toast.success('Gráfico generado correctamente');
     }
   }
 }
