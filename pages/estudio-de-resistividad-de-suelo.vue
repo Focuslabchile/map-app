@@ -87,7 +87,7 @@
             <td>
               <template v-if="rType === 'r_medidas'">
                 <template v-if="!schlumbergerEditList.includes(index)">
-                  {{ item.rMedidas.toFixed(2) }}
+                  {{ Number(item.rMedidas).toFixed(2) }}
                 </template>
                 <input
                   v-else
@@ -117,7 +117,15 @@
                 </span>
               </template>
               <span v-if="rType === 'ro_calculados'">
-                {{ item.roCalculados.toFixed(2) }}
+                <template v-if="!schlumbergerEditList.includes(index)">
+                  {{ Number(item.roCalculados).toFixed(2) }}
+                </template>
+                <input
+                  v-else
+                  @keypress.enter="editRecord(index)"
+                  class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  v-model="schlumbergerRecords[index].roCalculados"
+                >
               </span>
             </td>
             <td>
@@ -195,7 +203,7 @@
             <td>
               <template v-if="rType === 'r_medidas'">
                 <template v-if="!wennerEditList.includes(index)">
-                  {{ item.rMedidas.toFixed(2) }}
+                  {{ Number(item.rMedidas).toFixed(2) }}
                 </template>
                 <input
                   v-else
@@ -213,7 +221,15 @@
                 {{ wennerGetRoCalculados(item).toFixed(2) }}
               </template>
               <template v-if="rType === 'ro_calculados'">
-                {{ item.roCalculados.toFixed(2) }}
+                <template v-if="!wennerEditList.includes(index)">
+                  {{ Number(item.roCalculados).toFixed(2) }}
+                </template>
+                <input
+                  v-else
+                  @keypress.enter="editRecord(index)"
+                  class="rounded-lg border-1 border-gray-500 text-center p-1"
+                  v-model="wennerRecords[index].roCalculados"
+                >
               </template>
             </td>
             <td>
