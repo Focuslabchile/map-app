@@ -605,10 +605,13 @@ export default {
     addRecord() {
       const item = this.formulaType === 'Schlumberger' ? this.schlumbergerRecordBlank : this.wennerRecordBlank
       const items = this.formulaType === 'Schlumberger' ? this.schlumbergerRecords : this.wennerRecords
-      
-      item.a = Number(item.a?.replace(',', '.'))
-      item.rMedidas = Number(item.rMedidas?.replace(',', '.'))
-      item.roCalculados = Number(item.roCalculados?.replace(',', '.'))
+      item.a = Number(item?.a?.replace(',', '.'))
+      if(typeof item?.rMedidas === 'string') {
+        item.rMedidas = Number(item?.rMedidas?.replace(',', '.'))
+      }
+      if(typeof item?.roCalculados === 'string') {
+        item.roCalculados = Number(item?.roCalculados?.replace(',', '.'))
+      }
       
       if (this.formulaType === 'Schlumberger') {
         item.d = Number(item.d?.replace(',', '.'))
@@ -632,11 +635,13 @@ export default {
           if (!item.a || !item.rMedidas) {
             item.a = ''
             item.rMedidas = ''
+            item.roCalculados = ''
             return
           }
         } else if (this.rType==='ro_calculados') {
           if (!item.a || !item.roCalculados) {
             item.a = ''
+            item.rMedidas = ''
             item.roCalculados = ''
             return
           }
