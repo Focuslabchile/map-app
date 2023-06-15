@@ -8,6 +8,7 @@ export default {
       formulaType: 'Schlumberger',
       wennerRecords: [],
       schlumbergerRecords: [],
+      showTheorical: true,
     }
   },
   components: {
@@ -67,13 +68,39 @@ export default {
         {
           type: 'line',
           data: {
-            datasets: [{
-              label: 'Gráfico logarítmico',
-              data: [],
-              pointBackgroundColor: 'rgba(54, 196, 240, 1)'
-            }]
+            datasets: [
+              {
+                label: 'Curva real',
+                data: [],
+                pointBackgroundColor: 'rgba(54, 196, 240, 1)',
+                yAxisID: 'y',
+
+              },
+              {
+                label: 'Curva Teórica',
+                data: [],
+                pointBackgroundColor: 'red',
+                yAxisID: 'y',
+              },
+            ]
           },
           options: {
+            plugins: {
+              legend: {
+                onClick: (e,legendItem, legend) => {
+                  const index = legendItem.datasetIndex;
+                  const ci = legend.chart;
+                  if (ci.isDatasetVisible(index)) {
+                    ci.hide(index);
+                    legendItem.hidden = true;
+                  } else {
+                    ci.show(index);
+                    legendItem.hidden = false;
+                  }
+                  this.showTheorical = !legendItem.hidden
+                },
+              },
+            },
             tension: 0.4,
             scales: {
               x: {
@@ -149,9 +176,53 @@ export default {
       
       this.chart.options.scales.x.title.text = this.formulaType === 'Schlumberger' ? 'DISTANCIA AB/2' : 'DISTANCIA A'
       this.chart.data.datasets[0].data = chartData
+      this.chart.data.datasets[1].data = this.theoricCurve(chartData)
       this.chart.options.scales.y.min = 0
       this.chart.options.scales.y.max = Math.pow(10, Math.ceil(Math.log10(maxY)))
       this.chart.update()
+    },
+    theoricCurve(realCurve) {
+      const curve = []
+      const [valuesY, valuesX] = [[], []]
+      realCurve.forEach(item => {
+        valuesY.push(Number(item.y))
+        valuesX.push(Number(item.x))
+      })
+      const logest = this.logest(valuesY, valuesX)
+      for(let i = 0; i < valuesX.length; i++) {
+        curve.push({
+          x: valuesX[i],
+          y: logest.b * Math.pow(logest.m, valuesX[i])
+        })
+      }
+      return curve
+    },
+    logest(yData, xData) {
+      // Verificar que los arrays xData y yData tengan la misma longitud
+      if (xData.length !== yData.length) {
+        throw new Error('xData and yData must have the same length');
+      }
+  
+      // Calcular el logaritmo natural de todos los elementos en yData
+      const yLogData = yData.map(y => Math.log(y));
+  
+      // Calcular las sumas necesarias para la regresión lineal
+      const n = xData.length;
+      const sumX = xData.reduce((sum, x) => sum + x, 0);
+      const sumYLog = yLogData.reduce((sum, y) => sum + y, 0);
+      const sumX2 = xData.reduce((sum, x) => sum + x * x, 0);
+      const sumXYLog = xData.reduce((sum, x, i) => sum + x * yLogData[i], 0);
+  
+      // Calcular la pendiente (slope) e intercepción (intercept) de la regresión lineal
+      const slope = (n * sumXYLog - sumX * sumYLog) / (n * sumX2 - sumX * sumX);
+      const intercept = (sumYLog - slope * sumX) / n;
+  
+      // Convertir la pendiente e intercepción a los parámetros 'b' y 'm' del modelo exponencial
+      const m = Math.exp(slope);
+      const b = Math.exp(intercept);
+  
+      // Devolver los valores ajustados de 'b' y 'm'
+      return { b, m };
     }
   }
 }

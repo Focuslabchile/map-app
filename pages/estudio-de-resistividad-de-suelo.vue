@@ -56,6 +56,7 @@
             <th>d</th>
             <th>R<br>Medidas</th>
             <th>Ro<br>Calculados</th>
+            <th v-if="showTheorical">Curva<br>teórica</th>
           </tr>
           <tr v-for="(item, index) in schlumbergerRecords" :key="index+'-table-item'">
             <td>{{ item.nLectura }}</td>
@@ -128,6 +129,7 @@
                 >
               </span>
             </td>
+            <td v-if="showTheorical">{{ chart.data.datasets[1].data[index] && Number(chart.data.datasets[1].data[index].y).toFixed(2) }}</td>
             <td>
               <button
                 @click="editRecord(index)"
@@ -497,12 +499,19 @@ export default {
       const csv = ((data) => {
         const csvRows = []
         const headers = Object.keys(data[0])
+        this.showTheorical && headers.push('curva_teorica')
         csvRows.push(headers.join(';'))
+        let i = 0
         for (const row of data) {
+          if (this.showTheorical) {
+            row.curva_teorica = this.chart?.data.datasets[1].data?.[i].y
+            chartData[i].curva_teorica = row.curva_teorica
+          }
           const values = headers.map(header => {
             const escaped = ('' + row[header]).replace(/"/g, '\\"')
             return `"${escaped}"`
           })
+          i++
           csvRows.push(values.join(';'))
         }
         return csvRows.join('\n')
