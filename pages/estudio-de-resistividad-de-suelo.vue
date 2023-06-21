@@ -56,7 +56,7 @@
             <th>d</th>
             <th>R<br>Medidas</th>
             <th>Ro<br>Calculados</th>
-            <th v-if="showTheorical">Curva<br>teórica</th>
+            <th v-if="showTheorical && theoricalData && theoricalData.length">Curva<br>teórica</th>
           </tr>
           <tr v-for="(item, index) in schlumbergerRecords" :key="index+'-table-item'">
             <td>{{ item.nLectura }}</td>
@@ -129,7 +129,7 @@
                 >
               </span>
             </td>
-            <td v-if="showTheorical">{{ chart.data.datasets[1].data[index] && Number(chart.data.datasets[1].data[index].y).toFixed(2) }}</td>
+            <td v-if="showTheorical && theoricalData && theoricalData.length">{{ chart.data.datasets[1].data[index] && Number(chart.data.datasets[1].data[index].y).toFixed(2) }}</td>
             <td>
               <button
                 @click="editRecord(index)"
@@ -188,6 +188,7 @@
             <th>A</th>
             <th>R<br>Medidas</th>
             <th>Ro<br>Calculados</th>
+            <th v-if="showTheorical && theoricalData && theoricalData.length">Curva<br>teórica</th>
           </tr>
           <tr v-for="(item, index) in wennerRecords" :key="index+'-table-item'">
             <td>{{ item.nLectura }}</td>
@@ -234,6 +235,7 @@
                 >
               </template>
             </td>
+            <td v-if="showTheorical && theoricalData && theoricalData.length">{{ chart.data.datasets[1].data[index] && Number(chart.data.datasets[1].data[index].y).toFixed(2) }}</td>
             <td>
               <button
                 @click="editRecord(index)"
@@ -520,6 +522,7 @@ export default {
       this.$axios.post('api/logarithmic-charts', {
         data: {
           ...data,
+          showTheorical: this.showTheorical,
           formulaType: this.formulaType,
           latitud: this.coordinates[0],
           longitud: this.coordinates[1],

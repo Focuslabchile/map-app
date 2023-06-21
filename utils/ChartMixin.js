@@ -11,6 +11,11 @@ export default {
       showTheorical: true,
     }
   },
+  computed: {
+    theoricalData() {
+      return this.chart?.data.datasets[1].data
+    }
+  },
   components: {
     Chart
   },
@@ -97,7 +102,7 @@ export default {
                     ci.show(index);
                     legendItem.hidden = false;
                   }
-                  this.showTheorical = !legendItem.hidden
+                  if (legendItem.text === 'Curva Teórica') this.showTheorical = !legendItem.hidden
                 },
               },
             },
