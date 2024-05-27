@@ -1,5 +1,14 @@
 <template>
   <AppSection>
+    <div>
+      <a href="https://link.mercadopago.cl/infomap" target="_blank" class="rounded-lg border-2 border-gray-500 p-2 cursor-pointer">
+        Donaciones
+        <span class="material-icons align-bottom">
+          volunteer_activism
+        </span>
+      </a>
+      Apóyanos con tu donación para seguir innovando en ingeniería
+    </div>
     <p class="my-8">Con herramienta podras crear tablas y gráficos para el estudio de tierras usando los métodos de <strong>Wenner</strong> y <strong>Schlumberger</strong>. Los usuarios pueden ingresar los datos de resistencia eléctrica y profundidad, y exportar los resultados en un gráfico en escala logarítmica y formato PDF.</p>
     <div class="filters mb-4">
       <InputRadio
