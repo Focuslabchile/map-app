@@ -32,7 +32,7 @@
               </nuxt-link>
             </li>
             <li>
-              <nuxt-link @click.native="menu = false" to="/servicios">
+              <nuxt-link @click.native="menu = false" to="/pruebas-y-mediciones-electricas-chile">
                 <span class="material-icons">electrical_services</span>
                 <span>Servicios</span>
               </nuxt-link>
