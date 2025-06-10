@@ -37,7 +37,7 @@
                 <span>Servicios</span>
               </nuxt-link>
             </li>
-            <li>
+            <li style="display: none;">
               <nuxt-link @click.native="menu = false" to="/workshops">
                 <span class="material-icons">school</span>
                 <span>Workshops</span>
