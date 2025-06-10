@@ -2,9 +2,6 @@
   <div>
     <!-- Hero Section -->
     <section class="pt-28 pb-10 px-6 md:px-12 bg-dark">
-      <pre>
-        {{ workshops }}
-      </pre>
       <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center" v-for="(workshop, i) in workshops" :key="i">
         <!-- Imagen del taller -->
         <div>
