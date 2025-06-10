@@ -8,7 +8,7 @@
 </template>
 <style lang="scss">
 * {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Rajdhani', sans-serif;
 }
 body {
   margin: 0;

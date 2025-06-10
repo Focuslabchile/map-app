@@ -38,6 +38,12 @@
               </nuxt-link>
             </li>
             <li>
+              <nuxt-link @click.native="menu = false" to="/workshops">
+                <span class="material-icons">school</span>
+                <span>Workshops</span>
+              </nuxt-link>
+            </li>
+            <li>
               <nuxt-link @click.native="menu = false" to="/#contacto">
                 <span class="material-icons">contact_support</span>
                 <span>Contacto</span>
