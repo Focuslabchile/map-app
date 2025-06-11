@@ -3,7 +3,56 @@
     <!-- Hero Section -->
     <AppSection background="secondary">
       <Modal :open.sync="inscripcionEmpresa" title="Inscripción como empresa">
-        Este paso no es reversible. ¿Está seguro?
+        <p class="mb-4 text-sm">
+          Para inscribirse como empresa y recibir factura, realice una <strong>transferencia
+          por el monto indicado en el curso</strong> a la cuenta detallada a continuación.
+        </p>
+        <!-- Datos de pago -->
+        <table class="min-w-[280px] text-sm">
+          <tr>
+            <th class="text-left pr-4">Nombre</th>
+            <td>INGENIERÍA&nbsp;MYZ</td>
+          </tr>
+          <tr>
+            <th class="text-left pr-4">RUT</th>
+            <td>77.430.473-8</td>
+          </tr>
+          <tr>
+            <th class="text-left pr-4">Método de pago</th>
+            <td>Mercado&nbsp;Pago</td>
+          </tr>
+          <tr>
+            <th class="text-left pr-4">Tipo de cuenta</th>
+            <td>Cuenta&nbsp;Vista</td>
+          </tr>
+          <tr>
+            <th class="text-left pr-4">N.º de cuenta</th>
+            <td>1014075600</td>
+          </tr>
+          <tr>
+            <th class="text-left pr-4">Enviar comprobante</th>
+            <td>Nataliainfomap@gmail.com / +56 9 3068 9517</td>
+          </tr>
+        </table>
+
+        <!-- Botón copiar -->
+        <button
+          @click="copiarDatosPago"
+          class="mt-3 px-4 py-2 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition">
+          Copiar datos
+        </button>
+
+        <!-- Mensaje de éxito (aparece 2 s) -->
+        <small v-if="copiado" class="block mt-2 font-semibold text-green-600">
+          ¡Datos copiados al portapapeles!
+        </small>
+
+        <!-- Instrucciones y contacto (fuera de la tabla) -->
+        <p class="mt-4 text-xs italic">
+          Una vez realizada la transferencia, envíe el comprobante y sus datos de facturación a
+          <a href="mailto:Nataliainfomap@gmail.com" class="underline">Nataliainfomap@gmail.com</a> o al WhatsApp
+          <a href="https://wa.me/56930689517" class="underline">+56 9 3068 9517</a>. La inscripción quedará confirmada tras la verificación del pago.
+        </p>
       </Modal>
       <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-start" v-for="(workshop, i) in workshops" :key="i">
         <h1 class="text-4xl md:text-5xl font-bold">Workshops del <span class="text-accent">Mes</span></h1>
@@ -70,7 +119,7 @@
     <!-- Roadmap de Próximos Workshops Mejorado -->
     <AppSection background="primary">
       <div class="max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12 text-white">Roadmap de Próximos Workshops</h2>
+        <h2 class="text-3xl font-bold text-center mb-12">Roadmap de <span class="text-accent">Próximos Workshops</span></h2>
         
         <!-- Julio 2025 -->
         <div class="mb-12">
@@ -78,7 +127,7 @@
             Julio 2025
           </h3>
           <div class="grid md:grid-cols-2 gap-6">
-            <div v-for="(workshop, index) in upcomingWorkshopsJulio" :key="'julio-' + index" class="bg-dark rounded-xl p-6 border border-gray-700 hover:border-accent transition-colors">
+            <div v-for="(workshop, index) in upcomingWorkshopsJulio" :key="'julio-' + index" class="secondary rounded-xl p-6 transition-colors">
               <div class="flex gap-4">
                 <!-- Imagen reducida -->
                 <div class="flex-shrink-0">
@@ -86,7 +135,7 @@
                 </div>
                 <!-- Información -->
                 <div class="flex-1">
-                  <h4 class="text-lg font-bold text-white mb-2">{{ workshop.workshop_name }}</h4>
+                  <h4 class="text-lg font-bold mb-2">{{ workshop.workshop_name }}</h4>
                   <div class="text-sm text-light mb-2">
                     <span class="icon-calendar"></span> {{ workshop.fecha_inicio }} - {{ workshop.fecha_termino }}
                   </div>
@@ -94,60 +143,22 @@
                     <img :src="workshop.foto_instructor" alt="Instructor" class="w-8 h-8 rounded-full object-cover">
                     <span class="text-sm text-light">{{ workshop.instructor_name }}</span>
                   </div>
-                  <div class="flex flex-wrap gap-2 text-xs mb-3">
-                    <span class="bg-accent/20 text-accent px-2 py-1 rounded">{{ workshop.modalidad }}</span>
-                    <span class="bg-gray-700 text-light px-2 py-1 rounded">{{ workshop.certificado }}</span>
+                  <div class="flex flex-wrap gap-2 text-xs mb-3 font-semibold">
+                    <span class="bg-gray2 text-accent px-2 py-1 rounded">{{ workshop.modalidad }}</span>
+                    <span class="bg-accent text-gray2 px-2 py-1 rounded">{{ workshop.certificado }}</span>
                   </div>
                   <p class="text-sm text-light line-clamp-2">{{ workshop.Descripcion }}</p>
                 </div>
               </div>
               <!-- Botones de acción compactos -->
               <div class="mt-4 flex gap-2">
-                <button class="flex-1 py-2 px-3 text-sm border border-accent text-accent rounded hover:bg-accent hover:text-white transition">
+                <a
+                  :href="workshop.temario"
+                  target="_blank"
+                  class="text-center font-semibold flex-1 py-2 px-3 text-sm border border-accent text-accent rounded
+                        hover:bg-accent hover:text-white transition">
                   Ver Temario
-                </button>
-                <button class="flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition">
-                  Inscribirme
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Agosto 2025 -->
-        <div class="mb-12">
-          <h3 class="text-2xl font-semibold text-accent mb-6 border-b border-accent pb-2">
-            Agosto 2025
-          </h3>
-          <div class="grid md:grid-cols-2 gap-6">
-            <div v-for="(workshop, index) in upcomingWorkshopsAgosto" :key="'agosto-' + index" class="bg-dark rounded-xl p-6 border border-gray-700 hover:border-accent transition-colors">
-              <div class="flex gap-4">
-                <!-- Imagen reducida -->
-                <div class="flex-shrink-0">
-                  <img :src="workshop.foto_taller" alt="Foto del taller" class="w-24 h-24 object-cover rounded-lg">
-                </div>
-                <!-- Información -->
-                <div class="flex-1">
-                  <h4 class="text-lg font-bold text-white mb-2">{{ workshop.workshop_name }}</h4>
-                  <div class="text-sm text-light mb-2">
-                    <span class="icon-calendar"></span> {{ workshop.fecha_inicio }} - {{ workshop.fecha_termino }}
-                  </div>
-                  <div class="flex items-center gap-3 mb-3">
-                    <img :src="workshop.foto_instructor" alt="Instructor" class="w-8 h-8 rounded-full object-cover">
-                    <span class="text-sm text-light">{{ workshop.instructor_name }}</span>
-                  </div>
-                  <div class="flex flex-wrap gap-2 text-xs mb-3">
-                    <span class="bg-accent/20 text-accent px-2 py-1 rounded">{{ workshop.modalidad }}</span>
-                    <span class="bg-gray-700 text-light px-2 py-1 rounded">{{ workshop.certificado }}</span>
-                  </div>
-                  <p class="text-sm text-light line-clamp-2">{{ workshop.Descripcion }}</p>
-                </div>
-              </div>
-              <!-- Botones de acción compactos -->
-              <div class="mt-4 flex gap-2">
-                <button class="flex-1 py-2 px-3 text-sm border border-accent text-accent rounded hover:bg-accent hover:text-white transition">
-                  Ver Temario
-                </button>
+                </a>
                 <button class="flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition">
                   Inscribirme
                 </button>
@@ -175,16 +186,19 @@
       </div>
     </AppSection>
 
-    <!-- Preguntas Frecuentes -->
+    <!-- Logos -->
     <AppSection background="primary">
-      <div class="max-w-5xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12 text-white">Preguntas Frecuentes</h2>
-        <dl class="space-y-8">
-          <div v-for="(faq, index) in faqs" :key="index">
-            <dt class="text-xl font-semibold text-white">{{ faq.question }}</dt>
-            <dd class="mt-2 text-light">{{ faq.answer }}</dd>
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-16">
+          Clientes y Partners
+        </h2>
+
+        <!-- Carrusel de logos -->
+        <div class="clients-carousel">
+          <div class="clients-track">
+            <img v-for="(logo) in logos" :key="logo.id" class="client-logo" :src="logo.imagen" alt="">
           </div>
-        </dl>
+        </div>
       </div>
     </AppSection>
   </div>
@@ -194,6 +208,7 @@
 export default {
   data() {
     return {
+      copiado: false,
       inscripcionEmpresa: false,
       workshops: [],
       upcomingWorkshopsJulio: [],
@@ -221,12 +236,65 @@ export default {
       ]
     }
   },
+  async asyncData(context) {
+    const logos = await context.$api.get('api/inicio?populate=Header_Slider.Imagen').then(res => {
+      return res.data.data.attributes.Header_Slider
+      .map(el => {
+        return {
+          titulo: el.Titulo,
+          bajada: el.Bajada,
+          id: el.id,
+          imagen: el.Imagen.data.attributes.url
+        }
+      })
+    })
+    return { logos }
+  },
   mounted() {
     this.updateCountdown();
     setInterval(this.updateCountdown, 1000);
     this.fetchWorkshops()
   },
   methods: {
+    copiarDatosPago() {
+      /* texto plano que se enviará al portapapeles */
+      const datos = [
+        'Nombre: INGENIERÍA MYZ',
+        'RUT: 77.430.473-8',
+        'Método de pago: Mercado Pago',
+        'Tipo de cuenta: Cuenta Vista',
+        'N.º de cuenta: 1014075600',
+        'Enviar comprobante: Nataliainfomap@gmail.com / +56 9 3068 9517'
+      ].join('\n');
+
+      /* API moderna (con fallback) */
+      const copiar = async () => {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(datos);
+          } else {
+            /* Fallback para navegadores sin Clipboard API */
+            const ta = document.createElement('textarea');
+            ta.value = datos;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+          }
+          /* Mostrar aviso */
+          this.copiado = true;
+          setTimeout(() => (this.copiado = false), 2000);
+        } catch (e) {
+          console.error('No se pudo copiar:', e);
+          alert('No se pudo copiar el texto. Copia manualmente, por favor.');
+        }
+      };
+
+      copiar();
+    },
     async fetchWorkshops() {
       await this.$api.get('api/workshops?populate=foto_taller,foto_instructor,temario').then(res => {
         const now = new Date().getTime()
@@ -309,6 +377,12 @@ export default {
 .bg-accent {
   background: var(--primary) !important;
 }
+.bg-gray2 {
+  background: var(--gray2) !important;
+}
+.text-gray2 {
+  color: var(--gray2) !important;
+}
 .border-accent {
   border-color: var(--primary) !important;
 }
@@ -321,12 +395,48 @@ export default {
 .icon-payments::before { content: "\1F4B3 ";}
 
 .testimonios-carousel {
-  .testimonios-track {
-    &:hover {
+  &:hover {
+    .testimonios-track {
       animation-play-state: paused;
     }
   }
 }
+
+/* Contenedor: oculta el desborde para el “deslizamiento infinito” */
+.clients-carousel {
+  position: relative;
+  overflow: hidden;
+  &:hover {
+    .clients-track {
+      animation-play-state: paused;
+    }
+  }
+}
+
+/* Pista de logos: fila horizontal que se anima continuamente */
+.clients-track {
+  @apply flex items-center whitespace-nowrap select-none;
+  animation: scroll 10s linear infinite;     /* ajusta la duración a tu gusto */
+}
+
+/* Cada logo: tamaño coherente, margen y efecto gris que se aclara al pasar */
+.client-logo {
+  @apply h-20 w-auto mx-6 flex-shrink-0    /* mismo alto para todos; margen lateral */
+         object-contain                    /* mantiene relación original */
+         grayscale opacity-70 transition;  /* estilo inicial */
+
+  &:hover {
+    @apply grayscale-0 opacity-100;        /* resalta al pasar el cursor */
+  }
+}
+
+/* Animación: desplaza la pista hacia la izquierda la mitad de su anchura
+   (se duplica el set de logos en tu markup para lograr bucle perfecto) */
+@keyframes scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 
 @keyframes scroll {
   0% { transform: translateX(0); }
