@@ -38,6 +38,9 @@ body {
 
 body {
     &.dark-mode {
+        .text-light {
+            color: #b6c2d1;
+        }
         .dark-invert {
             filter: invert(1);
         }

@@ -1,9 +1,12 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="pt-28 pb-10 px-6 md:px-12 bg-dark">
-      <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center" v-for="(workshop, i) in workshops" :key="i">
-        <h1 class="text-4xl md:text-5xl font-bold text-white">Workshops del <span class="text-accent">Mes</span></h1>
+    <AppSection background="secondary">
+      <Modal :open.sync="inscripcionEmpresa" title="Inscripción como empresa">
+        Este paso no es reversible. ¿Está seguro?
+      </Modal>
+      <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-start" v-for="(workshop, i) in workshops" :key="i">
+        <h1 class="text-4xl md:text-5xl font-bold">Workshops del <span class="text-accent">Mes</span></h1>
         <br>
         <!-- Imagen del taller -->
         <div>
@@ -13,54 +16,59 @@
             <h2 class="text-xl md:text-2xl font-bold mb-2 text-accent">¿Qué aprenderás?</h2>
             <p class="mb-2 text-light">{{ workshop.Descripcion }}</p>
           </div>
+          <br>
+          <ul class="text-sm space-y-2 mb-6 text-light">
+            <li><span class="icon-calendar"></span> <strong>{{ workshop.fecha_inicio }}</strong> – <span>{{ workshop.fecha_termino }}</span></li>
+            <li><span class="icon-laptop"></span> {{ workshop.modalidad }}</li>
+            <li><span class="icon-book"></span> {{ workshop.materiales }}</li>
+            <li v-if="workshop.certificado"><span class="icon-certificate"></span> {{ workshop.certificado }}</li>
+            <li><span class="icon-payments"></span> ${{ workshop.cost }}</li>
+          </ul>
         </div>
         <!-- Información -->
         <div>
           <h1 class="text-3xl md:text-4xl font-bold mb-2 text-accent">{{ workshop.workshop_name }}</h1>
           <div class="mb-4">
-            <span class="block text-lg font-semibold text-white px-2 border-t-2 border-b-2 border-accent py-1">
+            <span class="block text-lg font-semibold px-2 border-t-2 border-b-2 border-accent py-1">
               {{ workshop.fecha_inicio }} al {{ workshop.fecha_termino }}
             </span>
           </div>
-          <p class="mb-4 text-light">{{ workshop.descripcion_instructor }}</p>
           <div class="mb-8">
-            <h3 class="text-2xl font-bold mb-4 text-white">Conoce a tu instructor</h3>
-            <div class="relative w-full rounded-xl overflow-hidden bg-black">
-              <img :src="workshop.foto_instructor" alt="Foto del instructor" class="w-full h-auto object-cover aspect-video mx-auto">
+            <h3 class="text-2xl font-bold mb-4">Conoce a tu instructor</h3>
+            <!-- Contenedor responsive con flexbox -->
+            <div class="flex flex-col md:flex-row md:items-start gap-4">
+              <!-- Foto circular, SIEMPRE cuadrada -->
+              <div class="w-24 md:w-32 aspect-square overflow-hidden rounded-full shrink-0">
+                <img
+                  :src="workshop.foto_instructor"
+                  alt="Foto del instructor"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+
+              <!-- Descripción -->
+              <p class="text-light">{{ workshop.descripcion_instructor }}</p>
             </div>
           </div>
-          <ul class="text-sm space-y-2 mb-6 text-light">
-            <li><span class="icon-calendar"></span> <strong class="text-white">{{ workshop.fecha_inicio }}</strong> – <span>{{ workshop.fecha_termino }}</span></li>
-            <li><span class="icon-laptop"></span> {{ workshop.modalidad }}</li>
-            <li><span class="icon-book"></span> {{ workshop.materiales }}</li>
-            <li><span class="icon-certificate"></span> {{ workshop.certificado }}</li>
-          </ul>
           <!-- Puedes agregar botones de acción aquí si tu API entrega links -->
           <div class="space-y-4">
-              <a href="#" target="_blank" class="block w-full text-center py-3 rounded-lg transition font-semibold" style="border: 1.5px solid rgb(59, 167, 227); color: rgb(59, 167, 227); background: transparent;" onmouseover="this.style.backgroundColor='rgb(59,167,227)';this.style.color='white'" onmouseout="this.style.backgroundColor='transparent';this.style.color='rgb(59,167,227)'">
+              <a :href="workshop.temario" target="_blank" class="block w-full text-center py-3 rounded-lg transition font-semibold" style="border: 1.5px solid rgb(59, 167, 227); color: rgb(59, 167, 227); background: transparent;" onmouseover="this.style.backgroundColor='rgb(59,167,227)';this.style.color='white'" onmouseout="this.style.backgroundColor='transparent';this.style.color='rgb(59,167,227)'">
                   Descargar Temario
               </a>
-              <a href="#" target="_blank" class="block w-full text-center py-3 rounded-lg font-bold transition text-white" style="background-color: rgb(59, 167, 227); opacity: 1;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
-                  Inscribirme – $89.000
+              <small class="mt-2 block">PAGO:</small>
+              <a :href="workshop.payment" target="_blank" class="block w-full text-center py-3 rounded-lg font-bold transition text-white" style="background-color: rgb(59, 167, 227); opacity: 1;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                  Boleta
               </a>
+              <button @click="inscripcionEmpresa=true" target="_blank" class="cursor-pointer block w-full text-center py-3 rounded-lg font-bold transition text-white" style="background-color: rgb(59, 167, 227); opacity: 1;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                  Factura
+              </button>
           </div>
         </div>
-        <!-- Temario visual -->
-        <section class="py-20 bg-dark">
-          <div class="max-w-4xl mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-8 text-center text-white">Temario General</h2>
-            <ol class="space-y-2 text-lg list-decimal list-inside text-light">
-              <li v-for="(item, idx) in workshop.temario" :key="idx">
-                {{ typeof item === 'string' ? item : item.contenido }}
-              </li>
-            </ol>
-          </div>
-        </section>
       </div>
-    </section>
+    </AppSection>
 
     <!-- Roadmap de Próximos Workshops Mejorado -->
-    <section class="py-20 px-4 bg-black">
+    <AppSection background="primary">
       <div class="max-w-6xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12 text-white">Roadmap de Próximos Workshops</h2>
         
@@ -148,12 +156,12 @@
           </div>
         </div>
       </div>
-    </section>
+    </AppSection>
 
     <!-- Testimonios Carrusel -->
-    <section class="py-20 bg-dark">
+    <AppSection background="secondary">
       <div class="max-w-6xl mx-auto px-4 text-center">
-        <h2 class="text-4xl md:text-5xl font-bold mb-12 text-white">
+        <h2 class="text-4xl md:text-5xl font-bold mb-12">
           Testimonios de <span class="text-accent">participantes</span>
         </h2>
         <div class="testimonios-carousel overflow-hidden relative">
@@ -165,10 +173,10 @@
           </div>
         </div>
       </div>
-    </section>
+    </AppSection>
 
     <!-- Preguntas Frecuentes -->
-    <section class="py-20 px-4 bg-black">
+    <AppSection background="primary">
       <div class="max-w-5xl mx-auto">
         <h2 class="text-3xl font-bold text-center mb-12 text-white">Preguntas Frecuentes</h2>
         <dl class="space-y-8">
@@ -178,7 +186,7 @@
           </div>
         </dl>
       </div>
-    </section>
+    </AppSection>
   </div>
 </template>
 
@@ -186,6 +194,7 @@
 export default {
   data() {
     return {
+      inscripcionEmpresa: false,
       workshops: [],
       upcomingWorkshopsJulio: [],
       upcomingWorkshopsAgosto: [],
@@ -219,28 +228,29 @@ export default {
   },
   methods: {
     async fetchWorkshops() {
-      await this.$api.get('api/workshops?populate=foto_taller,foto_instructor,Temario').then(res => {
+      await this.$api.get('api/workshops?populate=foto_taller,foto_instructor,temario').then(res => {
         const now = new Date().getTime()
         
         // Workshops del mes (próximos 3)
         this.workshops = res.data.data
-          .filter(workshop => new Date(workshop.attributes.fecha_inicio).getTime() > now)
+          .filter(workshop => new Date(workshop.attributes.fecha_termino).getTime() > now)
           .sort((a, b) => new Date(a.attributes.fecha_inicio) - new Date(b.attributes.fecha_inicio))
           .slice(0, 3)
           .map(workshop => {
+            console.log(workshop)
             return {
               ...workshop.attributes,
               fecha_inicio: new Date(workshop.attributes.fecha_inicio).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }),
               fecha_termino: new Date(workshop.attributes.fecha_termino).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }),
               foto_taller: workshop.attributes.foto_taller.data.attributes.url,
-              foto_instructor: workshop.attributes.foto_instructor.data.attributes.url,
-              temario: workshop.attributes.Temario,
+              temario: workshop.attributes.temario?.data?.attributes.url,
+              foto_instructor: workshop.attributes.foto_instructor?.data?.attributes.url,
             }
           })
 
         // Filtrar workshops para roadmap por mes
         const allWorkshops = res.data.data
-          .filter(workshop => new Date(workshop.attributes.fecha_inicio).getTime() > now)
+          .filter(workshop => new Date(workshop.attributes.fecha_termino).getTime() > now)
           .sort((a, b) => new Date(a.attributes.fecha_inicio) - new Date(b.attributes.fecha_inicio))
           .map(workshop => {
             const fechaInicio = new Date(workshop.attributes.fecha_inicio)
@@ -248,9 +258,10 @@ export default {
               ...workshop.attributes,
               fecha_inicio: fechaInicio.toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }),
               fecha_termino: new Date(workshop.attributes.fecha_termino).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }),
-              foto_taller: workshop.attributes.foto_taller.data.attributes.url,
-              foto_instructor: workshop.attributes.foto_instructor.data.attributes.url,
+              foto_taller: workshop.attributes.foto_taller?.data?.attributes.url,
+              foto_instructor: workshop.attributes.foto_instructor?.data?.attributes.url,
               instructor_name: workshop.attributes.instructor_name || "Instructor",
+              temario: workshop.attributes.temario?.data?.attributes.url,
               month: fechaInicio.getMonth() + 1, // Para filtrar por mes
               year: fechaInicio.getFullYear()
             }
@@ -292,9 +303,6 @@ export default {
 .text-accent {
   color: var(--primary);
 }
-.text-light {
-  color: #b6c2d1;
-}
 .text-gray {
   color: #d1d5db;
 }
@@ -310,6 +318,7 @@ export default {
 .icon-laptop::before { content: "\1F4BB "; }
 .icon-book::before { content: "\1F4D8 "; }
 .icon-certificate::before { content: "\1F4DC "; }
+.icon-payments::before { content: "\1F4B3 ";}
 
 .testimonios-carousel {
   .testimonios-track {

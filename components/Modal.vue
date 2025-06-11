@@ -61,8 +61,6 @@ export default {
   backdrop-filter: blur(2px);
   color: black;
   .modal-content {
-    position: absolute;
-    top: 0;
     padding: 10px;
     background-color: white;
     border-radius: 4px;
