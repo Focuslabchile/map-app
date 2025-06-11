@@ -196,7 +196,7 @@
         <!-- Carrusel de logos -->
         <div class="clients-carousel">
           <div class="clients-track">
-            <img v-for="(logo) in logos" :key="logo.id" class="client-logo" :src="logo.imagen" alt="">
+            <img v-for="(logo, idx) in logos" :key="logo.id+'-'+idx" class="client-logo" :src="logo.imagen" alt="">
           </div>
         </div>
       </div>
@@ -208,6 +208,7 @@
 export default {
   data() {
     return {
+      logos: [],
       copiado: false,
       inscripcionEmpresa: false,
       workshops: [],
@@ -254,6 +255,14 @@ export default {
     this.updateCountdown();
     setInterval(this.updateCountdown, 1000);
     this.fetchWorkshops()
+  },
+  computed: {
+    // Devuelve dos copias seguidas → [logo1, logo2, …, logoN, logo1, logo2, …]
+    logosDuplicados() {
+      return this.logos.length
+      ? [...this.logos, ...this.logos]   // dos copias
+      : [];
+    }
   },
   methods: {
     copiarDatosPago() {
@@ -429,18 +438,12 @@ export default {
     @apply grayscale-0 opacity-100;        /* resalta al pasar el cursor */
   }
 }
-
+.client-logo:first-child { margin-left: 0; }
 /* Animación: desplaza la pista hacia la izquierda la mitad de su anchura
    (se duplica el set de logos en tu markup para lograr bucle perfecto) */
 @keyframes scroll {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(-190%); }
 }
 
 // Utilidad para truncar texto
