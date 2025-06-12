@@ -3,7 +3,7 @@
     <Modal :open.sync="inscripcionEmpresa" title="Inscripción como empresa">
       <p class="mb-4 text-sm">
         Para inscribirse como empresa y recibir factura, realice una <strong>transferencia
-        por el monto indicado en el curso</strong> a la cuenta detallada a continuación.
+        por el monto de: ${{ workshop.cost }}</strong> a la cuenta detallada a continuación.
       </p>
       <!-- Datos de pago -->
       <table class="min-w-[280px] text-sm">
@@ -124,7 +124,7 @@ export default {
   data() {
     return {
       inscripcionEmpresa: false,
-      copiado: false
+      copiado: false,
     }
   },
   methods: {
@@ -136,7 +136,8 @@ export default {
         'Método de pago: Mercado Pago',
         'Tipo de cuenta: Cuenta Vista',
         'N.º de cuenta: 1014075600',
-        'Enviar comprobante: Nataliainfomap@gmail.com / +56 9 3068 9517'
+        'Enviar comprobante: Nataliainfomap@gmail.com / +56 9 3068 9517',
+        'Monto: $'+this.workshop.cost
       ].join('\n');
 
       /* API moderna (con fallback) */

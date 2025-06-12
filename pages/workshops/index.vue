@@ -3,7 +3,7 @@
     <!-- Hero Section -->
     <AppSection background="secondary">
       <h1 class="text-4xl md:text-5xl font-bold">Workshops del <span class="text-accent">Mes</span></h1>
-      <Workshop :workshop="workshop" v-for="(workshop, i) in workshops" :key="i"/>
+      <Workshop :workshop="workshop" v-for="(workshop, i) in thisMonth" :key="i"/>
     </AppSection>
 
     <!-- Roadmap de Próximos Workshops Mejorado -->
@@ -12,49 +12,73 @@
         <h2 class="text-3xl font-bold text-center mb-12">Roadmap de <span class="text-accent">Próximos Workshops</span></h2>
         
         <!-- Julio 2025 -->
-        <div class="mb-12">
-          <h3 class="text-2xl font-semibold text-accent mb-6 border-b border-accent pb-2">
-            Julio 2025
-          </h3>
-          <div class="grid md:grid-cols-2 gap-6">
-            <div v-for="(workshop, index) in upcomingWorkshopsJulio" :key="'julio-' + index" class="secondary rounded-xl p-6 transition-colors">
-              <div class="flex gap-4">
-                <!-- Imagen reducida -->
-                <div class="flex-shrink-0">
-                  <img :src="workshop.foto_taller" alt="Foto del taller" class="w-24 h-24 object-cover rounded-lg">
-                </div>
-                <!-- Información -->
-                <div class="flex-1">
-                  <h4 class="text-lg font-bold mb-2">{{ workshop.workshop_name }}</h4>
-                  <div class="text-sm text-light mb-2">
-                    <span class="icon-calendar"></span> {{ workshop.fecha_inicio }} - {{ workshop.fecha_termino }}
-                  </div>
-                  <div class="flex items-center gap-3 mb-3">
-                    <img :src="workshop.foto_instructor" alt="Instructor" class="w-8 h-8 rounded-full object-cover">
-                    <span class="text-sm text-light">{{ workshop.instructor_name }}</span>
-                  </div>
-                  <div class="flex flex-wrap gap-2 text-xs mb-3 font-semibold">
-                    <span class="bg-gray2 text-accent px-2 py-1 rounded">{{ workshop.modalidad }}</span>
-                    <span class="bg-accent text-gray2 px-2 py-1 rounded">{{ workshop.certificado }}</span>
-                  </div>
-                </div>
-              </div>
-              <!-- Botones de acción compactos -->
-              <div class="mt-4 flex gap-2">
-                <a
-                  :href="workshop.temario"
-                  target="_blank"
-                  class="text-center font-semibold flex-1 py-2 px-3 text-sm border border-accent text-accent rounded
-                        hover:bg-accent hover:text-white transition">
-                  Ver Temario
-                </a>
-                <nuxt-link :to="'/workshops/'+workshop.id" class="text-center flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition">
-                  Ver más
-                </nuxt-link>
-              </div>
-            </div>
+        <div v-for="(group, gi) in workshops" :key="gi" class="mb-12">
+  <!-- Título dinámico: mes y año -->
+  <h3
+    class="text-2xl font-semibold text-accent mb-6 border-b border-accent pb-2">
+    {{ group.mes }} {{ group.ano }}
+  </h3>
+
+  <!-- Cuadrícula de workshops para ese mes -->
+  <div class="grid md:grid-cols-2 gap-6">
+    <div
+      v-for="(workshop, wi) in group.items"
+      :key="`${group.mes}-${wi}`"
+      class="secondary rounded-xl p-6 transition-colors"
+    >
+      <div class="flex gap-4">
+        <!-- Imagen reducida -->
+        <div class="flex-shrink-0">
+          <img
+            :src="workshop.foto_taller"
+            alt="Foto del taller"
+            class="w-24 h-24 object-cover rounded-lg"
+          >
+        </div>
+        <!-- Información -->
+        <div class="flex-1">
+          <h4 class="text-lg font-bold mb-2">{{ workshop.workshop_name }}</h4>
+          <div class="text-sm text-light mb-2">
+            <span class="icon-calendar"></span>
+            {{ workshop.fecha_inicio }} - {{ workshop.fecha_termino }}
+          </div>
+          <div class="flex items-center gap-3 mb-3">
+            <img
+              :src="workshop.foto_instructor"
+              alt="Instructor"
+              class="w-8 h-8 rounded-full object-cover"
+            >
+            <div class="flex flex-wrap gap-2 text-xs mb-3 font-semibold">
+            <span class="bg-gray2 text-accent px-2 py-1 rounded">
+              {{ workshop.modalidad }}
+            </span>
+            <span v-if="workshop.certificado" class="bg-accent text-gray2 px-2 py-1 rounded">
+              {{ workshop.certificado }}
+            </span>
+          </div>
           </div>
         </div>
+      </div>
+      <!-- Botones de acción -->
+      <div class="mt-4 flex gap-2">
+        <a
+          :href="workshop.temario"
+          target="_blank"
+          class="text-center font-semibold flex-1 py-2 px-3 text-sm border border-accent text-accent rounded
+                 hover:bg-accent hover:text-white transition"
+        >
+          Ver Temario
+        </a>
+        <nuxt-link
+          :to="`/workshops/${workshop.id}`"
+          class="text-center flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition"
+        >
+          Ver más
+        </nuxt-link>
+      </div>
+    </div>
+  </div>
+</div>
       </div>
     </AppSection>
 
@@ -97,6 +121,7 @@
 export default {
   data() {
     return {
+      thisMonth: [],
       logos: [],
       workshops: [],
       upcomingWorkshopsJulio: [],
@@ -153,50 +178,69 @@ export default {
   },
   methods: {
     async fetchWorkshops() {
-      await this.$api.get('api/workshops?populate=foto_taller,foto_instructor,temario').then(res => {
-        const now = new Date().getTime()
-        
-        // Workshops del mes (próximos 3)
-        this.workshops = res.data.data
-          .filter(workshop => new Date(workshop.attributes.fecha_termino).getTime() > now)
-          .sort((a, b) => new Date(a.attributes.fecha_inicio) - new Date(b.attributes.fecha_inicio))
-          .slice(0, 3)
-          .map(workshop => {
-            return {
-              ...workshop.attributes,
-              id: workshop.id,
-              fecha_inicio: new Date(workshop.attributes.fecha_inicio).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }),
-              fecha_termino: new Date(workshop.attributes.fecha_termino).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }),
-              foto_taller: workshop.attributes.foto_taller.data.attributes.url,
-              temario: workshop.attributes.temario?.data?.attributes.url,
-              foto_instructor: workshop.attributes.foto_instructor?.data?.attributes.url,
-            }
-          })
+      // 1. Traer y filtrar
+      const res = await this.$api.get(
+        'api/workshops?populate=foto_taller,foto_instructor,temario'
+      );
+      const now = Date.now();
 
-        // Filtrar workshops para roadmap por mes
-        const allWorkshops = res.data.data
-          .filter(workshop => new Date(workshop.attributes.fecha_termino).getTime() > now)
-          .sort((a, b) => new Date(a.attributes.fecha_inicio) - new Date(b.attributes.fecha_inicio))
-          .map(workshop => {
-            const fechaInicio = new Date(workshop.attributes.fecha_inicio)
-            return {
-              ...workshop.attributes,
-              id: workshop.id,
-              fecha_inicio: fechaInicio.toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }),
-              fecha_termino: new Date(workshop.attributes.fecha_termino).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }),
-              foto_taller: workshop.attributes.foto_taller?.data?.attributes.url,
-              foto_instructor: workshop.attributes.foto_instructor?.data?.attributes.url,
-              instructor_name: workshop.attributes.instructor_name || "Instructor",
-              temario: workshop.attributes.temario?.data?.attributes.url,
-              month: fechaInicio.getMonth() + 1, // Para filtrar por mes
-              year: fechaInicio.getFullYear()
-            }
-          })
+      // 2. Normalizar y ordenar
+      const monthNames = [
+        'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+        'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+      ];
+      const normalized = res.data.data
+        .filter(w => new Date(w.attributes.fecha_inicio).getTime() > now)
+        .sort((a, b) =>
+          new Date(a.attributes.fecha_inicio) - new Date(b.attributes.fecha_inicio)
+        )
+        .map(w => {
+          const attrs = w.attributes;
+          const start = new Date(attrs.fecha_inicio);
+          return {
+            ...attrs,
+            id: w.id,
+            nombre: attrs.nombre,             // ejemplo de campo
+            fecha_inicio: start.toLocaleDateString('es-CL', {
+              year: 'numeric', month: 'long', day: 'numeric'
+            }),
+            fecha_termino: new Date(attrs.fecha_termino).toLocaleDateString('es-CL', {
+              year: 'numeric', month: 'long', day: 'numeric'
+            }),
+            foto_taller: attrs.foto_taller?.data?.attributes.url,
+            foto_instructor: attrs.foto_instructor?.data?.attributes.url,
+            temario: attrs.temario?.data?.attributes.url,
+            monthIndex: start.getMonth(),
+            year: start.getFullYear()
+          };
+        });
 
-        // Separar por meses
-        this.upcomingWorkshopsJulio = allWorkshops
-        this.upcomingWorkshopsAgosto = allWorkshops
-      })
+      // 3. Agrupar por mes y año
+      const grouped = normalized.reduce((acc, item) => {
+        const key = `${item.year}-${item.monthIndex}`;
+        if (!acc[key]) {
+          acc[key] = {
+            mes: monthNames[item.monthIndex],
+            ano: String(item.year),
+            items: []
+          };
+        }
+        acc[key].items.push(item);
+        return acc;
+      }, {});
+
+      // 4. Convertir a array y devolverlo
+      const result = Object.values(grouped);
+      
+      // 5. Filtrar el mes actual
+      const nowDate = new Date();
+      const currentMonthName = monthNames[nowDate.getMonth()];
+      const currentYearStr = String(nowDate.getFullYear());
+      const currentGroup = result.find(g =>
+        g.mes === currentMonthName && g.ano === currentYearStr
+      );
+      this.thisMonth = currentGroup ? currentGroup.items : [];
+      this.workshops = result
     },
     updateCountdown() {
       const deadline = new Date("July 8, 2025 23:59:59").getTime();

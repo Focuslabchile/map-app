@@ -22,7 +22,7 @@ export default {
   methods: {
     async fetchWorkshop() {
     const filters = [
-      'filters[$or][0][id][$eq]=1',
+      'filters[$or][0][id][$eq]='+this.id,
       'populate=*'
     ].join('&');
 
