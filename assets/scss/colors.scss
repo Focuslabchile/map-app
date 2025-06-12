@@ -58,3 +58,29 @@ body {
         }
     }
 }
+
+
+.bg-dark {
+background: var(--darkgray);
+}
+.bg-black {
+background: var(--black);
+}
+.text-accent {
+color: var(--primary);
+}
+.text-gray {
+color: #d1d5db;
+}
+.bg-accent {
+background: var(--primary) !important;
+}
+.bg-gray2 {
+background: var(--gray2) !important;
+}
+.text-gray2 {
+color: var(--gray2) !important;
+}
+.border-accent {
+border-color: var(--primary) !important;
+}
