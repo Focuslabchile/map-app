@@ -1,22 +1,14 @@
 <template>
-  <div class="infinite-carousel" :class="{ 'testimonials-mode': mode === 'testimonials' }">
-    <div class="carousel-container" ref="carouselContainer">
-      <div class="carousel-track" ref="carouselTrack">
+  <div class="logos-carousel">
+    <div class="logos-container" ref="logosContainer">
+      <div class="logos-track" ref="logosTrack">
         <div 
-          v-for="(item, index) in duplicatedItems" 
+          v-for="(logo, index) in duplicatedLogos" 
           :key="index" 
-          class="carousel-item"
-          :class="itemClass"
+          class="logo-item"
         >
-          <slot :item="item" :index="index">
-            <!-- Default slot content for logos -->
-            <img v-if="mode === 'logos'" :src="item.imagen" :alt="item.alt" />
-            
-            <!-- Default slot content for testimonials -->
-            <figure v-else-if="mode === 'testimonials'" class="testimonial-card">
-              <blockquote class="testimonial-quote">{{ item.quote }}</blockquote>
-              <figcaption class="testimonial-author">{{ item.author }}</figcaption>
-            </figure>
+          <slot>
+            <img :src="logo.imagen" :alt="logo.alt" />
           </slot>
         </div>
       </div>
@@ -26,48 +18,27 @@
 
 <script>
 export default {
-  name: 'InfiniteCarousel',
+  name: 'Logos',
   props: {
-    items: {
-      type: Array,
-      default: () => []
-    },
     logos: {
       type: Array,
-      default: () => [
-        { imagen: '/logo.png', alt: 'Logo A' },
-        { imagen: '/logo2.png', alt: 'Logo B' },
-        { imagen: '/logo3.png', alt: 'Logo C' },
-        { imagen: '/inn.png', alt: 'Logo D' },
-        { imagen: '/schlumberger.png', alt: 'Logo E' },
-        { imagen: '/sec.png', alt: 'Logo F' }
-      ]
-    },
-    mode: {
-      type: String,
-      default: 'logos',
-      validator: (value) => ['logos', 'testimonials'].includes(value)
+      default: () => []
     },
     speed: {
       type: Number,
       default: 50
-    },
-    itemClass: {
-      type: String,
-      default: ''
     }
   },
   data() {
     return {
       animationId: null,
       currentTranslate: 0,
-      itemsWidth: 0
+      logosWidth: 0
     }
   },
   computed: {
-    duplicatedItems() {
-      const sourceItems = this.items.length > 0 ? this.items : this.logos
-      return [...sourceItems, ...sourceItems, ...sourceItems]
+    duplicatedLogos() {
+      return [...this.logos, ...this.logos, ...this.logos]
     }
   },
   mounted() {
@@ -83,25 +54,25 @@ export default {
   },
   methods: {
     calculateDimensions() {
-      const track = this.$refs.carouselTrack
+      const track = this.$refs.logosTrack
       if (track) {
         const firstSet = track.children.length / 3
-        this.itemsWidth = 0
+        this.logosWidth = 0
         for (let i = 0; i < firstSet; i++) {
-          this.itemsWidth += track.children[i].offsetWidth
+          this.logosWidth += track.children[i].offsetWidth
         }
       }
     },
     startAnimation() {
       const animate = () => {
-        this.currentTranslate -= this.speed / 10
+        this.currentTranslate -= 1
         
-        if (Math.abs(this.currentTranslate) >= this.itemsWidth) {
+        if (Math.abs(this.currentTranslate) >= this.logosWidth) {
           this.currentTranslate = 0
         }
         
-        if (this.$refs.carouselTrack) {
-          this.$refs.carouselTrack.style.transform = `translateX(${this.currentTranslate}px)`
+        if (this.$refs.logosTrack) {
+          this.$refs.logosTrack.style.transform = `translateX(${this.currentTranslate}px)`
         }
         
         this.animationId = requestAnimationFrame(animate)
@@ -122,37 +93,33 @@ export default {
 </script>
 
 <style scoped>
-.infinite-carousel {
+.logos-carousel {
   width: 100%;
   overflow: hidden;
   background: transparent;
 }
 
-.carousel-container {
+.logos-container {
   width: 100%;
   overflow: hidden;
   position: relative;
 }
 
-.carousel-track {
+.logos-track {
   display: flex;
   align-items: center;
   will-change: transform;
 }
 
-.carousel-item {
+.logo-item {
   flex-shrink: 0;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Logos mode styles */
-.infinite-carousel:not(.testimonials-mode) .carousel-item {
-  padding: 0 20px;
-}
-
-.infinite-carousel:not(.testimonials-mode) .carousel-item img {
+.logo-item img {
   height: 60px;
   width: auto;
   max-width: 150px;
@@ -162,102 +129,30 @@ export default {
   transition: all 0.3s ease;
 }
 
-.infinite-carousel:not(.testimonials-mode) .carousel-item img:hover {
+.logo-item img:hover {
   filter: grayscale(0%);
   opacity: 1;
 }
 
-/* Testimonials mode styles */
-.testimonials-mode .carousel-item {
-  padding: 0 16px;
-}
-
-.testimonial-card {
-  background: #000;
-  border-radius: 12px;
-  padding: 32px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-width: 320px;
-  max-width: 350px;
-  height: auto;
-  min-height: 200px;
-  margin: 0;
-}
-
-.testimonial-quote {
-  color: #e5e7eb;
-  font-size: 1.25rem;
-  line-height: 1.6;
-  margin-bottom: 16px;
-  font-style: italic;
-}
-
-.testimonial-author {
-  color: #ffffff;
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin-top: auto;
-}
-
-/* Responsive styles */
 @media (max-width: 768px) {
-  .infinite-carousel:not(.testimonials-mode) .carousel-item {
+  .logo-item {
     padding: 0 15px;
   }
   
-  .infinite-carousel:not(.testimonials-mode) .carousel-item img {
+  .logo-item img {
     height: 40px;
     max-width: 100px;
-  }
-
-  .testimonials-mode .carousel-item {
-    padding: 0 12px;
-  }
-
-  .testimonial-card {
-    min-width: 280px;
-    max-width: 300px;
-    padding: 24px;
-  }
-
-  .testimonial-quote {
-    font-size: 1.125rem;
-  }
-
-  .testimonial-author {
-    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .infinite-carousel:not(.testimonials-mode) .carousel-item {
+  .logo-item {
     padding: 0 10px;
   }
   
-  .infinite-carousel:not(.testimonials-mode) .carousel-item img {
+  .logo-item img {
     height: 30px;
     max-width: 80px;
-  }
-
-  .testimonials-mode .carousel-item {
-    padding: 0 8px;
-  }
-
-  .testimonial-card {
-    min-width: 250px;
-    max-width: 280px;
-    padding: 20px;
-  }
-
-  .testimonial-quote {
-    font-size: 1rem;
-  }
-
-  .testimonial-author {
-    font-size: 0.875rem;
   }
 }
 </style>

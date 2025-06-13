@@ -90,7 +90,7 @@
         </h2>
         <div class="overflow-hidden relative">
           <div class="inline-flex">
-            <Logos :logos="testimonials" mode="testimonials" :speed="10" />
+            <Testimonials :items="testimonials" :speed="10" />
           </div>
         </div>
       </div>
