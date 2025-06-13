@@ -1,5 +1,6 @@
 <template>
   <AppSection background="secondary">
+    <nuxt-link to="/workshops">Volver</nuxt-link>
     <Workshop :workshop="workshop"/>
   </AppSection>
 </template>

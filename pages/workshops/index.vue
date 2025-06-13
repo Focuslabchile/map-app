@@ -13,72 +13,72 @@
         
         <!-- Julio 2025 -->
         <div v-for="(group, gi) in workshops" :key="gi" class="mb-12">
-  <!-- Título dinámico: mes y año -->
-  <h3
-    class="text-2xl font-semibold text-accent mb-6 border-b border-accent pb-2">
-    {{ group.mes }} {{ group.ano }}
-  </h3>
+          <!-- Título dinámico: mes y año -->
+          <h3
+            class="text-2xl font-semibold text-accent mb-6 border-b border-accent pb-2">
+            {{ group.mes }} {{ group.ano }}
+          </h3>
 
-  <!-- Cuadrícula de workshops para ese mes -->
-  <div class="grid md:grid-cols-2 gap-6">
-    <div
-      v-for="(workshop, wi) in group.items"
-      :key="`${group.mes}-${wi}`"
-      class="secondary rounded-xl p-6 transition-colors"
-    >
-      <div class="flex gap-4">
-        <!-- Imagen reducida -->
-        <div class="flex-shrink-0">
-          <img
-            :src="workshop.foto_taller"
-            alt="Foto del taller"
-            class="w-24 h-24 object-cover rounded-lg"
-          >
-        </div>
-        <!-- Información -->
-        <div class="flex-1">
-          <h4 class="text-lg font-bold mb-2">{{ workshop.workshop_name }}</h4>
-          <div class="text-sm text-light mb-2">
-            <span class="icon-calendar"></span>
-            {{ workshop.fecha_inicio }} - {{ workshop.fecha_termino }}
-          </div>
-          <div class="flex items-center gap-3 mb-3">
-            <img
-              :src="workshop.foto_instructor"
-              alt="Instructor"
-              class="w-8 h-8 rounded-full object-cover"
+          <!-- Cuadrícula de workshops para ese mes -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div
+              v-for="(workshop, wi) in group.items"
+              :key="`${group.mes}-${wi}`"
+              class="secondary rounded-xl p-6 transition-colors"
             >
-            <div class="flex flex-wrap gap-2 text-xs mb-3 font-semibold">
-            <span class="bg-gray2 text-accent px-2 py-1 rounded">
-              {{ workshop.modalidad }}
-            </span>
-            <span v-if="workshop.certificado" class="bg-accent text-gray2 px-2 py-1 rounded">
-              {{ workshop.certificado }}
-            </span>
-          </div>
+              <div class="flex gap-4">
+                <!-- Imagen reducida -->
+                <div class="flex-shrink-0">
+                  <img
+                    :src="workshop.foto_taller"
+                    alt="Foto del taller"
+                    class="w-24 h-24 object-cover rounded-lg"
+                  >
+                </div>
+                <!-- Información -->
+                <div class="flex-1">
+                  <h4 class="text-lg font-bold mb-2">{{ workshop.workshop_name }}</h4>
+                  <div class="text-sm text-light mb-2">
+                    <span class="icon-calendar"></span>
+                    {{ workshop.fecha_inicio }} - {{ workshop.fecha_termino }}
+                  </div>
+                  <div class="flex items-center gap-3 mb-3">
+                    <img
+                      :src="workshop.foto_instructor"
+                      alt="Instructor"
+                      class="w-8 h-8 rounded-full object-cover"
+                    >
+                    <div class="flex flex-wrap gap-2 text-xs mb-3 font-semibold">
+                    <span class="bg-gray2 text-accent px-2 py-1 rounded">
+                      {{ workshop.modalidad }}
+                    </span>
+                    <span v-if="workshop.certificado" class="bg-accent text-gray2 px-2 py-1 rounded">
+                      {{ workshop.certificado }}
+                    </span>
+                  </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Botones de acción -->
+              <div class="mt-4 flex gap-2">
+                <a
+                  :href="workshop.temario"
+                  target="_blank"
+                  class="text-center font-semibold flex-1 py-2 px-3 text-sm border border-accent text-accent rounded
+                        hover:bg-accent hover:text-white transition"
+                >
+                  Ver Temario
+                </a>
+                <nuxt-link
+                  :to="`/workshops/${workshop.id}`"
+                  class="text-center flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition"
+                >
+                  Ver más
+                </nuxt-link>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- Botones de acción -->
-      <div class="mt-4 flex gap-2">
-        <a
-          :href="workshop.temario"
-          target="_blank"
-          class="text-center font-semibold flex-1 py-2 px-3 text-sm border border-accent text-accent rounded
-                 hover:bg-accent hover:text-white transition"
-        >
-          Ver Temario
-        </a>
-        <nuxt-link
-          :to="`/workshops/${workshop.id}`"
-          class="text-center flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition"
-        >
-          Ver más
-        </nuxt-link>
-      </div>
-    </div>
-  </div>
-</div>
       </div>
     </AppSection>
 
@@ -88,12 +88,15 @@
         <h2 class="text-4xl md:text-5xl font-bold mb-12">
           Testimonios de <span class="text-accent">participantes</span>
         </h2>
-        <div class="testimonios-carousel overflow-hidden relative">
-          <div class="testimonios-track inline-flex" :style="{ animation: 'scroll 18s linear infinite' }">
-            <figure v-for="(testimonio, index) in testimonios" :key="index" class="rounded-xl shadow-lg p-8 flex flex-col h-full justify-between mx-4 bg-black min-w-[320px] max-w-[350px]">
-              <blockquote class="mb-4 text-xl text-light">{{ testimonio.quote }}</blockquote>
-              <figcaption class="text-lg font-semibold text-white">{{ testimonio.author }}</figcaption>
-            </figure>
+        <div class="overflow-hidden relative">
+          <div class="inline-flex">
+            <Logos :logos="testimonios" mode="testimonials" :speed="10" />
+            <Slider>
+              <figure v-for="(testimonio, index) in testimonios" :key="index" class="rounded-xl shadow-lg p-8 flex flex-col h-full justify-between mx-4 bg-black min-w-[320px] max-w-[350px]">
+                <blockquote class="mb-4 text-xl text-light">{{ testimonio.quote }}</blockquote>
+                <figcaption class="text-lg font-semibold text-white">{{ testimonio.author }}</figcaption>
+              </figure>
+            </Slider>
           </div>
         </div>
       </div>
@@ -108,9 +111,7 @@
 
         <!-- Carrusel de logos -->
         <div class="clients-carousel">
-          <div class="clients-track">
-            <img v-for="(logo, idx) in logos" :key="logo.id+'-'+idx" class="client-logo" :src="logo.imagen" alt="">
-          </div>
+          <Logos :logos="logos" :speed="15" />
         </div>
       </div>
     </AppSection>
@@ -270,14 +271,6 @@ export default {
 .icon-book::before { content: "\1F4D8 "; }
 .icon-certificate::before { content: "\1F4DC "; }
 .icon-payments::before { content: "\1F4B3 ";}
-
-.testimonios-carousel {
-  &:hover {
-    .testimonios-track {
-      animation-play-state: paused;
-    }
-  }
-}
 
 /* Contenedor: oculta el desborde para el “deslizamiento infinito” */
 .clients-carousel {

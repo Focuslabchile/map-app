@@ -29,7 +29,7 @@
         </tr>
         <tr>
           <th class="text-left pr-4">Enviar comprobante</th>
-          <td>Nataliainfomap@gmail.com / +56 9 3068 9517</td>
+          <td>Enviar comprobante y datos de facturación a Nataliainfomap@gmail.com o al +56 9 3068 9517 tras la transferencia.</td>
         </tr>
       </table>
 
@@ -44,13 +44,6 @@
       <small v-if="copiado" class="block mt-2 font-semibold text-green-600">
         ¡Datos copiados al portapapeles!
       </small>
-
-      <!-- Instrucciones y contacto (fuera de la tabla) -->
-      <p class="mt-4 text-xs italic">
-        Una vez realizada la transferencia, envíe el comprobante y sus datos de facturación a
-        <a href="mailto:Nataliainfomap@gmail.com" class="underline">Nataliainfomap@gmail.com</a> o al WhatsApp
-        <a href="https://wa.me/56930689517" class="underline">+56 9 3068 9517</a>. La inscripción quedará confirmada tras la verificación del pago.
-      </p>
     </Modal>
     <div class="md:col-span-2">
       <!-- Imagen del taller -->
@@ -69,8 +62,8 @@
         <p class="mb-2 text-light">{{ workshop.Descripcion }}</p>
       </div>
       <br>
-      <ul class="text-sm space-y-2 mb-6 text-light">
-        <li><span class="icon-calendar"></span> <strong>{{ workshop.fecha_inicio }}</strong> – <span>{{ workshop.fecha_termino }}</span></li>
+      <ul class="space-y-2 mb-6 text-light">
+        <li><span class="icon-calendar"></span> <strong>{{ workshop.fecha_inicio }} – <span>{{ workshop.fecha_termino }}</span></strong></li>
         <li><span class="icon-laptop"></span> {{ workshop.modalidad }}</li>
         <li><span class="icon-book"></span> {{ workshop.materiales }}</li>
         <li v-if="workshop.certificado"><span class="icon-certificate"></span> {{ workshop.certificado }}</li>
@@ -101,7 +94,7 @@
           <a :href="workshop.temario" target="_blank" class="block w-full text-center py-3 rounded-lg transition font-semibold" style="border: 1.5px solid rgb(59, 167, 227); color: rgb(59, 167, 227); background: transparent;" onmouseover="this.style.backgroundColor='rgb(59,167,227)';this.style.color='white'" onmouseout="this.style.backgroundColor='transparent';this.style.color='rgb(59,167,227)'">
               Descargar Temario
           </a>
-          <small class="mt-2 block">PAGO:</small>
+          <small class="mt-2 block">Inscríbete:</small>
           <a :href="workshop.payment" target="_blank" class="block w-full text-center py-3 rounded-lg font-bold transition text-white" style="background-color: rgb(59, 167, 227); opacity: 1;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
               Boleta
           </a>
