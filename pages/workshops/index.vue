@@ -83,20 +83,14 @@
     </AppSection>
 
     <!-- Testimonios Carrusel -->
-    <AppSection background="secondary">
+    <AppSection v-if="testimonials.length" background="secondary">
       <div class="text-center">
         <h2 class="text-4xl md:text-5xl font-bold mb-12">
           Testimonios de <span class="text-accent">participantes</span>
         </h2>
         <div class="overflow-hidden relative">
           <div class="inline-flex">
-            <Logos :logos="testimonios" mode="testimonials" :speed="10" />
-            <Slider>
-              <figure v-for="(testimonio, index) in testimonios" :key="index" class="rounded-xl shadow-lg p-8 flex flex-col h-full justify-between mx-4 bg-black min-w-[320px] max-w-[350px]">
-                <blockquote class="mb-4 text-xl text-light">{{ testimonio.quote }}</blockquote>
-                <figcaption class="text-lg font-semibold text-white">{{ testimonio.author }}</figcaption>
-              </figure>
-            </Slider>
+            <Logos :logos="testimonials" mode="testimonials" :speed="10" />
           </div>
         </div>
       </div>
@@ -106,7 +100,7 @@
     <AppSection background="primary">
       <div>
         <h2 class="text-4xl font-bold text-center mb-16">
-          Clientes y Partners
+          Clientes y <span class="text-accent">Partners</span>
         </h2>
 
         <!-- Carrusel de logos -->
@@ -128,26 +122,6 @@ export default {
       upcomingWorkshopsJulio: [],
       upcomingWorkshopsAgosto: [],
       countdownText: '',
-      testimonios: [
-        {
-          quote: "Excelente consultoría, clara y con ejemplos reales. El relator domina completamente el tema.",
-          author: "Carlos R., Técnico eléctrico"
-        },
-        {
-          quote: "Muy útil para quienes trabajamos en terreno. Me ayudó a entender mejor las mediciones de mallas.",
-          author: "María L., Ingeniera en ejecución"
-        }
-      ],
-      faqs: [
-        {
-          question: "¿Necesito experiencia previa?",
-          answer: "No es obligatoria, pero se recomienda tener conocimientos básicos en electricidad."
-        },
-        {
-          question: "¿Entregan certificado?",
-          answer: "Sí, recibirás un certificado digital de participación."
-        }
-      ]
     }
   },
   async asyncData(context) {
@@ -162,7 +136,18 @@ export default {
         }
       })
     })
-    return { logos }
+    const testimonials = await context.$api.get('api/testimonials')
+      .then((res)=> {
+        const data = res.data.data
+        return data.map(el => {
+          return {
+            quote: el.attributes.mensaje,
+            author: el.attributes.nombre,
+            course: el.attributes.curso
+          }
+        })
+      })
+    return { logos, testimonials }
   },
   mounted() {
     this.updateCountdown();
