@@ -2,14 +2,14 @@
   <div>
     <!-- Hero Section -->
     <AppSection background="secondary">
-      <h1 class="text-4xl md:text-5xl font-bold">Workshops del <span class="text-accent">Mes</span></h1>
+      <h1 class="text-4xl md:text-5xl font-bold">Consultorías Técnicas del <span class="text-accent">Mes</span></h1>
       <Workshop :workshop="workshop" v-for="(workshop, i) in thisMonth" :key="i"/>
     </AppSection>
 
     <!-- Roadmap de Próximos Workshops Mejorado -->
     <AppSection background="primary">
       <div>
-        <h2 class="text-3xl font-bold text-center mb-12">Roadmap de <span class="text-accent">Próximos Workshops</span></h2>
+        <h2 class="text-3xl font-bold text-center mb-12">Inscríbete en las <span class="text-accent">próximas consultorias</span></h2>
         
         <!-- Julio 2025 -->
         <div v-for="(group, gi) in workshops" :key="gi" class="mb-12">
