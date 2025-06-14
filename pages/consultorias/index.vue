@@ -1,8 +1,66 @@
 <template>
   <div>
+    <Modal :open.sync="showConsultorModal" title="¡Conviértete en consultor y deja tu huella técnica hoy! ">
+      <h2 class="text-2xl font-bold text-accent mb-4">Postula como Consultor Técnico</h2>
+
+      <p class="mb-4">
+        ¿Tienes conocimientos técnicos y ganas de aportar? Escríbenos:
+      </p>
+
+      <ul class="mb-4 space-y-1 text-gray-800">
+        <li>📧 <strong>Correo:</strong> <a href="mailto:rene@infomap.cl" class="text-blue-600 underline">rene@infomap.cl</a></li>
+        <li>📱 <strong>WhatsApp:</strong> +56 9 5200 0241</li>
+      </ul>
+
+      <div class="mb-6">
+        <h3 class="font-semibold mb-1 text-gray-700">Asunto del correo:</h3>
+        <p class="italic text-gray-600">Postulación Consultor Técnico – [Tu Nombre]</p>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="font-semibold mb-2 text-gray-700">Incluye en el mensaje:</h3>
+        <ul class="list-disc list-inside text-gray-700 space-y-1">
+          <li>Breve presentación (nombre, experiencia)</li>
+          <li>Áreas o temas en los que puedes aportar</li>
+          <li>Tu disponibilidad horaria</li>
+          <li>CV (opcional)</li>
+          <li>Enlace a proyectos o portafolio (si tienes)</li>
+        </ul>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="font-semibold mb-2 text-gray-700">Ejemplo de mensaje:</h3>
+        <div class="bg-gray-100 p-4 rounded text-sm text-gray-700">
+          <p>Hola equipo MZ,</p>
+          <p class="mt-2">
+            Mi nombre es <strong>[Tu Nombre]</strong>, soy <strong>[tu profesión]</strong> con experiencia en <strong>[tema]</strong>.
+            Me gustaría participar como consultor técnico en su comunidad.
+          </p>
+          <p class="mt-2">
+            Estoy disponible los días <strong>[martes y jueves por la tarde]</strong> y adjunto mi CV.
+          </p>
+          <p class="mt-2">
+            Quedo atento a sus comentarios. ¡Gracias!
+          </p>
+          <p class="mt-2">
+            Saludos,<br>
+            <strong>[Tu Nombre]</strong><br>
+            [Tu teléfono]
+          </p>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <button
+          class="bg-accent text-white px-4 py-2 rounded hover:bg-accent/90 transition"
+          @click="showConsultorModal = false">
+          Cerrar
+        </button>
+      </div>
+    </Modal>
     <!-- Hero Section -->
     <AppSection background="secondary">
-      <h1 class="text-4xl md:text-5xl font-bold">Consultorías Técnicas del <span class="text-accent">Mes</span></h1>
+      <h1 class="text-4xl md:text-5xl font-bold">Consultorías Técnicas <span class="text-accent">del Mes</span></h1>
       <Workshop :workshop="workshop" v-for="(workshop, i) in thisMonth" :key="i"/>
     </AppSection>
 
@@ -109,6 +167,17 @@
         </div>
       </div>
     </AppSection>
+    <AppSection background="secondary" class="text-center py-16 px-8">
+      <h2 class="text-4xl font-bold text-center mb-16">
+        ¡Conviértete en consultor y <span class="text-accent">deja tu huella técnica hoy</span>
+      </h2>
+      <button
+        @click="showConsultorModal = true"
+        class="text-center flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition"
+      >
+        <span class="icon-notes">Inscríbete como consultor</span>
+      </button>
+    </AppSection>
   </div>
 </template>
 
@@ -116,6 +185,7 @@
 export default {
   data() {
     return {
+      showConsultorModal: false,
       thisMonth: [],
       logos: [],
       workshops: [],
@@ -256,6 +326,7 @@ export default {
 .icon-book::before { content: "\1F4D8 "; }
 .icon-certificate::before { content: "\1F4DC "; }
 .icon-payments::before { content: "\1F4B3 ";}
+.icon-notes::before { content: "\📝"}
 
 /* Contenedor: oculta el desborde para el “deslizamiento infinito” */
 .clients-carousel {

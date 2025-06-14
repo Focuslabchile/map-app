@@ -13,7 +13,10 @@
             <!-- Default slot content for testimonials -->
             <figure class="testimonial-card">
               <blockquote class="testimonial-quote">{{ item.quote }}</blockquote>
-              <figcaption class="testimonial-author">{{ item.author }}</figcaption>
+              <figcaption class="testimonial-author">{{ item.author }}
+                <br>
+                <i><small>{{ item.course }}</small></i>
+              </figcaption>
             </figure>
           </slot>
         </div>
