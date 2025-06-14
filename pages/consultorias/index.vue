@@ -116,7 +116,6 @@
 export default {
   data() {
     return {
-      testimonials: [],
       thisMonth: [],
       logos: [],
       workshops: [],
@@ -137,13 +136,23 @@ export default {
         }
       })
     })
-    return { logos }
+    const testimonials = await context.$api.get('api/testimonials')
+      .then((res)=> {
+        const data = res.data.data
+        return data.map(el => {
+          return {
+            quote: el.attributes.mensaje,
+            author: el.attributes.nombre,
+            course: el.attributes.curso
+          }
+        })
+      })
+    return { logos, testimonials }
   },
   mounted() {
-    this.fetchTestimonials();
     this.updateCountdown();
     setInterval(this.updateCountdown, 1000);
-    this.fetchWorkshops();
+    this.fetchWorkshops()
   },
   computed: {
     // Devuelve dos copias seguidas → [logo1, logo2, …, logoN, logo1, logo2, …]
@@ -154,19 +163,6 @@ export default {
     }
   },
   methods: {
-    async fetchTestimonials (){
-      this.testimonials = await context.$api.get('api/testimonials')
-        .then((res)=> {
-          const data = res.data.data
-          return data.map(el => {
-            return {
-              quote: el.attributes.mensaje,
-              author: el.attributes.nombre,
-              course: el.attributes.curso
-            }
-          })
-        })
-    },
     async fetchWorkshops() {
       // 1. Traer y filtrar
       const res = await this.$api.get(
