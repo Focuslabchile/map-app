@@ -70,7 +70,7 @@
                   Ver Temario
                 </a>
                 <nuxt-link
-                  :to="`/workshops/${workshop.id}`"
+                  :to="`/consultorias/${workshop.id}`"
                   class="text-center flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition"
                 >
                   Ver más
