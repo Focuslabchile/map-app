@@ -169,11 +169,11 @@
     </AppSection>
     <AppSection background="secondary" class="text-center py-16 px-8">
       <h2 class="text-4xl font-bold text-center mb-16">
-        ¡Conviértete en consultor y <span class="text-accent">deja tu huella técnica hoy</span>
+        ¡Conviértete en consultor y <span class="text-accent">deja tu huella técnica hoy!</span>
       </h2>
       <button
         @click="showConsultorModal = true"
-        class="text-center flex-1 py-2 px-3 text-sm bg-accent text-white rounded hover:bg-accent/90 transition"
+        class="text-center flex-1 py-2 px-3 text-md bg-accent text-white font-bold rounded hover:bg-accent/90 transition"
       >
         <span class="icon-notes">Inscríbete como consultor</span>
       </button>
